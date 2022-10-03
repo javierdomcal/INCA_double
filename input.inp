@@ -1,0 +1,64 @@
+name_input
+$wfxfile
+name.wfx
+$logfile
+no
+$cubefile
+0.d0  0.d0  0.d0
+0.1   0.1   0.1
+50  50  50
+$density
+no
+$primitive
+no
+1
+$AO
+no
+1
+$MO
+no
+2
+$gradient
+no
+$laplacian
+no
+$intracule
+intrac
+$radial_integral
+.true.
+.true.    !different nodes
+$Number of quadrature
+auto
+3
+$Quadrature centers
+0.d0 0.d0 0.d0
+0.d0 0.d0 35.8d0
+0.d0 0.d0 -35.8d0
+$Gauss-Legendre
+30 30 30
+1.d0 0.1d0 0.1d0
+0.d0 0.d0   !limits of the integral
+$Gauss-Lebedev
+590 590 590
+$Threshold (Tau)
+1.d-8
+$DM2
+name.dm2p
+10 10
+name_nrad_nang_alfa.out
+$radial_plot
+.false.
+name.rad
+4
+0 7 65 1202
+7 33 5 1202
+33 42 90 1202
+42 55 5 1202
+$Vectorial_plot
+.false.
+name.cube
+0.d0 0.d0 -2.d0
+0.15  0.15 0.15  
+10  10  800
+
+
