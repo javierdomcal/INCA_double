@@ -11,7 +11,7 @@ implicit none
 integer :: kk1, kk2 !integers we do not want to read from .dm2
 integer :: dfact    !double factorial
 integer :: ii,iii,sum, ig, ir, summ, np, sm, smm !some integers
-double precision :: pot
+double precision :: pot 
 double precision :: R_i_k_2, R_j_l_2  !R_ik=(R_i-R_k)^2
 double precision :: Aa_ijkl !grid independent part of the intracule
 double precision :: n_prim_i, n_prim_j,n_prim_k, n_prim_l !normalization of primitives for DM2
@@ -19,7 +19,6 @@ double precision :: n_prim_t !total normalization factor
 double precision :: DMval !value of DM2
 double precision :: A_ind !eq.18 (grid independent part)
 double precision :: screen1, screen2, lim !integral screenings
-
 double precision :: U_x, U_y, U_z !coef. for 2nd integral screening
 double precision, allocatable, dimension(:) :: C_x, C_y, C_z !coefficients of V 
 double precision :: V_x, V_y, V_z !eq 16
@@ -37,7 +36,8 @@ double precision, allocatable, dimension(:) :: I_vec   !intracule at a point
 !check accuracy of calculations
 double precision :: trace_DM2prim, trDM2 !normalized and not normalized DM2prim
 integer :: npairs      !number of electron pairs
-real :: T1, T2, T3, T4 !time check
+real :: T1, T2, T3, T4, TT1, TT2, TT3, TT4, TT5 !time check
+real :: Tread, T1screen, T2screen, Tgrid
 
  lim=thresh*(dble(nprim)*(dble(nprim)+1.d0)*0.5d0)**(-1.d0) !limit for the 1st integral screening
  
@@ -69,6 +69,8 @@ real :: T1, T2, T3, T4 !time check
  trace_DM2prim=0.d0 
  trDM2=0.d0
  call cpu_time(T2)
+
+! call intracalc(r,ngrid)
  !subroutine intracalc(Computes intracule function with the given points)
  open(unit=5,file=dm2name, form='unformatted',access='stream') !open binary file
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
@@ -83,11 +85,22 @@ real :: T1, T2, T3, T4 !time check
  smm=0
  trDM2=0.d0  !sum of all the DM2 terms.
  trace_DM2prim=0.d0 !sum of all the normalized DM2 terms.
+!Time check
+Tread=0.d0
+T1screen=0.d0
+T2screen=0.d0
+Tgrid=0.d0
+
  do while (.true.)  !loop for primitive quartets.
+ 
+          call cpu_time(TT1)
     
           read(5,end=100) kk1,i,j,k,l,DMval,kk2 !read a line from binary file .dm2
           if (i.eq.0) goto 100 !file is finished   
-           
+          
+          call cpu_time(TT2) 
+          Tread=Tread+(TT2-TT1)
+
           trDM2=trDM2+DMval
 
           smm=smm+1
@@ -112,7 +125,7 @@ real :: T1, T2, T3, T4 !time check
           n_prim_t=N_prim_i*N_prim_j*N_prim_k*N_prim_l
           DMval=n_prim_t*DMval 
           trace_DM2prim=trace_DM2prim+DMval !sum all the DM2 quartets to check accuracy
-
+           
           !compute the first variables
 
           a_ik=Alpha(i)+Alpha(k)  
@@ -129,9 +142,13 @@ real :: T1, T2, T3, T4 !time check
                   (Cartes(Ra(j),3)-Cartes(Ra(l),3))**2.d0
                    
          !!!!1st integral screening!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                                   
-         screen1=abs(DMval)*sqrt(J_ik(i,k,R_i_K_2)*J_jl(j,l,R_j_l_2))                     
+         screen1=abs(DMval)*sqrt(J_ik(i,k,R_i_K_2)*J_jl(j,l,R_j_l_2))       
+         
+         call cpu_time(TT3)
+         T1screen=T1screen-(TT3-TT2)         
          if (screen1.ge.lim) then    
          !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 
                  !compute the other variables (eqn. 12)
                  a_ijkl=a_ik+a_jl
                  e_ijkl=(a_ik*a_jl)*a_ijkl**(-1.d0)
@@ -146,7 +163,9 @@ real :: T1, T2, T3, T4 !time check
                  !compute Aa_ijkl (the grid independent part)  !eq.18
                  A_ind=(a_ijkl)**(-1.5d0)* exp(-e_ik*R_i_k_2-e_jl*R_j_l_2)
                  Aa_ijkl=DMval*A_ind 
-                        
+
+
+
                  !!!!!!!!!!!!Calculate coeficients of V!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                  sm=0
                  U_x=0.d0; U_y=0.d0; U_z=0.d0
@@ -170,6 +189,8 @@ real :: T1, T2, T3, T4 !time check
                                   
                  !!!!!!!!!!2nd Integral Screening!!!!!!!!!!!!!!!!!!!!!                      
                  screen2=abs(Aa_ijkl*U_x*U_y*U_z) !eqn.40
+                 call CPU_time(TT4)
+                 T2screen=T2screen+(TT4-TT3)                
                  if (screen2.ge.lim) then 
                  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                                             
                             !loop over grid points                                
@@ -196,7 +217,9 @@ real :: T1, T2, T3, T4 !time check
                                    !!!!!!!!!!!!!Calculate intracule at a point!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                    I_vec(ig)=I_vec(ig)+Aa_ijkl*exp(-(rp(1)**2.d0+rp(2)**2.d0+rp(3)**2.d0))*V_x*V_y*V_z
                                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                                  
-                              end do       !End loop over grid points
+                            end do       !End loop over grid points
+                            call CPU_time(TT5)
+                            Tgrid=Tgrid+(TT5-TT4)
                  else                     
                               summ=summ+1  !count quartets that do not pass 2nd screening 
                  end if 
@@ -209,18 +232,13 @@ real :: T1, T2, T3, T4 !time check
  end do !end loop over quartets 
  100 continue           !it comes here when .dm2 file is finished
  write(*,*) "Ended loop for primitives"
-
  !end subroutine intracalc 
  !as output gives a vector with the intracule at the given points
-
-
-
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  !!!!!!!!!!!!!!!!!!!!!!!Compute the integrals using the quadrature !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  !!!!!!!!!!!!!!!!!!!!!!!weights and the vectorial intracule        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  call cpu_time(T3)
-
  if (radial_plot) then        !compute radial intracule
       open(unit=3, file=r_plot_name)   
       allocate(r_intra(nradi)) 
@@ -239,7 +257,6 @@ real :: T1, T2, T3, T4 !time check
       deallocate(r_intra)
       close(3)
  end if     
-  
  if (radial_integral) then !integral of the intracule
      r_integral=0.d0
      do i=1,rrgrid
@@ -247,7 +264,6 @@ real :: T1, T2, T3, T4 !time check
      end do 
      deallocate(rweight)
  end if
-
  if (cubeintra) then
          open(unit=3, file=cubeintraname)
          write(3,*) "CUBE FILE"
@@ -264,22 +280,22 @@ real :: T1, T2, T3, T4 !time check
          end do  
          close(3)
  end if        
-
 ! 40 format(6(E16.6E3))
-
  call cpu_time(T4)
- 
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  !!!!!!!!!!!!!!!!!!!!!Print output!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
  open(unit=3,file=outname) !open output file 
  write(3,*) "*******Job Finished************"
- 
  write(3,*) "-----------Computational time----------------"
  write(3,*) "Total CPU time", T4-T1 
  write(3,*) "Grid points computing time", T2-T1
  write(3,*) "Primitive quartet loop time", T3-T2
  write(3,*) "CPU time for intracule integrations", T4-T3
+ write(3,*) "---Primitive quartet time analysis-----------"
+ write(3,*) "Reading .dm2p file-->", Tread
+ write(3,*) "1st primitive screening-->", T1screen
+ write(3,*) "2nd primitive screening-->", T2screen
+ write(3,*) "Grid points loop-->", Tgrid
  write(3,*) "---------------------------------------------"
  write(3,*) "------Grid point + primitive quartet info----"
  write(3,*) "Original grid points", maxgrid
@@ -314,7 +330,6 @@ real :: T1, T2, T3, T4 !time check
  else if (cubeintra) then
      write(3,*) "CUBEFILE GENERATED"
  end if
-
  close(3)
 end subroutine
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -90,5 +90,5 @@ subroutine becke(rrg,sumq,rgrid,nquad,cent,w_beck,Ps)                           
      double precision, intent(in) :: vl
          pf=1.5d0*vl-0.5d0*vl**(3.d0)     
      end function
-end subroutine becke
+end subroutine becke         
 
