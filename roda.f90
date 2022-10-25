@@ -162,8 +162,6 @@ end subroutine readinput
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 subroutine readintra() 
-use inputdat
-use cubeinfo
 use intrainfo
 use located
 implicit none
@@ -175,52 +173,59 @@ call getarg(1,name)  !gets the name of the input file (writen in the prompt)
 name=trim(name)      !remove the blank spaces of the string 'name'
 open(unit=3,file=name,status='OLD')  
         !read input for intracule
-        call locate(3,'$Threshold')
+        call locate(3,'$Threshold') !threshold for integral screenings
         read(3,*) thresh  
         rewind(3)
         call locate(3,'$DM2')
-        read(3,*) dm2name
-        read(3,*) trsh1, trsh2 !thresholds used in DM2prim
-        read(3,*) outname
+        read(3,*) dm2name           !name of the dm2p file
+        read(3,*) trsh1, trsh2      !thresholds used in DM2prim
+        read(3,*) outname           !name of the output file
         rewind(3)
         
         call locate(3,'$radial_integral')
-        read(3,*) radial_integral
+        read(3,*) radial_integral   
         read(3,*) dif_nodes
-        if (radial_integral) then
+        if (radial_integral) then   !read info to perform radial integral
             call locate(3,'$Number of quadrature')
             read(3,*) ccent
             autoc=.false.
-            if (ccent.eq."manual") then
-                read(3,*) nquad                
+            if (ccent.eq."manual") then  !input parameters
+                read(3,*) nquad          !number of quadrature centers      
                 call locate(3,'Quadrature center')
                 allocate(cent(3,nquad))
-                do i=1,nquad
+                do i=1,nquad            !read position of centers
                    read(3,*) (cent(j,i), j=1,3)
                 end do
             else !default
                 write(*,*) "Computing centers automatically"
                 call centercalc()
+                call autocalc() !calculate approximate I_vs_r curve
             end if            
-            if (dif_nodes) then  
+            if (dif_nodes) then       !Different node for each centre
                 allocate(nradc(nquad))
                 allocate(nangc(nquad))
-                allocate(sfalpha(nquad))
+                allocate(sfalpha(nquad)) !PROBLEM: We can't know nquad beforehand
                 call locate(3,'Gauss-Legendre')
                 read(3,*) (nradc(i), i=1,nquad)
                 read(3,*) sfalpha(:)
-                read(3,*) a,b
-                rewind(3)
+                rewind(3)           
                 call locate(3,'$Gauss-Lebedev')
                 read(3,*) nangc(:)
             else        
                 call locate(3,'Gauss-Legendre')
                 read(3,*) nrad
                 read(3,*) sfalpha
-                read(3,*) a,b
+                if (nquad.eq.1) then  !Becke isn't used 
+                   read(3,*) a,b       !Choose limits of the radial integral
+                end if                 !if 0 the integral is computed from 0 to infty
                 rewind(3)
                 call locate(3,'$Gauss-Lebedev')
-                read(3,*) gpt
+                read(3,*) gpt !write number of angular nodes
+                do i=1,nquad
+                    nradc(i)=nrad
+                    nangc(i)=gpt
+                    sfalpha(i)=sfalpha(1)
+                end do                
             end if 
             rewind(3)
             call locate(3,'$Center weights')
@@ -258,7 +263,7 @@ open(unit=3,file=name,status='OLD')
  close(3) 
 end subroutine readintra
 
-subroutine autocalc()
+subroutine autocac()
 use geninfo
 use radis
 implicit none
@@ -273,7 +278,7 @@ end do
 maxrad=maxval(radii)
 
 
-end subroutine autocalc
+end subroutine autocac
 
 
 

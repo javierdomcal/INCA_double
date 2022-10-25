@@ -164,8 +164,8 @@ end do
 allocate(T(noccmo,nprim))                  !read T matrix (MOs in prims)       
 call locate(1,"Molecular Orbital Primitive Coefficients")
 do kk=1,noccmo
- read(1,'(a80)')line
- read(1,*) mon                          !molecular orbital number "mo"
+  read(1,'(a80)')line
+  read(1,*) mon                          !molecular orbital number "mo"
  read(1,'(a80)') zaborra  
  read(1,*) (T(mon,i), i=1,nprim)
 end do
@@ -219,7 +219,6 @@ do i=1,nprim                                                                 !t-
      stop
    end if
 end do
-
                              !if we have an unrestricted wf-------What about correlated???
 if (uhf) then                !split T matrix into T_a and T_b (alpha and beta)
      allocate(T_a(nalfae,nprim))

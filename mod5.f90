@@ -62,9 +62,11 @@ module intrainfo
 implicit none
 character*20 :: dm2name, outname
 double precision :: thresh
-integer :: nquad !number of quadratures
 double precision :: trsh1, trsh2 !thresholds for DM2prim
 !!!!!Radial integral parameters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+logical :: autoc                                       !calculate centres automatically
+logical :: radial_integral                    !=.true. integral of radial intra from 0 to infty
+integer :: nquad !number of quadratures
 double precision, allocatable, dimension(:,:) :: cent  !integration centre
 double precision, allocatable, dimension(:) :: sfalpha !scaling factor for Gauss-Legendre
 double precision, allocatable, dimension(:) :: Ps !Bragg-Slater weight  
@@ -74,8 +76,7 @@ integer, allocatable, dimension(:) :: nangc  !angular grid points (diff nodes pe
 double precision :: a,b                                !limits of the integral
 integer :: nrad               !number of Gauss-Legendre quadrature points (same nodes per centre)
 double precision :: snglalpha                     !alpha parameter (same for all nodes)
-logical :: autoc                                       !calculate centres automatically
-logical :: radial_integral                    !=.true. integral of radial intra from 0 to infty
+
 !!!!Radial intracule at several distances!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 logical :: radial_plot                                !=.true if we want I vs R plot
 character*40 :: r_plot_name                           !name of the radial plot

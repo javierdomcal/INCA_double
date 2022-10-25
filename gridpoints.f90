@@ -87,7 +87,6 @@ double precision :: xs
 !ntrsh=-trsh !set negative threshold
 
 !count maximum number of points
-write(*,*) "Ps=,", Ps(:)
 np=0
 do i=1,nquad
   np=np+nradc(i)*nAngc(i)
@@ -206,7 +205,7 @@ do i1=1,nquad       !loop over centres
    write(*,*) "Total number of gp after center",i1,"=", sm, ngrid
    !neglect points by symmetry!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
    write(*,*) nGrid-(smn(i1)), "Points will be neglected in center", i1     
-   rGrid=smn(i1)  !reduced grid points of current center
+   !rGrid=smn(i1)  !reduced grid points of current center
    !store reduced points and their total weight
    sm=smp   !start again from 1st point of center
    smr=smpr !start from 1st reduced point of center

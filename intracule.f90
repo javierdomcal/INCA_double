@@ -164,8 +164,6 @@ Tgrid=0.d0
                  A_ind=(a_ijkl)**(-1.5d0)* exp(-e_ik*R_i_k_2-e_jl*R_j_l_2)
                  Aa_ijkl=DMval*A_ind 
 
-
-
                  !!!!!!!!!!!!Calculate coeficients of V!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                  sm=0
                  U_x=0.d0; U_y=0.d0; U_z=0.d0

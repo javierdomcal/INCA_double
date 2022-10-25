@@ -117,7 +117,7 @@ contains
 !!!!!!!!!!
 
 
-        function Wr(rhat,r,ax)  !for 1st integral screening
+  function Wr(rhat,r,ax)  !for 1st integral screening
         double precision :: Wr
         double precision, intent(in) :: rhat,r
         integer, intent(in) :: ax
@@ -125,7 +125,7 @@ contains
         ((sqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl+0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(j),ax)))**dble(TMN(j,ax))*&
         ((sqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl-0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(k),ax)))**dble(TMN(k,ax))*&
         ((sqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl+0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(l),ax)))**dble(TMN(l,ax))
-        end function Wr
+  end function Wr
       
  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
