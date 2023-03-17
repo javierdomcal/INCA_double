@@ -8,18 +8,20 @@ module wfxinfo !especific data of wfx files
   double precision, allocatable, dimension(:) :: Occ   !ocupancies of orbitals
 end module wfxinfo
 !---------------------------------------------------------------------------------------
-module geninfo !general information, can be obtained from .wfx files.
+module geninfo           !general information, can be obtained from .wfx files.
   implicit none
-  logical :: uhf    !unrestricted Hartree Fock???
-  integer :: natoms !number of atoms
+  logical :: uhf, rhf    !unrestricted-restricted Hartree Fock???
+  logical :: rdens,udens !relaxed or unrelaxed density
+  logical :: opsh, clsh  !open or closed shell
+  integer :: natoms      !number of atoms
   integer :: nelec
-  integer :: nprim !number of primitives
+  integer :: nprim       !number of primitives
   double precision :: netch !net charge
-  integer :: mspin !electronic spin multiplicity
-  integer :: nalfae !number of alpha electrons
-  integer :: nbetae !number of beta electrons
-  integer, allocatable, dimension(:) :: Ra !atomic centers of primitives
-  integer, allocatable, dimension(:) :: Ptyp !primitive type
+  integer :: mspin       !electronic spin multiplicity
+  integer :: nalfae      !number of alpha electrons
+  integer :: nbetae      !number of beta electrons
+  integer, allocatable, dimension(:) :: Ra    !atomic centers of primitives
+  integer, allocatable, dimension(:) :: Ptyp  !primitive type
   double precision, allocatable, dimension(:) :: Alpha !Primitive exponents
   integer, allocatable, dimension(:,:) :: TMN !matrix with t,m,n coeficients
   double precision, allocatable,  dimension(:,:) :: cartes !nuclear cartesian coordinates
@@ -43,6 +45,7 @@ end module loginfo
 module inputdat
 implicit none
  logical :: readwfx, readlog, cube, primcube, aocube, MOcube, denscube, gradient, laplacian, intracalc
+ logical :: c1calc
  character*40 :: wfxfilename
  character*40 :: logfilename
  character*40 :: nameprim
@@ -52,7 +55,7 @@ implicit none
  character*40 :: namegrad
  character*40 :: namelap
  character*40 :: nameint
-
+ character*40 :: namec1
 end module inputdat
 
 !----------------------------------------------------------------------------------------------------
@@ -119,13 +122,20 @@ end module quadratures
 !-----------------------------------------------------------------------------------------
 
 module cubeinfo
- integer :: mo !molecular orbital to represent in the cubefile
- integer :: npr  !primitive to represent in the cubefile
- integer :: cao  !atomic orbital to represent in the cubefile
- double precision, dimension(3) :: center !cube centered in (x,y,z)
- double precision, dimension(3) :: step !distance between points for each axis
- integer, dimension(3) :: np !number of points in the cube for each axis
+   integer :: mo !molecular orbital to represent in the cubefile
+   integer :: npr  !primitive to represent in the cubefile
+   integer :: cao  !atomic orbital to represent in the cubefile
+   double precision, dimension(3) :: center !cube centered in (x,y,z)
+   double precision, dimension(3) :: step !distance between points for each axis
+   integer, dimension(3) :: np !number of points in the cube for each axis
 end module cubeinfo
+
+module fractions
+   double precision, parameter :: hr=1.d0*(3.d0**(-1.d0))
+   double precision, parameter :: boh=5.d0*(3.d0**(-1.d0))
+   double precision, parameter :: bs=1.d0*(6.d0**(-1.d0)) 
+   double precision, parameter :: bih=2.d0*(3.d0**(-1.d0))
+end module fractions        
 
 module radis
    double precision, parameter, dimension(92) :: BL=(/0.327d0, 0.320d0, &

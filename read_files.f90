@@ -14,8 +14,7 @@ character*40, intent(in) :: wfxfilename
 character*80 :: line
 character*80 :: zaborra  !coses que no volem llegir
 integer :: i,j,k, kk
-integer :: mon !molecular orbital number  
-logical :: rhf, rdens, udens, opsh, clsh 
+integer :: mon !molecular orbital number   
 double precision :: maxim, minim
 double precision, parameter :: trsh=1.d-6 !threeshold for orbital occupancies
 
@@ -49,11 +48,13 @@ do i=1,noccmo                                         !by
 end do
  
 do i=1,noccmo
+   if (occ(i).ne.0.d0) then
      if ((Occ(i).ne.1.d0).and.(Occ(i).ne.2.d0)) then
         write(*,*) "Correlated wavefunction"
         corr=.true.
         exit
      end if
+   end if  
 end do
 
 maxim=maxval(Occ)                                         !store the maximum occupation value
@@ -77,25 +78,29 @@ if (corr) then
         end if                    
     end if 
 else                    !HF mwavefunction, check if it's RHF or UHF 
-   if (minim.eq. 1.d0) then                 !we have 1e- in 1 orbital     
-         if (maxim.eq. 2.d0) then           !at least 1 doubly occ orbital
+   minim=minval(Occ,MASK=occ.gt.0.d0)     
+   if (minim.eq.1.d0) then                 !we have 1e- in 1 orbital
+         if (maxim.eq.2.d0) then           !at least 1 doubly occ orbital
             rhf=.true.                      !open shell RHF
             uhf=.false.
+            opsh=.true.
             write(*,*) "Open shell RHF"
          else                                 !all singly occ. orbitals (alpha and beta)
             rhf=.false.                        !UHF   
-            uhf=.true. 
+            uhf=.true.  
+            opsh=.true.           
             write(*,*) "UHF"
          end if
    else if (minim.eq.2.d0) then           !all doubly occ. orbitals
          rhf=.true.                           !closed shell rhf
          uhf=.false.  
+         clsh=.true.
          write(*,*) "Closed shell RHF"
    else 
          write(*,*)   "Error, correlated wf"  
          STOP
    end if    
-  deallocate(Occ)                        !with HF wavefunctions we no longer need the occupancy   
+  !deallocate(Occ)                        !with HF wavefunctions we no longer need the occupancy   
 end if  
  
 call locate(1,"Net Charge")           !store some variables
@@ -214,8 +219,48 @@ do i=1,nprim                                                                 !t-
       TMN(i,1)=0
       TMN(i,2)=1
       TMN(i,3)=1      
-   else 
-     write(*,*) "Error, f orbital!"
+   else if (ptyp(i).eq.11) then !fxxx 
+      TMN(i,1)=3
+      TMN(i,2)=0
+      TMN(i,3)=0
+   else if (ptyp(i).eq.12) then !fyyy 
+      TMN(i,1)=0
+      TMN(i,2)=3
+      TMN(i,3)=0
+   else if (ptyp(i).eq.13) then !fzzz 
+      TMN(i,1)=0
+      TMN(i,2)=0
+      TMN(i,3)=3
+   else if (ptyp(i).eq.14) then !fxxy 
+      TMN(i,1)=2
+      TMN(i,2)=1
+      TMN(i,3)=0
+   else if (ptyp(i).eq.15) then !fxxz 
+      TMN(i,1)=2
+      TMN(i,2)=0
+      TMN(i,3)=1
+   else if (ptyp(i).eq.16) then !fyyz 
+      TMN(i,1)=0
+      TMN(i,2)=2
+      TMN(i,3)=1
+   else if (ptyp(i).eq.17) then !fxyy 
+      TMN(i,1)=1
+      TMN(i,2)=2
+      TMN(i,3)=0
+   else if (ptyp(i).eq.18) then !fxzz 
+      TMN(i,1)=1
+      TMN(i,2)=0
+      TMN(i,3)=2
+   else if (ptyp(i).eq.19) then !fyzz 
+      TMN(i,1)=0
+      TMN(i,2)=1
+      TMN(i,3)=2
+   else if (ptyp(i).eq.20) then !fxyz 
+      TMN(i,1)=1
+      TMN(i,2)=1
+      TMN(i,3)=1
+   else
+     write(*,*) "G orbitals are not implemented"
      stop
    end if
 end do
@@ -234,7 +279,8 @@ if (uhf) then                !split T matrix into T_a and T_b (alpha and beta)
                 T_b(i,j) = T(k,j)     
           end do
           k=k+1                   !next beta orbital
-     end do 
+     end do
+     write(*,*) "reading alpha and beta coefficients" 
 end if 
      
  close(1) 

@@ -168,7 +168,7 @@ do i1=1,nquad       !loop over centres
               phi(i)=0.d0
         end if  
         Wlb(i)=Wlb(i)*2.d0*pi !store 2pi factor on the weight (see solid angle integral)
-   end do
+   end do                     !should be 4pi but we have a factor of 1/2 in the intracule!!
    deallocate(r_lb)
    !!!!!!!!!!!!!Compute grid points of quadrature!!!!!!!!!!!
    nGrid=nAng*nrad

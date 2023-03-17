@@ -54,7 +54,9 @@ if (intracalc) then !compute the intracule
   write(*,*) "intracule computed succesfully"
 end if
 
-
+if (c1calc) then
+   call c1hole(70,1.d0)
+end if
 end program wavefunction
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -156,7 +158,9 @@ call locate(3,"$logfile")
  if (nameint.ne.'no') then
         intracalc=.true.
  end if
-         
+
+ call locate(3,"$HFhole")
+ read(3,*) c1calc
 end subroutine readinput 
 
 
@@ -199,7 +203,7 @@ open(unit=3,file=name,status='OLD')
             else !default
                 write(*,*) "Computing centers automatically"
                 call centercalc()
-                call autocalc() !calculate approximate I_vs_r curve
+                call pdint() !calculate approximate I_vs_r curve
             end if            
             if (dif_nodes) then       !Different node for each centre
                 allocate(nradc(nquad))
@@ -232,7 +236,7 @@ open(unit=3,file=name,status='OLD')
             allocate(Ps(nquad)) !allocate weight of each centre
             read(3,*) beckw
             if (beckw) then
-                call autocalc()
+                !call pdint()
                 !compute Becke centres weights automatically (TO IMPLEMENT)
             else
                 read(3,*) Ps(:) !the weigth of a positive center must be equal to the neg.
