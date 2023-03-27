@@ -25,7 +25,7 @@ double precision :: E_kn
 
 
 double precision :: gradx,grady,gradz
-double precision :: laplx,laply,laplz, laplx1, laplx2
+double precision :: laplx,laply,laplz, laplx1, laplx2, laply1, laply2, laplz1, laplz2
 double precision :: Ek_x,Ek_y,Ek_z   !x,y,z components of kinetic energy density
 double precision :: Ekin_x,Ekin_y,Ekin_z
 double precision :: Tmult, Tmult2
@@ -52,7 +52,21 @@ do i=1,nprim !compute and store value of primitives and its derivatives
     dpxx(i)=dxx
     dpyy(i)=dyy
     dpzz(i)=dzz
-!    write(*,*) "Primitive",i, pval(i), tmn(i,1), tmn(i,2), tmn(i,3)
+    if (dyy.gt.100) then
+       write(*,*) "dyy was too big"
+       write(*,*) TMN(i,1), TMN(i,2), TMN(i,3)     
+       write(*,*) "Primitive",i, pval(i), tmn(i,1), tmn(i,2), tmn(i,3)
+       write(*,*) dyy
+       write(*,*) "--------------------------------------------------"
+    end if   
+    if (dxx.gt.100) then
+       write(*,*) "dyy was too big"
+       write(*,*) TMN(i,1), TMN(i,2), TMN(i,3)
+       write(*,*) "Primitive",i, pval(i), tmn(i,1), tmn(i,2), tmn(i,3)
+       write(*,*) dxx
+       write(*,*) "--------------------------------------------------"
+    end if
+
 end do
 
 E_kin=0.d0
@@ -98,15 +112,34 @@ do i=1,noccmo
          Laplx1=Laplx1+Tmult*(2.d0*dpxval(j)*dpxval(k)) 
          Laplx2=Laplx2+Tmult*(pval(j)*dpxx(k)+dpxx(j)*pval(k))
 
+         Laply1=Laply1+Tmult*(2.d0*dpyval(j)*dpyval(k))
+         Laply2=Laply2+Tmult*(pval(j)*dpyy(k)+dpyy(j)*pval(k))
+
+         Laplz1=Laplz1+Tmult*(2.d0*dpzval(j)*dpzval(k))
+         Laplz2=Laplz2+Tmult*(pval(j)*dpzz(k)+dpzz(j)*pval(k))
+
          Laply=Laply+Tmult*((2.d0*dpyval(j)*dpyval(k))+pval(j)*dpyy(k) &
                     +dpyy(j)*pval(k))
          Laplz=Laplz+Tmult*((2.d0*dpzval(j)*dpzval(k))+pval(j)*dpzz(k) &
                     +dpzz(j)*pval(k))
         ! write(*,*) "i=",i, "j=",j, "k=",k
-        ! write(*,*) "pval(j)*dpyy(k)", pval(j), dpyy(k)
+       !  write(*,*) "pval(j)*dpyy(k)", pval(j), dpyy(k)
         ! write(*,*) "pval(k)*dpyy(j)", pval(k), dpyy(j)
-        ! Lapl=Lapl+Tmult*(2.d0*(dpxval(j)*dpxval(k)+dpyval(j)*dpyval(k)+dpzval(j)*dpzval(k))+ &
-        !                 pval(j)*(dpxx(k)+dpyy(k)+dpzz(k))+pval(k)*(dpxx(j)+dpyy(j)+dpzz(j)))
+         if (dpyy(k).gt.100) then
+                 write(*,*) "dpyy very big"
+                 write(*,*) dpyy(k), k, Tmult
+                 write(*,*) "INFO ABOUT PRIMITIVE"
+                 write(*,*) "PVAL=", pval(k)
+                 write(*,*) "Coeff", TMN(k,1), TMN(k,2), TMN(k,3)
+         end if
+         if (dpzz(k).gt.100) then
+                 write(*,*) "dpzz very big"
+                 write(*,*) dpzz(k), k, Tmult
+                 write(*,*) "Pval=", pval(k)
+                 write(*,*) "Coeff", TMN(k,1), TMN(k,2), TMN(k,3)
+         end if
+       ! Lapl=Lapl+Tmult*(2.d0*(dpxval(j)*dpxval(k)+dpyval(j)*dpyval(k)+dpzval(j)*dpzval(k))+ &
+       !                 pval(j)*(dpxx(k)+dpyy(k)+dpzz(k))+pval(k)*(dpxx(j)+dpyy(j)+dpzz(j)))
          Ekin_x=Ekin_x+Tmult*dpxval(j)*dpxval(k)
          Ekin_y=Ekin_y+Tmult*dpyval(j)*dpyval(k)
          Ekin_z=Ekin_z+Tmult*dpzval(j)*dpzval(k)
@@ -123,6 +156,8 @@ write(*,*) Grad2
 write(*,*) "LAPLACIAN="
 write(*,*) Laplx, Laply, Laplz
 write(*,*) Laplx1, Laplx2
+write(*,*) Laply1, Laply2
+write(*,*) Laplz1, Laplz2
 Lapl=Laplx+Laply+Laplz
 write(*,*) Lapl
 write(*,*) Laplx+Laply+Laplz
@@ -155,19 +190,19 @@ double precision :: expr
 dpx=0.d0
 dpy=0.d0
 dpz=0.d0
-if (abs(x-xa).gt.0.d0) then
+if (abs(x-xa).gt.0d-5) then
         fx1=tmn(mu,1)*(x-xa)**(-1.d0) !avoid div 0
 else
         fx1=0.d0
         if (tmn(mu,1).eq.1) fx1=1.d0         !see the development in the notebook
 end if        
-if (abs(y-ya).gt.0.d0) then
+if (abs(y-ya).gt.0d-5) then
         fy1=tmn(mu,2)*(y-ya)**(-1.d0)
 else
         fy1=0.d0
         if (tmn(mu,2).eq.1) fy1=1.d0
 end if
-if (abs(z-za).gt.0.d0) then
+if (abs(z-za).gt.0d-5) then
         fz1=tmn(mu,3)*(z-za)**(-1.d0)
 else
         fz1=0.d0
@@ -197,7 +232,8 @@ end if
 end subroutine dprim
 
 subroutine ddprim(mu,x,y,z,xa,ya,za,pval,dx,dy,dz,fxval,fyval,fzval,dxx,dyy,dzz)
-use geninfo       
+use geninfo  
+implicit none
 double precision, intent(in) :: x,y,z,xa,ya,za
 double precision, intent(in) :: pval !value of the primitive
 double precision, intent(in) :: dx,dy,dz !value of x y and z derivatives of prim
@@ -205,17 +241,21 @@ double precision, intent(in) :: fxval,fyval,fzval !part of the derivative of pri
 integer, intent(in) :: mu
 double precision, intent(out) :: dxx,dyy,dzz
 double precision :: px, py, pz
+double precision :: expr
 if (abs(x-xa).gt.0.d0) then
         px=-pval*TMN(mu,1)*(x-xa)**(-2.d0) !avoid div 0
         dxx=dx*fxval+pval*(-2.d0*Alpha(mu))+px
 else
         if (TMN(mu,1).eq.1) then
-                dxx=-2.d0*Alpha(mu)*dx    
-                write(*,*) "dxx not zero"            
+           !  dxx=-2.d0*Alpha(mu)*dx
+              dxx=0.d0
         else if (TMN(mu,1).eq.2) then
                 dxx=2.d0*(y-ya)**(tmn(mu,2))*(z-za)**(tmn(mu,3))*expr(x,y,z,xa,ya,za,mu)
+        else if (TMN(mu,1).eq.0) then 
+                dxx=pval*(-2.d0*Alpha(mu))  
+           
         else
-                dxx=pval*(-2.d0*Alpha(mu))        
+                dxx=0.d0        
         end if
 end if
 if (abs(y-ya).gt.0.d0) then
@@ -223,15 +263,18 @@ if (abs(y-ya).gt.0.d0) then
         dyy=dy*fyval+pval*(-2.d0*Alpha(mu))+py
 else
         if (TMN(mu,2).eq.1) then
-                dyy=-2.d0*Alpha(mu)*dy
-                write(*,*) "dyy not zero", TMN(mu,1),TMN(mu,2),TMN(mu,3)
-                write(*,*) dyy, pval
+             !   dyy=-2.d0*Alpha(mu)*dy
+                dyy=0.d0
         else if (TMN(mu,2).eq.2) then
                 dyy=2.d0*(x-xa)**(tmn(mu,1))*(z-za)**(tmn(mu,3))*expr(x,y,z,xa,ya,za,mu)
-                write(*,*) "dyy not zero", TMN(mu,1),TMN(mu,2),TMN(mu,3)
-                write(*,*) dyy, pval
+               
+ 
+        else if (TMN(mu,2).eq.0) then
+                dyy=pval*(-2.d0*Alpha(mu))     
+            
         else
-                dyy=pval*(-2.d0*Alpha(mu))        
+               ! dyy=pval*(-2.d0*Alpha(mu))     
+                dyy=0.d0
         end if
 end if
 if (abs(z-za).gt.0.d0) then
@@ -239,16 +282,18 @@ if (abs(z-za).gt.0.d0) then
         dzz=dz*fzval+pval*(-2.d0*Alpha(mu))+pz
 else
         if (TMN(mu,3).eq.1) then
-               !dzz=-2.d0*Alpha(mu)*dz
                write(*,*) "dzz not zero", TMN(mu,1),TMN(mu,2),TMN(mu,3)
-               dzz=-2.d0*Alpha(mu)*dz
-               write(*,*) dzz,pval
+              ! dzz=-2.d0*Alpha(mu)*dz
+              ! write(*,*) dzz,pval
+               dzz=0.d0
         else if (TMN(mu,3).eq.2) then
                dzz=2.d0*(x-xa)**(tmn(mu,1))*(y-ya)**(tmn(mu,2))*expr(x,y,z,xa,ya,za,mu)      
-               write(*,*) "dzz not zero", TMN(mu,1),TMN(mu,2),TMN(mu,3)
-               write(*,*) dzz,pval
-        else
+        else if (TMN(mu,3).eq.0) then
                dzz=pval*(-2.d0*Alpha(mu))
+              
+        else
+              ! dzz=pval*(-2.d0*Alpha(mu))
+               dzz=0.d0
         end if
 end if        
 end subroutine

@@ -8,8 +8,8 @@ subroutine c1hole(nrad,sfalpha)
     !Local variables
     double precision, dimension(nrad) :: r, rad, wr
     !angular quadrature!!!!!!!
-    double precision, dimension(1202) :: wa, lbx, lby, lbz, phi,theta
-    double precision, dimension(1202) :: cosin, sinsin, cost
+    double precision, dimension(110) :: wa, lbx, lby, lbz, phi,theta
+    double precision, dimension(110) :: cosin, sinsin, cost
     integer :: nang
     double precision :: xs
     !grid points!!!!!!!!!!!!!!
@@ -39,11 +39,11 @@ subroutine c1hole(nrad,sfalpha)
     lbx=0.d0
     lby=0.d0 
     lbz=0.d0
-    nang=1202
+    nang=110
     !call LD0006(lbx,lby,lbz,Wa,nAng)  !6 grid points
-    !call LD0110(lbx,lby,lbz,wa,nang)
+    call LD0110(lbx,lby,lbz,wa,nang)
     !call LD0590(lbx,lby,lbz,wa,nAng) !590
-    call LD1202(lbx,lby,lbz,wa,nAng)
+    !call LD1202(lbx,lby,lbz,wa,nAng)
 
     do i=1,nang
          theta(i)=acos(lbz(i))
@@ -108,6 +108,7 @@ subroutine c1hole(nrad,sfalpha)
       write(*,*) x,y,z
       write(*,*) "------------------"
       call becke1(x,y,z,b,alf)
+      Dens=Density(x,y,z)/2.d0
       write(*,*) "b=", b
       write(*,*) "a=", alf
       kk=0.d0 !interelectronic distance
@@ -116,15 +117,15 @@ subroutine c1hole(nrad,sfalpha)
           kk=kk+0.005d0
           xchole=beckex(b,alf,kk)   !exchange hole model
           rdmv1=0.d0
-          !do k=1,nang !angular integral of the squared 1rdm
-          !     px=x+kk*cosin(k)  !cos(phi(k))*sin(theta(k))
-          !     py=y+kk*sinsin(k) !sin(phi(k))*sin(theta(k))
-          !     pz=z+kk*cost(k)   !cos(theta(k))
-          !     rdmv1=rdmv1+wa(k)*(rDM1_alf(x,y,z,px,py,pz)*rDM1_alf(px,py,pz,x,y,z))
-          !end do
-          write(4,*) kk, xchole!, rdmv1/((Dens)*4.d0*pi) !write both models
+          do k=1,nang !angular integral of the squared 1rdm
+                px=x+kk*cosin(k)  !cos(phi(k))*sin(theta(k))
+                py=y+kk*sinsin(k) !sin(phi(k))*sin(theta(k))
+                pz=z+kk*cost(k)   !cos(theta(k))
+                rdmv1=rdmv1+wa(k)*(rDM1_alf(x,y,z,px,py,pz)*rDM1_alf(px,py,pz,x,y,z))
+          end do
+          write(4,*) kk, xchole, rdmv1/((Dens)*4.d0*pi) !write both models
       end do
-      STOP
+      !STOP
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !!!!!!end of test 2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -180,13 +181,25 @@ subroutine c1hole(nrad,sfalpha)
                         py=y+kk*sin(phi(k))*sin(theta(k))
                         pz=z+kk*cos(theta(k))                                           
                         !spherical average of s
-                        rdmv1=rdmv1+wa(k)*rDM1(x,y,z,px,py,pz)*rDM1(px,py,pz,x,y,z)
+                        rdmv1=rdmv1+wa(k)*rDM1_alf(x,y,z,px,py,pz)*rDM1_alf(px,py,pz,x,y,z)
                    end do
+                   write(*,*) "Point:", x,y,z
                    call becke1(x,y,z,b,alf)
-                   xchole=beckex(b,alf,kk)*4.d0*pi
+                   write(*,*) "b=,alf=", b, alf
+                   if (b.eq.0.d0) then !avoid division by zero
+                           xchole=0.d0
+                           write(*,*) "B is zero"
+                           write(*,*) alf,b,rdmv1
+                   else        
+                           xchole=beckex(b,alf,kk)*4.d0*pi
+                   end if         
+                   write(*,*) "Xchole,edmv1=", xchole, rdmv1
                    rho2=rdmv1-xchole*(Density(x,y,z)) !c1 part of Coulomb hole: hc(\Vec{r},s)
                    rho2s=rho2s+wa(j)*rho2   !spherical average of \Vec{r}
+                   write(*,*) "rho2s=", rho2s
               end do
+              write(*,*) "-----rho2s=", rho2s
+              write(*,*) "---hc1=", hc1(s)
               hc1(s)=hc1(s)+wr(i)*rho2s*r(i)**2.d0 !radial average of r
          end do
          write(4,*) kk, hc1(s)
@@ -197,24 +210,25 @@ end subroutine c1hole
 subroutine becke1(x,y,z,b,alf) !give a point and returns a and b from eq 17 of Becke-Rousell
   use fractions
   use geninfo
+  implicit none
   double precision, intent(in) :: x,y,z
   double precision, intent(out) :: b,alf
   !!!!!local variables!!!!!!!!!!!!!!!!!!
   double precision :: xx ! x in Becke-Rousell paper. 
   double precision :: dens, E_kin, Grad, Lapl, newtr
   double precision, parameter :: trsh=1d-16
-  write(*,*) "In Becke 1"
+ ! write(*,*) "In Becke 1"
   call dens_ops(x,y,z,Dens,E_kin,Grad,Lapl) !subroutine to compute densities (one spin)
-  write(*,*) "Dens, E_kin, Grad, Lapl" !this quantities are for one spin
-  write(*,*) Dens, E_kin, Grad, Lapl
+ ! write(*,*) "Dens, E_kin, Grad, Lapl" !this quantities are for one spin
+ ! write(*,*) Dens, E_kin, Grad, Lapl
   if (abs(Dens).ge.trsh) then
         xx=newtr(Dens,E_kin,Grad,Lapl)
-        write(*,*) "xx=", xx
+       ! write(*,*) "xx=", xx
         if (xx.lt.0.d0) then
-                write(*,*) "Danger, negative root"
+       !         write(*,*) "Danger, negative root"
                 xx=abs(xx)
         end if
-        write(*,*) "xx=", xx
+       ! write(*,*) "xx=", xx
         b=(xx**(3.d0)*exp(-xx)*0.125d0*((pi*Dens)**(-1.d0)))**(hr)
         alf=xx*(b**(-1.d0))
   else
@@ -256,13 +270,13 @@ function newtr(Dens,E_kin,Grad,Lapl) !performs Newton-Raphson to find x
    integer :: i
    double precision :: sf !scaling factor (step size)
    qval=q(Dens,E_kin,Grad,Lapl) !compute eq 20b
-   write(*,*) "Q=", qval
+   !write(*,*) "Q=", qval
    qval=qval
-   sf=0.5d0
+   sf=0.1d0
 
    k=bih*pi**(bih)*Dens**(boh)*qval**(-1.d0) !right hand part of eq 21
    if (qval.gt.0.d0) then
-           x0=3.d0 !see plot in mathematica (we want to stard from the right)
+           x0=2.1d0 !see plot in mathematica (we want to stard from the right)
            do i=1,maxit
                fpr=fp(x0)
                fr=f(x0,k)
@@ -272,9 +286,9 @@ function newtr(Dens,E_kin,Grad,Lapl) !performs Newton-Raphson to find x
                newtr=x0-sf*(fr*(fpr**(-1.d0)))
                fr=f(newtr,k)
                if (newtr.lt.2.d0) then
-                   newtr=2.5d0
+                   newtr=2.2d0
                end if        
-               write(*,*) "xx=", newtr
+           !    write(*,*) "xx=", newtr
                dif=abs(newtr-x0)
                if (dif.lt.trsh) then
                   write(*,*) "Converged after", i, "iterations"
@@ -292,9 +306,9 @@ function newtr(Dens,E_kin,Grad,Lapl) !performs Newton-Raphson to find x
               fpr=fp(x0)
               fr=f(x0,k)
               newtr=x0-sf*fr*(fpr**(-1.d0))
-              write(*,*) "xx=", newtr
+         !     write(*,*) "xx=", newtr
               if (newtr.gt.2.d0) then
-                    newtr=1.5d0
+                    newtr=0.5d0
               end if
               dif=abs(newtr-x0)
               if (dif.lt.trsh) then
@@ -351,7 +365,7 @@ function D(Dens,E_kin,Grad) !equation 13b
     else       
            D=E_kin-0.25d0*(Grad)*Dens**(-1.d0) !Grad-->scalar product of gradient
     end if       
-    write(*,*) "D=", D
+  !  write(*,*) "D=", D
 end function
 
 

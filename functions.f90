@@ -21,6 +21,7 @@
    double precision, intent(in) :: x, y, z,xa,ya,za
    integer, intent(in) :: npr
    expr=exp(-Alpha(npr)*((x-xa)**2.d0+(y-ya)**2.d0+(z-za)**2.d0))
+   write(*,*) "Expr=-------------", expr
  end function
 
    
@@ -398,6 +399,7 @@ end subroutine
    double precision :: MoOr, MO_a, MO_b
    double precision, intent(in) :: x1, y1, z1, x2, y2, z2
    integer :: i
+    rDM1_alf=0.d0
    if (uhf) then 
         if (nelec.eq.1) then   !only one electron
            rDM1_alf=0.d0
