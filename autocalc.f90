@@ -69,18 +69,18 @@ end subroutine autocalc
    end function
 
 
-  function rDM1(x1,y1,z1,x2,y2,z2) !1-electron reduced density matrix (HF case)
-   use wfxinfo
-   implicit none
-   double precision :: rDM1
-   double precision :: MoOr
-   double precision :: x1, y1, z1, x2, y2, z2
-   integer :: i   !don't cross alpha and beta, if it's closed shell do /2
-       do i=1,noccmo
-             rDM1=rDM1+MoOr(x1,y1,z1,i)*MoOr(x2,y2,z2,i)
-       end do
-       rDM1=rDM1/2.d0
-   end function
+!  function rDM1(x1,y1,z1,x2,y2,z2) !1-electron reduced density matrix (HF case)
+!   use wfxinfo
+!   implicit none
+!   double precision :: rDM1
+!   double precision :: MoOr
+!   double precision :: x1, y1, z1, x2, y2, z2
+!   integer :: i   !don't cross alpha and beta, if it's closed shell do /2
+!       do i=1,noccmo
+!             rDM1=rDM1+MoOr(x1,y1,z1,i)*MoOr(x2,y2,z2,i)
+!       end do
+!       rDM1=rDM1/2.d0
+!   end function
 
 
 

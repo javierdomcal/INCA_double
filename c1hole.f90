@@ -17,7 +17,7 @@ subroutine c1hole(nrad,sfalpha)
     double precision :: x,y,z
     !functions!!!!!!!!!!!!!!!!
     double precision :: rDM1, beckex, Density, rdm1_alf
-    double precision, dimension(40) :: hc1
+    double precision, dimension(45) :: hc1
     double precision :: dens, xchole
     !!!!!!!!!!!!!!!!!!!!!!!!!/
     double precision :: rdmv1, rho2, rho2s, rdmv2 !vector 1rdm and pair dens
@@ -165,10 +165,10 @@ subroutine c1hole(nrad,sfalpha)
 !!!!Compute C1 part of Coulomb Hole!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     open(unit=4, file="c1hole.out")
-    kk=0.0001d0   !interelectronic distance
-    do s=1,40 !for 20 interelectronic distances (EXAMPLE)
+    kk=0.00000001d0   !interelectronic distance
+    do s=1,45 !for 20 interelectronic distances (EXAMPLE)
          hc1(s)=0.d0     
-         do i=1,nrad       !loop for radial nodes
+         do i=1,nrad       !loop for radial nodes (integrate over r reference dist)
               rho2s=0.d0   !spherically averaged pair density at r dist and s dist.
               do j=1,nang  !loop for angular nodes (to average r)
                    x=r(i)*cos(phi(j))*sin(theta(j))  !compute x,y,z points (\Vec{r})
@@ -177,33 +177,33 @@ subroutine c1hole(nrad,sfalpha)
                    rdmv1=0.d0 !spherically averaged density at s distance at r point. 
                    do k=1,nang
                         !compute interelectronic separation vector (px,py,pz) (to average s)
-                        px=x+kk*cos(phi(k))*sin(theta(k))
+                        px=x+kk*cos(phi(k))*sin(theta(k)) !u are averaging coord 2, not distance s!!!
                         py=y+kk*sin(phi(k))*sin(theta(k))
                         pz=z+kk*cos(theta(k))                                           
                         !spherical average of s
                         rdmv1=rdmv1+wa(k)*rDM1_alf(x,y,z,px,py,pz)*rDM1_alf(px,py,pz,x,y,z)
                    end do
-                   write(*,*) "Point:", x,y,z
+                  ! write(*,*) "Point:", x,y,z
                    call becke1(x,y,z,b,alf)
-                   write(*,*) "b=,alf=", b, alf
+                  ! write(*,*) "b=,alf=", b, alf
                    if (b.eq.0.d0) then !avoid division by zero
                            xchole=0.d0
-                           write(*,*) "B is zero"
-                           write(*,*) alf,b,rdmv1
+                         !  write(*,*) "B is zero"
+                         !  write(*,*) alf,b,rdmv1
                    else        
-                           xchole=beckex(b,alf,kk)*4.d0*pi
+                           xchole=beckex(b,alf,kk)
                    end if         
-                   write(*,*) "Xchole,edmv1=", xchole, rdmv1
-                   rho2=rdmv1-xchole*(Density(x,y,z)) !c1 part of Coulomb hole: hc(\Vec{r},s)
+                   !write(*,*) "Xchole,edmv1=", xchole, rdmv1
+                   rho2=(rdmv1/(4.d0*pi)-xchole*((Density(x,y,z)/2.d0)))*2.d0 !c1 part of Coulomb hole: hc(\Vec{r},s)
                    rho2s=rho2s+wa(j)*rho2   !spherical average of \Vec{r}
-                   write(*,*) "rho2s=", rho2s
+                   !write(*,*) "rho2s=", rho2s
               end do
-              write(*,*) "-----rho2s=", rho2s
-              write(*,*) "---hc1=", hc1(s)
+              !write(*,*) "-----rho2s=", rho2s
+              !write(*,*) "---hc1=", hc1(s)
               hc1(s)=hc1(s)+wr(i)*rho2s*r(i)**2.d0 !radial average of r
          end do
-         write(4,*) kk, hc1(s)
-         kk=kk+0.02d0
+         write(4,*) kk, hc1(s)*kk**2.d0
+         kk=kk+0.1d0
     end do 
 end subroutine c1hole
 

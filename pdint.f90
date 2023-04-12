@@ -163,17 +163,17 @@ double precision :: PD, PD2, xs
  deallocate(N)                 
 end subroutine pdint               
 
-  function Gauss(r,x0,Alp,N)
-  double precision :: Gauss
-  double precision :: r,x0,Alp,N
-  double precision :: minim, a1  
-    a1=(sqrt(Alp))**(-1.d0)
-    minim=x0-a1
-    if (r.ge.minim) then
-        Gauss=N*((r-x0+a1)**2.d0)*exp(-Alp*(r-x0+a1)**2.d0)
-    else
-        Gauss=0.d0 !neglect the peak from the left
-    end if
-   end function
+!  function Gauss(r,x0,Alp,N)
+!  double precision :: Gauss
+!  double precision :: r,x0,Alp,N
+!  double precision :: minim, a1  
+!    a1=(sqrt(Alp))**(-1.d0)
+!    minim=x0-a1
+!    if (r.ge.minim) then
+!        Gauss=N*((r-x0+a1)**2.d0)*exp(-Alp*(r-x0+a1)**2.d0)
+!    else
+!        Gauss=0.d0 !neglect the peak from the left
+!    end if
+!   end function
 
 
