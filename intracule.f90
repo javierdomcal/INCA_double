@@ -1,5 +1,5 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-subroutine intracule()  !Computes vector or radial intracule, or radial integration
+subroutine intracule(normalize_dm2p)  !Computes vector or radial intracule, or radial integration
                         !need .wfx and .dm2p as input
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 use geninfo !information about the primitive functions
@@ -7,6 +7,7 @@ use intrastuff !subroutines and functions to compute the intracule
 use intrainfo !information from the input
 use quadratures !nodes and weights of the quadratures, +total grid points
 implicit none
+logical, intent(in) :: normalize_dm2p
 !!!!!!!!!!!!!!!local variables!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 integer :: kk1, kk2 !integers we do not want to read from .dm2
 integer :: dfact    !double factorial
@@ -104,26 +105,28 @@ Tgrid=0.d0
           trDM2=trDM2+DMval
 
           smm=smm+1
-          !normalization of DM2--> Normalize the primitives
-          N_prim_i=(2.d0*Alpha(i)/pi)**(0.75d0)&
-          *sqrt(((4.d0*Alpha(i))**(dble(TMN(i,1)+TMN(i,2)+TMN(i,3))))*&
-          dble(dfact(2*TMN(i,1)-1)*dfact(2*TMN(i,2)-1)*dfact(2*TMN(i,3)-1))**(-1.d0))  
+          if (normalize_dm2p) then
+              !normalization of DM2--> Normalize the primitives
+              N_prim_i=(2.d0*Alpha(i)/pi)**(0.75d0)&
+              *sqrt(((4.d0*Alpha(i))**(dble(TMN(i,1)+TMN(i,2)+TMN(i,3))))*&
+              dble(dfact(2*TMN(i,1)-1)*dfact(2*TMN(i,2)-1)*dfact(2*TMN(i,3)-1))**(-1.d0))  
    
-          N_prim_j=(2.d0*Alpha(j)/pi)**(0.75d0)&
-          *sqrt(((4.d0*Alpha(j))**(dble(TMN(j,1)+TMN(j,2)+TMN(j,3))))*&
-          dble(dfact(2*TMN(j,1)-1)*dfact(2*TMN(j,2)-1)*dfact(2*TMN(j,3)-1))**(-1.d0)) 
+              N_prim_j=(2.d0*Alpha(j)/pi)**(0.75d0)&
+              *sqrt(((4.d0*Alpha(j))**(dble(TMN(j,1)+TMN(j,2)+TMN(j,3))))*&
+              dble(dfact(2*TMN(j,1)-1)*dfact(2*TMN(j,2)-1)*dfact(2*TMN(j,3)-1))**(-1.d0)) 
    
-          N_prim_k=(2.d0*Alpha(k)/pi)**(0.75d0)&
-          *sqrt(((4.d0*Alpha(k))**(dble(TMN(k,1)+TMN(k,2)+TMN(k,3))))*&
-          dble(dfact(2*TMN(k,1)-1)*dfact(2*TMN(k,2)-1)*dfact(2*TMN(k,3)-1))**(-1.d0)) 
+              N_prim_k=(2.d0*Alpha(k)/pi)**(0.75d0)&
+              *sqrt(((4.d0*Alpha(k))**(dble(TMN(k,1)+TMN(k,2)+TMN(k,3))))*&
+              dble(dfact(2*TMN(k,1)-1)*dfact(2*TMN(k,2)-1)*dfact(2*TMN(k,3)-1))**(-1.d0)) 
          
-          N_prim_l=(2.d0*Alpha(l)/pi)**(0.75d0)&
-          *sqrt(((4.d0*Alpha(l))**(dble(TMN(l,1)+TMN(l,2)+TMN(l,3))))*&
-          dble(dfact(2*TMN(l,1)-1)*dfact(2*TMN(l,2)-1)*dfact(2*TMN(l,3)-1))**(-1.d0)) 
+              N_prim_l=(2.d0*Alpha(l)/pi)**(0.75d0)&
+              *sqrt(((4.d0*Alpha(l))**(dble(TMN(l,1)+TMN(l,2)+TMN(l,3))))*&
+              dble(dfact(2*TMN(l,1)-1)*dfact(2*TMN(l,2)-1)*dfact(2*TMN(l,3)-1))**(-1.d0)) 
    
-          !compute DMval with the normalization of primitives
-          n_prim_t=N_prim_i*N_prim_j*N_prim_k*N_prim_l
-          DMval=n_prim_t*DMval 
+               !compute DMval with the normalization of primitives
+               n_prim_t=N_prim_i*N_prim_j*N_prim_k*N_prim_l
+               DMval=n_prim_t*DMval 
+          end if     
           trace_DM2prim=trace_DM2prim+DMval !sum all the DM2 quartets to check accuracy
            
           !compute the first variables
@@ -250,7 +253,7 @@ Tgrid=0.d0
                 r_intra(i)=r_intra(i)+w_ang(sm)*I_vec(sm)!Perform the angular quadrature 
             end do
             r_intra(i)=radi(i)**(2.d0)*r_intra(i)
-            write(3,*) radi(i), r_intra(i)
+            write(3,'(2(E24.12,1X))') radi(i), r_intra(i)
       end do 
       deallocate(r_intra)
       close(3)

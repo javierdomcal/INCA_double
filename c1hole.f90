@@ -8,8 +8,8 @@ subroutine c1hole(nrad,sfalpha)
     !Local variables
     double precision, dimension(nrad) :: r, rad, wr
     !angular quadrature!!!!!!!
-    double precision, dimension(110) :: wa, lbx, lby, lbz, phi,theta
-    double precision, dimension(110) :: cosin, sinsin, cost
+    double precision, dimension(1202) :: wa, lbx, lby, lbz, phi,theta
+    double precision, dimension(1202) :: cosin, sinsin, cost
     integer :: nang
     double precision :: xs
     !grid points!!!!!!!!!!!!!!
@@ -39,11 +39,11 @@ subroutine c1hole(nrad,sfalpha)
     lbx=0.d0
     lby=0.d0 
     lbz=0.d0
-    nang=110
+    nang=1202
     !call LD0006(lbx,lby,lbz,Wa,nAng)  !6 grid points
-    call LD0110(lbx,lby,lbz,wa,nang)
+    !call LD0110(lbx,lby,lbz,wa,nang)
     !call LD0590(lbx,lby,lbz,wa,nAng) !590
-    !call LD1202(lbx,lby,lbz,wa,nAng)
+    call LD1202(lbx,lby,lbz,wa,nAng)
 
     do i=1,nang
          theta(i)=acos(lbz(i))
@@ -111,7 +111,7 @@ subroutine c1hole(nrad,sfalpha)
       Dens=Density(x,y,z)/2.d0
       write(*,*) "b=", b
       write(*,*) "a=", alf
-      kk=0.d0 !interelectronic distance
+      kk=0.0001d0 !interelectronic distance
       write(*,*) "Loop over distances"
       do i=1,1000
           kk=kk+0.005d0
@@ -125,7 +125,7 @@ subroutine c1hole(nrad,sfalpha)
           end do
           write(4,*) kk, xchole, rdmv1/((Dens)*4.d0*pi) !write both models
       end do
-      !STOP
+      STOP
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !!!!!!end of test 2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -165,7 +165,7 @@ subroutine c1hole(nrad,sfalpha)
 !!!!Compute C1 part of Coulomb Hole!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     open(unit=4, file="c1hole.out")
-    kk=0.00000001d0   !interelectronic distance
+    kk=0.00001d0   !interelectronic distance
     do s=1,45 !for 20 interelectronic distances (EXAMPLE)
          hc1(s)=0.d0     
          do i=1,nrad       !loop for radial nodes (integrate over r reference dist)
@@ -186,14 +186,8 @@ subroutine c1hole(nrad,sfalpha)
                   ! write(*,*) "Point:", x,y,z
                    call becke1(x,y,z,b,alf)
                   ! write(*,*) "b=,alf=", b, alf
-                   if (b.eq.0.d0) then !avoid division by zero
-                           xchole=0.d0
-                         !  write(*,*) "B is zero"
-                         !  write(*,*) alf,b,rdmv1
-                   else        
-                           xchole=beckex(b,alf,kk)
-                   end if         
-                   !write(*,*) "Xchole,edmv1=", xchole, rdmv1
+                   xchole=beckex(b,alf,kk)
+                   write(*,*) "Xchole,edmv1=", xchole, rdmv1
                    rho2=(rdmv1/(4.d0*pi)-xchole*((Density(x,y,z)/2.d0)))*2.d0 !c1 part of Coulomb hole: hc(\Vec{r},s)
                    rho2s=rho2s+wa(j)*rho2   !spherical average of \Vec{r}
                    !write(*,*) "rho2s=", rho2s
@@ -221,23 +215,18 @@ subroutine becke1(x,y,z,b,alf) !give a point and returns a and b from eq 17 of B
   call dens_ops(x,y,z,Dens,E_kin,Grad,Lapl) !subroutine to compute densities (one spin)
  ! write(*,*) "Dens, E_kin, Grad, Lapl" !this quantities are for one spin
  ! write(*,*) Dens, E_kin, Grad, Lapl
-  if (abs(Dens).ge.trsh) then
-        xx=newtr(Dens,E_kin,Grad,Lapl)
-       ! write(*,*) "xx=", xx
-        if (xx.lt.0.d0) then
-       !         write(*,*) "Danger, negative root"
-                xx=abs(xx)
-        end if
-       ! write(*,*) "xx=", xx
+     write(*,*) "x,y,z point"
+     write(*,*) x,y,z
+     xx=newtr(Dens,E_kin,Grad,Lapl)
+     if (xx.gt.0.d0) then
         b=(xx**(3.d0)*exp(-xx)*0.125d0*((pi*Dens)**(-1.d0)))**(hr)
         alf=xx*(b**(-1.d0))
-  else
-        b=0.d0
+     else
         alf=0.d0
-  end if
+        b=0.d0
+     end if        
+        write(*,*) "alf=", alf
 end subroutine becke1        
-
-
 
 function beckex(b,alf,s) !Becke-Roussel Exchange Hole, eqn 16
     use fractions
@@ -247,10 +236,14 @@ function beckex(b,alf,s) !Becke-Roussel Exchange Hole, eqn 16
     double precision, intent(in) :: b,alf,s  !r and s are distances
     !!!local variables!!!!!!!!!!!!!!!!!!
     double precision :: p1, p2, p3
+        if (b.eq.0.d0) then
+                beckex=0.d0
+        else        
         p1=0.0625d0*alf*(pi*b*s)**(-1.d0)
         p2=(alf*abs(b-s)+1.d0)*exp(-alf*abs(b-s))
         p3=(alf*abs(b+s)+1.d0)*exp(-alf*abs(b+s))
         beckex=p1*(p2-p3)
+end if
 end function beckex 
 
 function newtr(Dens,E_kin,Grad,Lapl) !performs Newton-Raphson to find x
@@ -261,67 +254,94 @@ function newtr(Dens,E_kin,Grad,Lapl) !performs Newton-Raphson to find x
    double precision, intent(in) :: Dens, E_kin, Grad, Lapl
    !!!local variables!!!!!
    double precision :: dif
-   double precision :: x0
+   double precision :: x0,x
    double precision :: qval
    double precision :: f, fp, fpr, fr,k
    double precision :: q
-   integer, parameter :: maxit=1000
-   double precision, parameter :: trsh=1d-8
-   integer :: i
+   integer, parameter :: maxit=100
+   double precision, parameter :: trsh=1d-11
+   integer :: i,j
    double precision :: sf !scaling factor (step size)
    qval=q(Dens,E_kin,Grad,Lapl) !compute eq 20b
-   !write(*,*) "Q=", qval
-   qval=qval
-   sf=0.1d0
-
-   k=bih*pi**(bih)*Dens**(boh)*qval**(-1.d0) !right hand part of eq 21
-   if (qval.gt.0.d0) then
-           x0=2.1d0 !see plot in mathematica (we want to stard from the right)
-           do i=1,maxit
-               fpr=fp(x0)
-               fr=f(x0,k)
-               if (fr/fpr.ge.1.d0) then
-                    sf=10*fpr/fr
-               end if        
-               newtr=x0-sf*(fr*(fpr**(-1.d0)))
-               fr=f(newtr,k)
-               if (newtr.lt.2.d0) then
-                   newtr=2.2d0
-               end if        
-           !    write(*,*) "xx=", newtr
-               dif=abs(newtr-x0)
-               if (dif.lt.trsh) then
-                  write(*,*) "Converged after", i, "iterations"
-                  exit
-               end if
-               if (i.eq.maxit) then
-                       write(*,*) "Newton-Raphson1 not converged"
-                       STOP
-               end if        
-               x0=newtr
-           end do
-   else
-           x0=-1.d0
-           do i=1,maxit
-              fpr=fp(x0)
-              fr=f(x0,k)
-              newtr=x0-sf*fr*(fpr**(-1.d0))
-         !     write(*,*) "xx=", newtr
-              if (newtr.gt.2.d0) then
-                    newtr=0.5d0
+   if (qval.eq.0.d0) then
+           qval=1d-15
+   end if        
+   write(*,*) "Q=", qval
+   !if (dens.eq.0.d0) then
+   !        k=0.d0
+   !else        
+           k=bih*pi**(bih)*Dens**(boh)*qval**(-1.d0) !right hand part of eq 21
+   !end if        
+   write(*,*) "k=", k
+   x0=2.d0
+   sf=1.d0
+   if (abs(k).lt.1d-16) then
+         newtr=0.d0
+   else      
+     if (k.lt.0.d0) then
+          do i=1,16
+              sf=sf*0.1d0
+              x=x0-sf
+              fpr=fp(x)
+              fr=f(x,k)
+              if (fr.lt.0.d0) then
+                      write(*,*) "x=", x
+                      do j=1,maxit
+                          fpr=fp(x)
+                          fr=f(x,k)
+                          newtr=x-fr*(fpr**(-1.d0))
+                          dif=abs(newtr-x)
+                          if (dif.lt.trsh) then
+                             write(*,*) "Converged after", j, "iterations"
+                             write(*,*) "xx=", newtr
+                             goto 100
+                          end if
+                          if (j.eq.maxit) then
+                               write(*,*) "Newton-Raphson1 not converged"
+                               write(*,*) "i=", x
+                               write(*,*) "k=", k
+                               STOP
+                          end if
+                          x=newtr
+                          write(*,*) x
+                      end do    
+              end if  
+          end do      
+      else if (k.gt.0.d0) then
+          do i=1,16
+              sf=sf*0.1d0
+              x=x0+sf
+              fpr=fp(x)
+              fr=f(x,k)
+              if (fr.gt.0.d0) then
+                      write(*,*) "x=", x
+                     do j=1,maxit
+                          fpr=fp(x)
+                          fr=f(x,k)
+                          newtr=x-fr*(fpr**(-1.d0))
+                          dif=abs(newtr-x)
+                          if (dif.lt.trsh) then
+                             write(*,*) "Converged after", j, "iterations"
+                             write(*,*) "xx=", newtr
+                             goto 100
+                          end if
+                          if (j.eq.maxit) then
+                               write(*,*) "Newton-Raphson1 not converged"
+                               write(*,*) "x=", x
+                               write(*,*) "k=", k
+                               STOP
+                          end if
+                          x=newtr
+                          write(*,*) x
+                     end do    
               end if
-              dif=abs(newtr-x0)
-              if (dif.lt.trsh) then
-                  write(*,*) "Converger after", i, "iterations"
-                  exit
-              end if
-              if (i.eq.maxit) then
-                   write(*,*) "Newton-Raphson2 not converged"
-                   STOP
-              end if
-              x0=newtr
-           end do
-   end if         
+          end do  
+        else
+         write(*,*) "k is zero"
+        newtr=0.d0   
+       end if
+     end if   
+ 100 CONTINUE   
 end function
 
 function f(x,k) !equation 21 of Becke-Roussel

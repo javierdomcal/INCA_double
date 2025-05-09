@@ -180,7 +180,7 @@ rewind 1
 allocate(TMN(nprim,3))      !create a matrix with t m and n exponents for each primitive (see prim equation)
 do i=1,nprim                                                                 !t->lx
    if (ptyp(i).eq.1) then   !s prim                                          !m->ly
-     do j=1,3                 						!n->lz
+     do j=1,3                   !n->lz
        TMN(i,j)=0
      end do
    else if (ptyp(i).eq.2) then  !px

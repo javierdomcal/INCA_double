@@ -86,7 +86,7 @@ character*40 :: r_plot_name                           !name of the radial plot
 integer :: nblock                                     !number of blocks for the radius
 integer, allocatable, dimension(:) :: n_an_per_part   !number of angluar points per block
 double precision, allocatable, dimension(:,:) :: tart !space between radius
-integer, allocatable, dimension(:) :: stp    !number of points for each block
+double precision, allocatable, dimension(:) :: stp    !step size for each block
 integer :: gpt, nAng                         !angular grid points (same nodes per centre)
 !vectorial plot with a cubefile!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 logical :: cubeintra

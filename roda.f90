@@ -6,6 +6,7 @@ use inputdat  !information about the calculations we want to do
 implicit none
 integer :: a !defines to subroutine cubefile what function we want to represent: prim, ao, mo, dens
 !double precision :: gradx, grady, gradz !gradient
+logical :: normalize_dm2p
 
 readwfx=.false. 
 readlog=.false. 
@@ -50,7 +51,8 @@ end if
 if (intracalc) then !compute the intracule
   call readintra()
   write(*,*) "readed intra info"
-  call intracule()  
+  normalize_dm2p=.false.
+  call intracule(normalize_dm2p)  
   write(*,*) "intracule computed succesfully"
 end if
 
@@ -203,7 +205,7 @@ open(unit=3,file=name,status='OLD')
             else !default
                 write(*,*) "Computing centers automatically"
                 call centercalc()
-                call pdint() !calculate approximate I_vs_r curve
+                !call pdint() !calculate approximate I_vs_r curve
             end if            
             if (dif_nodes) then       !Different node for each centre
                 allocate(nradc(nquad))
@@ -234,13 +236,13 @@ open(unit=3,file=name,status='OLD')
             rewind(3)
             call locate(3,'$Center weights')
             allocate(Ps(nquad)) !allocate weight of each centre
-            read(3,*) beckw
-            if (beckw) then
+            !read(3,*) beckw
+            !if (beckw) then
                 !call pdint()
                 !compute Becke centres weights automatically (TO IMPLEMENT)
-            else
-                read(3,*) Ps(:) !the weigth of a positive center must be equal to the neg.
-            end if
+            !else
+            read(3,*) Ps(:) !the weigth of a positive center must be equal to the neg.
+            !end if
             rewind(3)
         end if   
         call locate(3,'$radial_plot')

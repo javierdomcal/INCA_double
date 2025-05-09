@@ -109,14 +109,14 @@ do i=1,noccmo
          Gradz=Gradz+Tmult*(dpzval(j)*pval(k)+pval(j)*dpzval(k))
          Laplx=Laplx+Tmult*((2.d0*dpxval(j)*dpxval(k))+pval(j)*dpxx(k) &
                     +dpxx(j)*pval(k))
-         Laplx1=Laplx1+Tmult*(2.d0*dpxval(j)*dpxval(k)) 
-         Laplx2=Laplx2+Tmult*(pval(j)*dpxx(k)+dpxx(j)*pval(k))
+         !Laplx1=Laplx1+Tmult*(2.d0*dpxval(j)*dpxval(k)) 
+         !Laplx2=Laplx2+Tmult*(pval(j)*dpxx(k)+dpxx(j)*pval(k))
 
-         Laply1=Laply1+Tmult*(2.d0*dpyval(j)*dpyval(k))
-         Laply2=Laply2+Tmult*(pval(j)*dpyy(k)+dpyy(j)*pval(k))
+        ! Laply1=Laply1+Tmult*(2.d0*dpyval(j)*dpyval(k))
+        ! Laply2=Laply2+Tmult*(pval(j)*dpyy(k)+dpyy(j)*pval(k))
 
-         Laplz1=Laplz1+Tmult*(2.d0*dpzval(j)*dpzval(k))
-         Laplz2=Laplz2+Tmult*(pval(j)*dpzz(k)+dpzz(j)*pval(k))
+        ! Laplz1=Laplz1+Tmult*(2.d0*dpzval(j)*dpzval(k))
+        ! Laplz2=Laplz2+Tmult*(pval(j)*dpzz(k)+dpzz(j)*pval(k))
 
          Laply=Laply+Tmult*((2.d0*dpyval(j)*dpyval(k))+pval(j)*dpyy(k) &
                     +dpyy(j)*pval(k))
@@ -146,7 +146,8 @@ do i=1,noccmo
      end do
    end do
   end if 
-end do     
+end do 
+write(*,*) "DENSITY=", Dens
 write(*,*) "GRADIENT="
 write(*,*) Gradx, grady, gradz
 Grad=(gradx/2.d0)**(2.d0)+(grady/2.d0)**(2.d0)+(gradz/2.d0)**(2.d0) !scalar product of gradient (one spin)
@@ -155,9 +156,9 @@ write(*,*) "Gradient product"
 write(*,*) Grad2
 write(*,*) "LAPLACIAN="
 write(*,*) Laplx, Laply, Laplz
-write(*,*) Laplx1, Laplx2
-write(*,*) Laply1, Laply2
-write(*,*) Laplz1, Laplz2
+!write(*,*) Laplx1, Laplx2
+!write(*,*) Laply1, Laply2
+!write(*,*) Laplz1, Laplz2
 Lapl=Laplx+Laply+Laplz
 write(*,*) Lapl
 write(*,*) Laplx+Laply+Laplz

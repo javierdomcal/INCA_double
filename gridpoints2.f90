@@ -1,12 +1,13 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-subroutine gridpoints2(nblock,tart,npb,n_an_per_part)                                                    !
+subroutine gridpoints2(nblock,tart,step,n_an_per_part)                                                    !
 ! Compute grid points for with manually given radius (in the input file)!   
 use quadratures !contains weights, nradi, radi !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 implicit none
 !global variables
 integer, intent(in) :: nblock !number of parts
-integer, intent(in), dimension(nblock) :: npb, n_an_per_part !number of steps per part
+double precision, dimension(nblock), intent(in) :: step
+integer, intent(in), dimension(nblock) :: n_an_per_part !number of steps per part
 double precision, intent(in), dimension(2,nblock) :: tart !range of each Block
 !local variables
 !1-levedeb quadrature
@@ -15,33 +16,43 @@ double precision, allocatable, dimension(:) :: Wlb
 double precision, allocatable, dimension(:) :: theta, phi
 double precision, allocatable, dimension(:) :: pweight
 !grid points
+integer, allocatable,dimension(:) :: npb
+integer :: nr_total
 double precision, allocatable, dimension(:,:) :: gpt
-double precision :: z, step
+double precision :: z
 integer :: i, ia, ir, sm, smnn, j, smp, n_an, smrad
 double precision, parameter :: pi=4.d0*atan(1.d0)
 double precision, parameter :: trsh=1.d-15, trsh2=1.d-16
 !double precision :: a,b
 double precision :: xs
-
+double precision :: r_start,r_end
 write(*,*) nblock
-nradi=sum(npb)
-rpgrid=0
-sm=0
-smp=0
-write(*,*) "number of radial points:", nradi
-allocate(radi(nradi))  !allocate radial points
-allocate(smn(nradi))
-smn=0
-radi=0.d0
+allocate(npb(nblock))
+nr_total=0
 do i=1,nblock
-     step=abs(tart(2,i)-tart(1,i))/dble(npb(i))
-     do j=1,npb(i)
-       sm=sm+1
-       radi(sm)=tart(1,i)+step*dble(j) !compute radial points
-     end do 
-     rpgrid=rpgrid+npb(i)*n_an_per_part(i) !compute number of grid points
+    r_start=tart(1,i)
+    r_end=tart(2,i)
+    !compute number of points
+    npb(i)=int((r_end-r_start)/step(i))+1
+    nr_total = nr_total + npb(i)
+end do    
+
+nradi = nr_total
+allocate(radi(nradi))
+allocate(smn(nradi))
+radi = 0.d0
+smn = 0.d0
+
+sm = 0.d0
+rpgrid = 0
+do i = 1, nblock
+    do j = 0, npb(i)-1
+        sm = sm + 1
+        radi(sm) = tart(1,i) + step(i)*dble(j)
+    end do
+    rpgrid = rpgrid + npb(i) * n_an_per_part(i)
 end do
-write(*,*) "sm, nradi", sm, nradi
+
 do i=1,nradi
     write(*,*) i, radi(i)
 end do
@@ -118,7 +129,7 @@ do i=1,nblock !loop for each radius fragment
                   gpt(1,smnn)=radi(smrad)*cos(phi(ia))*sin(theta(ia))
                   gpt(2,smnn)=radi(smrad)*sin(phi(ia))*sin(theta(ia))
                   gpt(3,smnn)=z
-                  if (z.eq.0.d0) then
+                  if (z.lt.trsh) then
                      pweight(smnn)=Wlb(ia)
                   else
                      pweight(smnn)=2.d0*Wlb(ia)
