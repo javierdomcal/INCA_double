@@ -1,36 +1,50 @@
-#
-#Makefile for RODA program, find a better name (;
-#
-ODIR=obj
-FC=gfortran
-FFLAGS= -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant
-##FFLAGS= -o3
-LIB= -llapack -lblas
-SRCF90=$(wildcard *.f90)
-SRCF=$(wildcard *.f)
+# Makefile for INCA Fortran project
 
-#OBJ=$(SRCF90:.f90=.o) $(SRCF:.f=.o)
-OBJ=$(patsubst %.f90,$(ODIR)/%.o,$(SRCF90)) $(patsubst %.f,$(ODIR)/%.o,$(SRCF))
+.DEFAULT_GOAL := roda.exe
 
+SRC_DIR = src
+OBJ_DIR = obj
 
-$(ODIR)/%.o: %.f90
-	$(FC) $(FFLAGS) -o $(ODIR)/mod5.o -c mod5.f90
-	$(FC) $(FFLAGS) -o $(ODIR)/intrastuff.o -c intrastuff.f90
-	$(FC) $(FFLAGS) -o $@ -c $< 
+FC = gfortran
+FFLAGS = -Wall -g -msse4.2 -fcheck=all \
+         -Waliasing -Wampersand -Wconversion -Wsurprising \
+         -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant \
+         -J$(OBJ_DIR)    # store .mod files here
 
-$(ODIR)/%.o: %.f
-	$(FC) $(FFLAGS) -o $@ -c $<
+LIB = -llapack -lblas
 
+SRCF90 = $(wildcard $(SRC_DIR)/*.f90)
+SRCF   = $(wildcard $(SRC_DIR)/*.f)
+OBJF90 = $(patsubst $(SRC_DIR)/%.f90,$(OBJ_DIR)/%.o,$(SRCF90))
+OBJF   = $(patsubst $(SRC_DIR)/%.f,$(OBJ_DIR)/%.o,$(SRCF))
+OBJ    = $(OBJF90) $(OBJF)
 
+$(shell mkdir -p $(OBJ_DIR))
+
+# Pattern rules
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.f90
+	$(FC) $(FFLAGS) -I$(OBJ_DIR) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.f
+	$(FC) $(FFLAGS) -I$(OBJ_DIR) -c $< -o $@
+
+# Final executable
 roda.exe: $(OBJ)
 	$(FC) $(FFLAGS) -o $@ $(OBJ) $(LIB)
-	rm -f *.mod
 
+# Generate dependencies
+deps:
+	python generate_deps.py
+
+# Clean
 clean:
-	@rm -f *.mod $(ODIR)/*.o roda	
+	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod roda.exe test.log
 
-#Testing
-test: 
-	./test.sh >& test.log
+# Test
+test:
+	./test.sh > out 
+
+# Dependencies (generated)
+include deps.mk
 
 
