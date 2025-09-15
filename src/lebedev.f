@@ -59,11 +59,11 @@ cvw    Depending on code, there are 6...48 different but equivalent
 cvw    points.
 cvw
 cvw    code=1:   (0,0,1) etc                                (  6 points)
-cvw    code=2:   (0,a,a) etc, a=1/sqrt(2)                   ( 12 points)
-cvw    code=3:   (a,a,a) etc, a=1/sqrt(3)                   (  8 points)
-cvw    code=4:   (a,a,b) etc, b=sqrt(1-2 a^2)               ( 24 points)
-cvw    code=5:   (a,b,0) etc, b=sqrt(1-a^2), a input        ( 24 points)
-cvw    code=6:   (a,b,c) etc, c=sqrt(1-a^2-b^2), a/b input  ( 48 points)
+cvw    code=2:   (0,a,a) etc, a=1/dsqrt(2)                   ( 12 points)
+cvw    code=3:   (a,a,a) etc, a=1/dsqrt(3)                   (  8 points)
+cvw    code=4:   (a,a,b) etc, b=dsqrt(1-2 a^2)               ( 24 points)
+cvw    code=5:   (a,b,0) etc, b=dsqrt(1-a^2), a input        ( 24 points)
+cvw    code=6:   (a,b,c) etc, c=dsqrt(1-a^2-b^2), a/b input  ( 48 points)
 cvw
        goto (1,2,3,4,5,6) code
        write (6,*) 'Gen_Oh: Invalid Code'
@@ -98,60 +98,60 @@ cvw
        return
 cvw
     2  continue
-       a=sqrt(0.5d0)
-       x( 1) =  0d0
+       a=dsqrt(0.5d0)
+       x( 1) =  0.0d0
        y( 1) =  a
        z( 1) =  a
        w( 1) =  v
-       x( 2) =  0d0
+       x( 2) =  0.0d0
        y( 2) = -a
        z( 2) =  a
        w( 2) =  v
-       x( 3) =  0d0
+       x( 3) =  0.0d0
        y( 3) =  a
        z( 3) = -a
        w( 3) =  v
-       x( 4) =  0d0
+       x( 4) =  0.0d0
        y( 4) = -a
        z( 4) = -a
        w( 4) =  v
        x( 5) =  a
-       y( 5) =  0d0
+       y( 5) =  0.0d0
        z( 5) =  a
        w( 5) =  v
        x( 6) = -a
-       y( 6) =  0d0
+       y( 6) =  0.0d0
        z( 6) =  a
        w( 6) =  v
        x( 7) =  a
-       y( 7) =  0d0
+       y( 7) =  0.0d0
        z( 7) = -a
        w( 7) =  v
        x( 8) = -a
-       y( 8) =  0d0
+       y( 8) =  0.0d0
        z( 8) = -a
        w( 8) =  v
        x( 9) =  a
        y( 9) =  a
-       z( 9) =  0d0
+       z( 9) =  0.0d0
        w( 9) =  v
        x(10) = -a
        y(10) =  a
-       z(10) =  0d0
+       z(10) =  0.0d0
        w(10) =  v
        x(11) =  a
        y(11) = -a
-       z(11) =  0d0
+       z(11) =  0.0d0
        w(11) =  v
        x(12) = -a
        y(12) = -a
-       z(12) =  0d0
+       z(12) =  0.0d0
        w(12) =  v
        num=num+12
        return
 cvw
     3  continue
-       a = sqrt(1d0/3d0)
+       a = dsqrt(1.0d0/3.0d0)
        x(1) =  a
        y(1) =  a
        z(1) =  a
@@ -188,7 +188,7 @@ cvw
        return
 cvw
     4  continue
-       b = sqrt(1d0 - 2d0*a*a)
+       b = dsqrt(1.0d0 - 2.0d0*a*a)
        x( 1) =  a
        y( 1) =  a
        z( 1) =  b
@@ -289,7 +289,7 @@ cvw
        return
 cvw
     5  continue
-       b=sqrt(1d0-a*a)
+       b=dsqrt(1d0-a*a)
        x( 1) =  a
        y( 1) =  b
        z( 1) =  0d0
@@ -390,7 +390,7 @@ cvw
        return
 cvw
     6  continue
-       c=sqrt(1d0 - a*a - b*b)
+       c=dsqrt(1d0 - a*a - b*b)
        x( 1) =  a
        y( 1) =  b
        z( 1) =  c
@@ -641,7 +641,7 @@ chvd       Computational Mathematics and Mathematical Physics, Vol. 15,
 chvd       1975, pp. 44-51.
 chvd
        N=1
-       V=0.1666666666666667
+       V=0.1666666666666667d0
        Call GEN_OH( 1, N, X(N), Y(N), Z(N), W(N), A, B, V)
        N=N-1
        RETURN

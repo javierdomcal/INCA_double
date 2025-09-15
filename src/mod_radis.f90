@@ -1,4 +1,5 @@
 module radis
+   implicit none
    double precision, parameter, dimension(92) :: BL=(/0.327d0, 0.320d0, &
     + 1.219d0, 0.911d0, 0.793d0, 0.766d0, 0.699d0, 0.658d0,&
     + 0.900d0, 0.690d0, 1.545d0, 1.333d0, 1.199d0, 1.123d0, 1.110d0, 1.071d0, 1.039d0,&

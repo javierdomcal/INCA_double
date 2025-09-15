@@ -21,7 +21,7 @@ integer :: nr_total
 double precision, allocatable, dimension(:,:) :: gpt
 double precision :: z
 integer :: i, ia, ir, sm, smnn, j, smp, n_an, smrad
-double precision, parameter :: pi=4.d0*atan(1.d0)
+double precision, parameter :: pi=4.d0*datan(1.d0)
 double precision, parameter :: trsh=1.d-15, trsh2=1.d-16
 !double precision :: a,b
 double precision :: xs
@@ -102,13 +102,14 @@ do i=1,nblock !loop for each radius fragment
      allocate(theta(n_an))
      allocate(phi(n_an))
      do j=1,n_an   !compute angles     
-        theta(j)= acos(r_lb(3,j))
-        if (sin(theta(j)).ne.0.d0) then
-             xs=r_lb(1,j)/sin(theta(j))
-             if (xs.gt. 1.d0) xs=1.d0
-             if (xs.lt.-1.d0) xs=-1.d0
-              phi(j)=acos(xs)
-              if (r_lb(2,j).lt. 0.d0) phi(j)=-phi(j)
+        theta(j)= dacos(r_lb(3,j))
+        if (dabs(dsin(theta(j))).gt.1.0d-15) then
+             !xs=r_lb(1,j)/dsin(theta(j))
+             !if (xs.gt. 1.d0) xs=1.d0
+             !if (xs.lt.-1.d0) xs=-1.d0
+             phi(j) = datan2(r_lb(2,j), r_lb(1,j))
+             !phi(j)=dacos(xs)
+             !if (r_lb(2,j).lt. 0.d0) phi(j)=-1.0d0*phi(j)
         else
               phi(j)=0.d0
         end if
@@ -122,19 +123,19 @@ do i=1,nblock !loop for each radius fragment
            smrad=smrad+1 !sum over radius
            do ia=1,n_an  !sum over angular points
                sm=sm+1 !sum grid points
-               z=radi(smrad)*cos(theta(ia)) !compute z
-               if (z.ge.0.d0) then
+               z=radi(smrad)*dcos(theta(ia)) !compute z
+             !  if (z.ge.0.d0) then
                   smnn=smnn+1 !sum the number of reduced points of each quadrature
                   smn(smrad)=smn(smrad)+1 !sum number of points per radius
-                  gpt(1,smnn)=radi(smrad)*cos(phi(ia))*sin(theta(ia))
-                  gpt(2,smnn)=radi(smrad)*sin(phi(ia))*sin(theta(ia))
+                  gpt(1,smnn)=radi(smrad)*dcos(phi(ia))*dsin(theta(ia))
+                  gpt(2,smnn)=radi(smrad)*dsin(phi(ia))*dsin(theta(ia))
                   gpt(3,smnn)=z
-                  if (z.lt.trsh) then
+              !   if (z.lt.trsh) then
                      pweight(smnn)=Wlb(ia)
-                  else
-                     pweight(smnn)=2.d0*Wlb(ia)
-                  end if   
-               end if
+               !   else
+              !       pweight(smnn)=2.d0*Wlb(ia)
+              !    end if   
+              ! end if
            end do   
      end do  
      deallocate(Wlb)
@@ -147,7 +148,8 @@ do i=1,nblock !loop for each radius fragment
  write(*,*) "Number of grid points per radi", smn
  allocate(rpg(3,smnn))
  allocate(w_ang(smnn))
-     
+ w_ang = 0.0d0
+ rpg = 0.0d0 
  do i=1,smnn  !store the data in reduced size matrix
      rpg(:,i)=gpt(:,i) 
      w_ang(i)=pweight(i)          

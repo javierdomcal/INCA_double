@@ -31,7 +31,7 @@ subroutine becke(rrg,sumq,rgrid,nquad,cent,w_beck,Ps)                           
  !compute R_ij
  do i=1,nquad
   do j=1,nquad
-     Rij(i,j)=sqrt(sum((cent(:,i)-cent(:,j))**2.d0))  !distance between centers
+     Rij(i,j)=dsqrt(sum((cent(:,i)-cent(:,j))**2.d0))  !distance between centers
      Xi(i,j)=Ps(i)/Ps(j)                              !relacio entre centres
   end do
  end do     
@@ -44,8 +44,8 @@ subroutine becke(rrg,sumq,rgrid,nquad,cent,w_beck,Ps)                           
         P(i)=1.d0
         do j=1,nquad
            if (i.ne.j) then        
-             ri=sqrt(sum((rrg(:,i1)-cent(:,i))**2.d0)) !distance to center i (from point r)
-             rj=sqrt(sum((rrg(:,i1)-cent(:,j))**2.d0)) !distance to center j (from point r)
+             ri=dsqrt(sum((rrg(:,i1)-cent(:,i))**2.d0)) !distance to center i (from point r)
+             rj=dsqrt(sum((rrg(:,i1)-cent(:,j))**2.d0)) !distance to center j (from point r)
              mu_ij=(ri-rj)*(Rij(i,j)**(-1.d0))
              u_ij=(xi(i,j)-1.d0)/(xi(i,j)+1.d0)  
              a_ij=u_ij*((u_ij**2.d0)-1.d0)**(-1.d0)

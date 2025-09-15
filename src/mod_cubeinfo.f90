@@ -1,4 +1,5 @@
 module cubeinfo
+   implicit none
    integer :: mo !molecular orbital to represent in the cubefile
    integer :: npr  !primitive to represent in the cubefile
    integer :: cao  !atomic orbital to represent in the cubefile

@@ -14,7 +14,7 @@ readlog=.false.
 call readinput()  
 
 if (readwfx) call filewfx(wfxfilename)  !reads info from a wfx file 
-
+if (readfchk) call filefchk(fchkfilename)
 if (readlog) call filelog(logfilename)  !reads info from a log file
 
 if (cube) then
@@ -69,7 +69,7 @@ subroutine readinput()
 use inputdat
 use cubeinfo
 
-use located
+use locatemod
 implicit none
 character*80 :: name
 integer :: i
@@ -79,6 +79,7 @@ open(unit=3,file=name,status='OLD')
  
 !set up logical variables as false
 readwfx=.false. 
+readfchk=.false. 
 readlog=.false.
 primcube=.false.
 aocube=.false.
@@ -88,11 +89,19 @@ gradient=.false.
 laplacian=.false.
 intracalc=.false.
 
-call locate(3,"$wfxfile") 
- read(3,*) wfxfilename 
- if (wfxfilename.ne.'no') then
+
+call locate(3,"$wfxfile")
+read(3,*) wfxfilename
+if (wfxfilename.ne.'no') then
       readwfx=.true.
- end if
+end if
+rewind 3
+call locate(3,"$fchkfile")
+read(3,*) fchkfilename
+if (fchkfilename.ne.'no') then
+      readfchk=.true.
+end if
+rewind 3
 
 call locate(3,"$logfile")
  read(3,*) logfilename
@@ -169,7 +178,7 @@ end subroutine readinput
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 subroutine readintra() 
 use intrainfo
-use located
+use locatemod
 implicit none
 character*80 :: name
 integer :: i, j
@@ -182,6 +191,7 @@ open(unit=3,file=name,status='OLD')
         call locate(3,'$Threshold') !threshold for integral screenings
         read(3,*) thresh  
         rewind(3)
+        dm2name = ''
         call locate(3,'$DM2')
         read(3,*) dm2name           !name of the dm2p file
         read(3,*) trsh1, trsh2      !thresholds used in DM2prim
@@ -205,6 +215,7 @@ open(unit=3,file=name,status='OLD')
             else !default
                 write(*,*) "Computing centers automatically"
                 call centercalc()
+                write(*,*) "nquad computed =", nquad
                 !call pdint() !calculate approximate I_vs_r curve
             end if            
             if (dif_nodes) then       !Different node for each centre
@@ -265,7 +276,21 @@ open(unit=3,file=name,status='OLD')
                 read(3,*) (center_i(i), i=1,3) !cube centered in (x,y,z)
                 read(3,*) (step_i(i), i=1,3) !distance between points in the axis
                 read(3,*) (np_i(i), i=1,3) !number of points for each axis
-        end if 
+        end if
+        rewind(3)
+        call locate (3,'$Vee')
+        write(*,*) 'yeehaw'
+        read(3,*) vee_flag
+        if (vee_flag) then
+                read(3,*) nblock
+                allocate(n_an_per_part(nblock))
+                allocate(tart(2,nblock))
+                allocate(stp(nblock))
+                do i=1,nblock
+                  read(3,*) tart(:,i), stp(i), n_an_per_part(i)
+                end do
+        end if
+        rewind(3)
  close(3) 
 end subroutine readintra
 

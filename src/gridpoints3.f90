@@ -11,10 +11,10 @@
   allocate(rg(3,rgrid))
   rg=0.d0
   do i=1,3
-     if (mod(np_i(i),2).eq.0) then !odd number
-         xm(i)=center_i(i)-(step_i(i)/2)-((np_i(i)-2)/2)*step_i(i)
-     else !even number  !Calculates the starting point acording to cubeinfo data
-         xm(i)=center_i(i)-((np_i(i)-1)/2)*step_i(i)
+     if (dmod(dble(np_i(i)),2.d0).eq.0.d0) then !even number
+        xm(i)=center_i(i)-(step_i(i)/2.d0)-((dble(np_i(i))-2.d0)/2.d0)*step_i(i)
+     else !odd number  
+        xm(i)=center_i(i)-((dble(np_i(i))-1.d0)/2.d0)*step_i(i)
      end if
   end do
   sm=0

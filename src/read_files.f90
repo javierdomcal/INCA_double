@@ -8,7 +8,7 @@ subroutine filewfx(wfxfilename)                                             !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 use wfxinfo
 use geninfo
-use located
+use locatemod
 implicit none
 character*40, intent(in) :: wfxfilename
 character*80 :: line
@@ -16,7 +16,7 @@ character*80 :: zaborra  !coses que no volem llegir
 integer :: i,j,k, kk
 integer :: mon !molecular orbital number   
 double precision :: maxim, minim
-double precision, parameter :: trsh=1.d-6 !threeshold for orbital occupancies
+double precision, parameter :: trsh=1.d-16 !threeshold for orbital occupancies
 
  corr=.false.  
  uhf=.false.
@@ -29,14 +29,12 @@ double precision, parameter :: trsh=1.d-6 !threeshold for orbital occupancies
 open(unit=1,file=wfxfilename,status='OLD') 
 
 call locate(1,"Number of Nuclei") 
-read(1,'(a80)')line ! llegeix el que hi ha a la linia que hi ha despres de la linia que conte "Number of Nuclei"
-read(line(1:4),*) natoms ! del contingut de "line", guarda el que hi ha a les 3 primeres posicions en una variable
+read(1,*) natoms ! del contingut de "line", guarda el que hi ha a les 3 primeres posicions en una variable
                         
 rewind 1  
 
 call locate(1,"Number of Occupied Molecular Orbitals")
-read(1,'(a80)')line
-read(line(1:5),*) noccmo
+read(1,*) noccmo
 
 allocate(Occ(noccmo))
 
@@ -109,24 +107,20 @@ read(1,*) netch
 rewind 1
 
 call locate(1,"Number of Electrons")
-read(1,'(a80)')line
-read(line(1:5),*) nelec
+read(1,*) nelec
 
 call locate(1,"Number of Alpha Electrons")
-read(1,'(a80)')line
-read(line(1:5),*) nalfae
+read(1,*) nalfae
 
 rewind 1
 
 call locate(1,"Number of Beta Electrons")
-read(1,'(a80)')line
-read(line(1:5),*) nbetae
+read(1,*) nbetae
 
 rewind 1
 
 call locate(1,"Number of Primitives")
-read(1,'(a80)')line
-read(line(1:5),*) nprim
+read(1,*) nprim
 
 rewind 1
 
@@ -296,7 +290,7 @@ subroutine filelog(logfilename)                                             !
 use loginfo                    
 use geninfo
 use wfxinfo
-use located
+use locatemod
 implicit none
 integer, parameter :: maxao=100
 character*10 :: logfilename
@@ -306,7 +300,7 @@ character*10 :: tao !atomic orbital type
 integer :: i,j,k,l,m
 integer :: sm, smm, sm2, sm3, sm4 !sums !smp is the sum of the previous primitives
 integer :: smatom
-real :: kk !alpha value of the primitives (already got it from wfx) 
+double precision :: kk !alpha value of the primitives (already got it from wfx) 
 
 open(unit=4 ,file=logfilename, status='OLD') !obre arxiu amb nom name a la unitat 4
 
@@ -400,7 +394,7 @@ do i=1,nprim
       else if ((ptyp(i).gt.4).and.(ptyp(i).le.7)) then  !dxy,dxz.dyz
             N_prim(i)=(pi*0.5d0)**(-3.d0/4.d0) * (2**2 * Alpha(i)**(1.75d0))
       else if ((ptyp(i).gt.7).and.(ptyp(i).le.10)) then  !dx²,dy².dz²
-            N_prim(i)=(pi*0.5d0)**(-3.d0/4.d0) * (2**2 * Alpha(i)**(1.75d0))/(sqrt(3.d0))   
+            N_prim(i)=(pi*0.5d0)**(-3.d0/4.d0) * (2**2 * Alpha(i)**(1.75d0))/(dsqrt(3.d0))   
       else
             write(*,*) "f type orbital, insert its normalization equation"
       end if    
@@ -441,4 +435,317 @@ end do
 
 ! 41 format(10(F7.3,1X))
 end subroutine cmatrix
+
+subroutine filefchk(fchkfilename)
+   use wfxinfo
+   use geninfo
+   use locatemod
+   implicit none
+   character(len=*), intent(in) :: fchkfilename
+   character(len=500) :: line
+   character(len=40)  :: typ, method, basis
+   integer :: i, j, k, l, l1 , iprim, ishell, ncshl, npshl
+   integer, allocatable :: shell_types(:), prim_per_shell(:), shell2atom(:)
+   double precision, allocatable :: prim_exp(:), contr_coeff(:), pscontr(:)
+   
+   ! Reset flags
+   corr=.false.; uhf=.false.; rhf=.false.
+   udens=.false.; rdens=.false.
+   opsh=.false.; clsh=.false.
+
+   open(unit=1,file=fchkfilename,status='OLD')
+   ! ============================
+   ! Determine calculation type
+   ! ============================
+   call getline_with(1,"SP",line)
+   read(line,*) typ, method, basis
+   call getline_with(1,"Number of alpha electrons",line) !just to check if UHF or RHF
+   read(line,*) typ, typ, typ, typ, typ, nalfae
+   call getline_with(1,"Number of beta electrons",line)
+   read(line,*) typ, typ, typ, typ, typ, nbetae
+   nelec = nalfae + nbetae
+   call getline_with(1,"Total Energy",line)
+   read(line,*) typ, typ, typ, toteng
+   write(*,*) "Total Energy:", toteng
+   write(*,*) "Calculation type:", trim(method), trim(basis)
+   if (nalfae.eq.nbetae) then
+      clsh=.true.
+      write(*,*) "Closed shell"
+   else
+      opsh=.true.
+      write(*,*) "Open shell"
+   end if
+
+   if (method.eq."RHF") then
+      rhf=.true.
+   else if (method.eq."HF") then
+      if (opsh) uhf=.true.
+      if (clsh) rhf=.true.
+   else if (method.eq."UHF") then  
+      write(*,*) "Open shell UHF"
+      uhf=.true.
+   else
+      corr=.true.
+      write(*,*) "Correlated wavefunction"      
+   end if
+   ! ============================
+   ! Number of atoms
+   ! ============================
+   write(*,*) "Reading fchk file"
+   call getline_with(1,"Number of atoms",line)
+   write(*,*) line
+   read(line,*) typ, typ, typ, typ, natoms   ! label has spaces → just grab last value
+
+   ! ============================
+   ! Atomic numbers
+   ! ============================
+   allocate(an(natoms))
+   call locate(1,"Atomic numbers")
+   read(1,*) (an(i), i=1,natoms)
+
+   ! ============================
+   ! Nuclear charges
+   ! ============================
+   allocate(chrg(natoms))
+   chrg(:) = dble(an(:))
+
+   ! ============================
+   ! Cartesian coordinates
+   ! ============================
+   allocate(cartes(natoms,3))
+   call locate(1,"Current cartesian coord")
+   read(1,*) ((cartes(i,j), j=1,3), i=1,natoms)
+
+   ! =========================================
+   ! Number of contracted and primitive shells
+   ! ==========================================
+   call getline_with(1,"Number of contracted shells",line)
+   read(line,*) typ, typ, typ, typ, typ, ncshl
+   call getline_with(1,"Number of primitive shells",line)
+   read(line,*) typ, typ, typ, typ, typ, npshl
+   ! ============================
+   ! Shell types
+   ! ============================
+   allocate(shell_types(ncshl))
+   call locate(1,"Shell types")
+   read(1,*) (shell_types(i), i=1,ncshl)
+
+   ! ============================
+   ! Primitives per shell
+   ! ============================
+   allocate(prim_per_shell(ncshl))
+   call locate(1,"Number of primitives per shell")
+   read(1,*) (prim_per_shell(i), i=1,ncshl)
+   !calculate total number of pritimives
+   !take into account the shell types for that
+   nprim = 0
+   do i=1,ncshl
+      select case(shell_types(i))
+      case(0)  ! s shell
+         nprim = nprim + prim_per_shell(i)
+      case(1)  ! p shell -> expand px, py, pz
+         nprim = nprim + 3*prim_per_shell(i)
+      case(2)  ! d shell -> Cartesian: xx, yy, zz, xy, xz, yz
+         nprim = nprim + 6*prim_per_shell(i)
+      case(3)  ! f shell -> Cartesian (10 functions)
+         nprim = nprim + 10*prim_per_shell(i)   
+      case(-1) ! SP shell: s + p
+         nprim = nprim + 4*prim_per_shell(i)
+      case(-2) ! spherical d shell
+         nprim = nprim + 6*prim_per_shell(i)
+      case(-3) ! spherical f shell
+         nprim = nprim + 10*prim_per_shell(i)
+      case(4)  ! g shell -> Cartesian (15 functions) 
+         nprim = nprim + 15*prim_per_shell(i)
+      case(-4) ! spherical g shell
+         nprim = nprim + 15*prim_per_shell(i)   
+      case default
+         write(*,*) "Shell type not implemented:", shell_types(i)
+         stop
+      end select
+   end do
+   write(*,*) "nprim calculated from shells=", nprim
+   ! ============================
+   ! Shell-to-atom map
+   ! ============================
+   allocate(shell2atom(ncshl))
+   call locate(1,"Shell to atom map")
+   read(1,*) (shell2atom(i), i=1,ncshl)
+   ! ============================
+   ! Primitive exponents
+   ! ============================
+   allocate(prim_exp(npshl))
+   call locate(1,"Primitive exponents")
+   read(1,*) (prim_exp(i), i=1,npshl)
+   ! ============================
+   ! Expand primitives into basis
+   ! ============================   
+   allocate(Ra(nprim))
+   allocate(Alpha(nprim))
+   allocate(Ptyp(nprim))
+   allocate(TMN(nprim,3))
+   iprim = 0
+   l=0 !counter for primitive exponents
+   do i=1,ncshl
+      !counter for primitive shells
+      select case(shell_types(i))
+      case(0) ! s shell
+         do k=1,prim_per_shell(i)
+            iprim = iprim+1
+            Ra(iprim) = shell2atom(i)
+            l=l+1
+            Alpha(iprim) = prim_exp(l)
+            Ptyp(iprim) = 1
+            TMN(iprim,:) = (/0,0,0/)
+            write(*,*) "s shell", iprim
+         end do
+      case(1) ! p shell -> expand px, py, pz
+         do k=1,prim_per_shell(i)
+            l=l+1
+            do j=1,3
+               iprim = iprim+1
+               Ra(iprim) = shell2atom(i)
+               Alpha(iprim) = prim_exp(l)
+               Ptyp(iprim) = 1+j
+               TMN(iprim,:) = 0
+               TMN(iprim,j) = 1
+               write(*,*) "p shell", iprim
+            end do
+         end do
+      case(2, -2)
+          !consider also case -2   ! d shell -> Cartesian: xx, yy, zz, xy, xz, yz
+         do k=1,prim_per_shell(i)
+            l=l+1
+            ! xx, yy, zz, xy, xz, yz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=5; TMN(iprim,:)=(/2,0,0/)   ! xx
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=6; TMN(iprim,:)=(/0,2,0/)   ! yy
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=7; TMN(iprim,:)=(/0,0,2/)   ! zz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=8; TMN(iprim,:)=(/1,1,0/)   ! xy
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=9; TMN(iprim,:)=(/1,0,1/)   ! xz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=10; TMN(iprim,:)=(/0,1,1/)   ! yz
+            write(*,*) "d shell", iprim
+         end do
+      case(3, -3)  ! f shell -> Cartesian (10 functions)
+         do k=1,prim_per_shell(i)
+            l=l+1
+            ! xxx, yyy, zzz, xxy, xxz, xyy, yyz, xzz, yzz, xyz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=11; TMN(iprim,:)=(/3,0,0/)   ! xxx
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=12; TMN(iprim,:)=(/0,3,0/)   ! yyy
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=13; TMN(iprim,:)=(/0,0,3/)   ! zzz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=14; TMN(iprim,:)=(/2,1,0/)   ! xxy
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=15; TMN(iprim,:)=(/2,0,1/)   ! xxz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=16; TMN(iprim,:)=(/0,2,1/)   ! yyz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=17; TMN(iprim,:)=(/1,2,0/)   ! xyy
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=18; TMN(iprim,:)=(/1,0,2/)   ! xzz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=19; TMN(iprim,:)=(/0,1,2/)   ! yzz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=20; TMN(iprim,:)=(/1,1,1/)  ! xyz
+            write(*,*) "f shell", iprim
+         end do
+      case(4, -4) ! g shell -> Cartesian (15 functions) 
+         do k=1,prim_per_shell(i)
+            l=l+1
+            ! xxxx, yyyy, zzzz, xxxy, xxxz, yyyx, yyyz, zzzx, zzzy,
+            ! xxyy, xxzz, yyzz, xxyz, xyzz, xyyz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=21; TMN(iprim,:)=(/4,0,0/)   ! xxxx
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=22; TMN(iprim,:)=(/0,4,0/)   ! yyyy
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=23; TMN(iprim,:)=(/0,0,4/)   ! zzzz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=24; TMN(iprim,:)=(/3,1,0/)   ! xxxy
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=25; TMN(iprim,:)=(/3,0,1/)   ! xxxz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=26; TMN(iprim,:)=(/1,3,0/)   ! yyyx
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=27; TMN(iprim,:)=(/0,3,1/)   ! yyyz     
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=28; TMN(iprim,:)=(/1,0,3/)   ! zzzx
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=29; TMN(iprim,:)=(/0,1,3/)   ! zzzy
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=30; TMN(iprim,:)=(/2,2,0/)   ! xxyy
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=31; TMN(iprim,:)=(/2,0,2/)   ! xxzz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=32; TMN(iprim,:)=(/0,2,2/)   ! yyzz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=33; TMN(iprim,:)=(/2,1,1/)   ! xxyz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=34; TMN(iprim,:)=(/1,2,1/)   ! xyyz
+            iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
+            Ptyp(iprim)=35; TMN(iprim,:)=(/1,1,2/)   ! xyzz
+            write(*,*) "g shell", iprim            
+         end do 
+      case(-1) ! SP shell: s + p
+         write(*,*) "SP shell"
+         l1=l
+         do k=1,prim_per_shell(i)
+            l=l+1
+            ! first s
+            iprim = iprim+1
+            Ra(iprim) = shell2atom(i)
+            Alpha(iprim) = prim_exp(l)
+            Ptyp(iprim) = 1
+            TMN(iprim,:) = (/0,0,0/)
+         end do
+         l=l1
+         do k=1,prim_per_shell(i)
+            l=l+1   
+            ! now px
+            iprim = iprim+1
+            Ra(iprim) = shell2atom(i)
+            Alpha(iprim) = prim_exp(l)
+            Ptyp(iprim) = 2
+            TMN(iprim,:) = (/1,0,0/)
+         end do
+         l=l1
+         do k=1,prim_per_shell(i)
+            l=l+1   
+            !py
+            iprim = iprim+1
+            Ra(iprim) = shell2atom(i)
+            Alpha(iprim) = prim_exp(l)
+            Ptyp(iprim) = 3
+            TMN(iprim,:) = (/0,1,0/)
+         end do
+         l=l1
+         do k=1,prim_per_shell(i)
+            l=l+1   
+            !pz
+            iprim = iprim+1
+            Ra(iprim) = shell2atom(i)
+            Alpha(iprim) = prim_exp(l)
+            Ptyp(iprim) = 4
+            TMN(iprim,:) = (/0,0,1/)
+         end do
+      case default
+         write(*,*) "H orbitals are not implemented"
+         stop  
+      end select
+   end do
+   write(*,*) nprim, iprim, l
+   write(*,*) "Ended reading fchk file, total primitives=", nprim
+   do i=1,nprim 
+      write(*,*) TMN(i,:), Alpha(i), Ra(i), Ptyp(i) 
+   end do   
+   close(1)
+end subroutine filefchk
 

@@ -26,14 +26,14 @@ double precision :: x1,x2,y1,y2,z1,z2
          y2=cartes(j,2)
          z2=cartes(j,3)
          sm=sm+1
-         x0(sm)=sqrt((x1-x2)**2.d0+(y1-y2)**2.d0+(z1-z2)**2.d0)
+         x0(sm)=dsqrt((x1-x2)**2.d0+(y1-y2)**2.d0+(z1-z2)**2.d0)
          !Dens_A=Density(x1,y1,z1)
          !Dens_B=Density(x2,y2,z2)
          !Pk=Dens_A*Dens_B-(rDM1(x1,y1,z1,x2,y2,z2)**2.d0)
          bn=an(i)*an(j)
          Pk=Pk/bn 
-         Alp(sm)=pi*0.0625d0*((Pk*exp(1.d0))**2.d0)*(bn**(-2.d0))
-         N(sm)=sqrt(pi)*0.25d0*Alp(sm)**(-1.5d0) !normalization factor if integral is 1
+         Alp(sm)=pi*0.0625d0*((Pk*dexp(1.d0))**2.d0)*(bn**(-2.d0))
+         N(sm)=dsqrt(pi)*0.25d0*Alp(sm)**(-1.5d0) !normalization factor if integral is 1
          N(sm)=bn/N(sm)                           !full factor for exponential
     end do
  end do
@@ -59,10 +59,10 @@ end subroutine autocalc
   double precision :: Gauss
   double precision :: r,x0,Alp,N
   double precision :: minim, a1  
-    a1=(sqrt(Alp))**(-1.d0)
+    a1=(dsqrt(Alp))**(-1.d0)
     minim=x0-a1
     if (r.ge.minim) then
-        Gauss=N*((r-x0+a1)**2.d0)*exp(-Alp*(r-x0+a1)**2.d0)
+        Gauss=N*((r-x0+a1)**2.d0)*dexp(-Alp*(r-x0+a1)**2.d0)
     else
         Gauss=0.d0 !neglect the peak from the left
     end if

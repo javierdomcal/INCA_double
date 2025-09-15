@@ -1,7 +1,7 @@
 module intrainfo
 !input variables for intracule calculation!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 implicit none
-character*20 :: dm2name, outname
+character*40 :: dm2name, outname
 double precision :: thresh
 double precision :: trsh1, trsh2 !thresholds for DM2prim
 !!!!!Radial integral parameters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -30,6 +30,7 @@ logical :: cubeintra
 character*40 :: cubeintraname
 double precision, dimension(3) :: center_i            !cube centered in (x,y,z)
 double precision, dimension(3) :: step_i              !distance between points for each axis
-integer, dimension(3) :: np_i                         !number of points in the cube for each axis
+integer, dimension(3) :: np_i  
+logical :: vee_flag !number of points in the cube for each axis
 end module intrainfo
 

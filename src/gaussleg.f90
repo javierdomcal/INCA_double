@@ -37,7 +37,7 @@
 
 	!N = number of Gauss Points
 	!Roots are symmetric in the interval - so only need to find half of them  
-   	m = (n + 1) / 2
+   	m = int((dble(n) + 1.0d0) / 2.0d0)
 	
 	!The coats are going to be X1 = -1 and X2 = 1, Gauss-Legendre 
       	XM=0.5D0*(X1+X2)
@@ -46,7 +46,7 @@
 
 	!Loop over the desired roots
       	DO i = 1,m
-         Z = DCOS (pi * (i - 0.25D0)/(n + 0.5D0))
+         Z = DCOS (pi * (dble(i) - 0.25D0)/(dble(n) + 0.5D0))
 	!Starting with the above approximation to the i-th root,
 	!we enter the main loop of refinement by NEWTON'S method   
  10      P1 = 1.D0
@@ -57,12 +57,13 @@
          DO j = 1,n
             P3 = P2
             P2 = P1
-            P1 = ((2.D0 * j - 1.D0) * Z * P2 - (j - 1.D0) * P3)/j
+            P1 = ((2.D0 * dble(j) - 1.D0) * Z * P2 - (dble(j)-1.D0)*P3)&
+                /dble(j)
          END DO
 !p1 is now the desired Legendre polynomial.
 !We next compute pp, its derivative, by a standard relation involving also p2, 
 !the polynomial of one lower order. 
-         PP = n * (Z * P1 - P2)/(Z * Z - 1.D0)
+         PP = dble(n) * (Z * P1 - P2)/(Z * Z - 1.D0)
          Z1 = Z
          Z = Z1 - P1/PP	      ! Newton's Method  */
 

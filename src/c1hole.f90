@@ -46,12 +46,12 @@ subroutine c1hole(nrad,sfalpha)
     call LD1202(lbx,lby,lbz,wa,nAng)
 
     do i=1,nang
-         theta(i)=acos(lbz(i))
-         if (sin(theta(i)).ne.0.d0) then
-              xs=lbx(i)/sin(theta(i))
+         theta(i)=dacos(lbz(i))
+         if (dsin(theta(i)).ne.0.d0) then
+              xs=lbx(i)/dsin(theta(i))
               if (xs.gt.1.d0) xs=1.d0
               if (xs.lt.-1.d0) xs=-1.d0
-              phi(i)=acos(xs)
+              phi(i)=dacos(xs)
               if (lby(i).lt.0.d0) phi(i)=-phi(i)
          else
               phi(i)=0.d0
@@ -61,9 +61,9 @@ subroutine c1hole(nrad,sfalpha)
 
     open(unit=3, file="angular_grid")
     do i=1,nang
-           x=cos(phi(i))*sin(theta(i))
-           y=sin(phi(i))*sin(theta(i))
-           z=cos(theta(i))
+           x=dcos(phi(i))*dsin(theta(i))
+           y=dsin(phi(i))*dsin(theta(i))
+           z=dcos(theta(i))
            write(3,*) x,y,z
            cosin(i)=x
            sinsin(i)=y
@@ -81,9 +81,9 @@ subroutine c1hole(nrad,sfalpha)
     !   densint=0.d0
     !   rdm1int=0.d0
     !   do k=1,nang
-    !       x=r(i)*cos(phi(k))*sin(theta(k))
-    !       y=r(i)*sin(phi(k))*sin(theta(k))
-    !       z=r(i)*cos(theta(k))
+    !       x=r(i)*dcos(phi(k))*dsin(theta(k))
+    !       y=r(i)*dsin(phi(k))*dsin(theta(k))
+    !       z=r(i)*dcos(theta(k))
     !       densint=densint+wa(k)*Density(x,y,z)
     !       rdm1int=rdm1int+wa(k)*rDM1(x,y,z,x,y,z)
     !   end do    
@@ -118,9 +118,9 @@ subroutine c1hole(nrad,sfalpha)
           xchole=beckex(b,alf,kk)   !exchange hole model
           rdmv1=0.d0
           do k=1,nang !angular integral of the squared 1rdm
-                px=x+kk*cosin(k)  !cos(phi(k))*sin(theta(k))
-                py=y+kk*sinsin(k) !sin(phi(k))*sin(theta(k))
-                pz=z+kk*cost(k)   !cos(theta(k))
+                px=x+kk*cosin(k)  !dcos(phi(k))*dsin(theta(k))
+                py=y+kk*sinsin(k) !dsin(phi(k))*dsin(theta(k))
+                pz=z+kk*cost(k)   !dcos(theta(k))
                 rdmv1=rdmv1+wa(k)*(rDM1_alf(x,y,z,px,py,pz)*rDM1_alf(px,py,pz,x,y,z))
           end do
           write(4,*) kk, xchole, rdmv1/((Dens)*4.d0*pi) !write both models
@@ -137,9 +137,9 @@ subroutine c1hole(nrad,sfalpha)
           rdmv1=0.d0
           rdmv2=0.d0
           do k=1,nang
-             px=x+r(i)*cos(phi(k))*sin(theta(k))
-             py=y+r(i)*sin(phi(k))*sin(theta(k))
-             pz=z+r(i)*cos(theta(k))
+             px=x+r(i)*dcos(phi(k))*dsin(theta(k))
+             py=y+r(i)*dsin(phi(k))*dsin(theta(k))
+             pz=z+r(i)*dcos(theta(k))
              rdmv1=rdmv1+wa(k)*(rDM1(x,y,z,px,py,pz)*rDM1(px,py,pz,x,y,z))
           end do
           xcint2=xcint2+wr(i)*r(i)**2.d0*(rdmv1)
@@ -171,15 +171,15 @@ subroutine c1hole(nrad,sfalpha)
          do i=1,nrad       !loop for radial nodes (integrate over r reference dist)
               rho2s=0.d0   !spherically averaged pair density at r dist and s dist.
               do j=1,nang  !loop for angular nodes (to average r)
-                   x=r(i)*cos(phi(j))*sin(theta(j))  !compute x,y,z points (\Vec{r})
-                   y=r(i)*sin(phi(j))*sin(theta(j))
-                   z=r(i)*cos(theta(j))
+                   x=r(i)*dcos(phi(j))*dsin(theta(j))  !compute x,y,z points (\Vec{r})
+                   y=r(i)*dsin(phi(j))*dsin(theta(j))
+                   z=r(i)*dcos(theta(j))
                    rdmv1=0.d0 !spherically averaged density at s distance at r point. 
                    do k=1,nang
                         !compute interelectronic separation vector (px,py,pz) (to average s)
-                        px=x+kk*cos(phi(k))*sin(theta(k)) !u are averaging coord 2, not distance s!!!
-                        py=y+kk*sin(phi(k))*sin(theta(k))
-                        pz=z+kk*cos(theta(k))                                           
+                        px=x+kk*dcos(phi(k))*dsin(theta(k)) !u are averaging coord 2, not distance s!!!
+                        py=y+kk*dsin(phi(k))*dsin(theta(k))
+                        pz=z+kk*dcos(theta(k))                                           
                         !spherical average of s
                         rdmv1=rdmv1+wa(k)*rDM1_alf(x,y,z,px,py,pz)*rDM1_alf(px,py,pz,x,y,z)
                    end do
@@ -219,7 +219,7 @@ subroutine becke1(x,y,z,b,alf) !give a point and returns a and b from eq 17 of B
      write(*,*) x,y,z
      xx=newtr(Dens,E_kin,Grad,Lapl)
      if (xx.gt.0.d0) then
-        b=(xx**(3.d0)*exp(-xx)*0.125d0*((pi*Dens)**(-1.d0)))**(hr)
+        b=(xx**(3.d0)*dexp(-xx)*0.125d0*((pi*Dens)**(-1.d0)))**(hr)
         alf=xx*(b**(-1.d0))
      else
         alf=0.d0
@@ -240,8 +240,8 @@ function beckex(b,alf,s) !Becke-Roussel Exchange Hole, eqn 16
                 beckex=0.d0
         else        
         p1=0.0625d0*alf*(pi*b*s)**(-1.d0)
-        p2=(alf*abs(b-s)+1.d0)*exp(-alf*abs(b-s))
-        p3=(alf*abs(b+s)+1.d0)*exp(-alf*abs(b+s))
+        p2=(alf*dabs(b-s)+1.d0)*dexp(-alf*dabs(b-s))
+        p3=(alf*dabs(b+s)+1.d0)*dexp(-alf*dabs(b+s))
         beckex=p1*(p2-p3)
 end if
 end function beckex 
@@ -275,7 +275,7 @@ function newtr(Dens,E_kin,Grad,Lapl) !performs Newton-Raphson to find x
    write(*,*) "k=", k
    x0=2.d0
    sf=1.d0
-   if (abs(k).lt.1d-16) then
+   if (dabs(k).lt.1d-16) then
          newtr=0.d0
    else      
      if (k.lt.0.d0) then
@@ -290,7 +290,7 @@ function newtr(Dens,E_kin,Grad,Lapl) !performs Newton-Raphson to find x
                           fpr=fp(x)
                           fr=f(x,k)
                           newtr=x-fr*(fpr**(-1.d0))
-                          dif=abs(newtr-x)
+                          dif=dabs(newtr-x)
                           if (dif.lt.trsh) then
                              write(*,*) "Converged after", j, "iterations"
                              write(*,*) "xx=", newtr
@@ -319,7 +319,7 @@ function newtr(Dens,E_kin,Grad,Lapl) !performs Newton-Raphson to find x
                           fpr=fp(x)
                           fr=f(x,k)
                           newtr=x-fr*(fpr**(-1.d0))
-                          dif=abs(newtr-x)
+                          dif=dabs(newtr-x)
                           if (dif.lt.trsh) then
                              write(*,*) "Converged after", j, "iterations"
                              write(*,*) "xx=", newtr
@@ -351,7 +351,7 @@ function f(x,k) !equation 21 of Becke-Roussel
     double precision, parameter :: trsh=1d-8
     double precision, intent(in) :: x,k 
     double precision :: f1,f 
-    f1=x*exp(-bih*x)*(x-2.d0)**(-1.d0)                             !nomes cal calcular q una vegada
+    f1=x*dexp(-bih*x)*(x-2.d0)**(-1.d0)                             !nomes cal calcular q una vegada
     f=f1-k
 end function
 
@@ -361,7 +361,7 @@ function fp(x) !derivative of equation 22
     implicit none    
     double precision :: fp
     double precision, intent(in) :: x
-    fp=-bih*exp(-bih*x)*(x**2.d0-2.d0*x+3.d0)*(x-2.d0)**(-2.d0)
+    fp=-bih*dexp(-bih*x)*(x**2.d0-2.d0*x+3.d0)*(x-2.d0)**(-2.d0)
 
 end function
 
@@ -380,7 +380,7 @@ function D(Dens,E_kin,Grad) !equation 13b
     double precision,intent(in) :: Dens,E_kin,Grad
     double precision :: D
     double precision, parameter :: trsh=1d-15   
-    if (abs(Dens).lt.trsh) then
+    if (dabs(Dens).lt.trsh) then
            D=E_kin
     else       
            D=E_kin-0.25d0*(Grad)*Dens**(-1.d0) !Grad-->scalar product of gradient

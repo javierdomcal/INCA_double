@@ -52,12 +52,12 @@ double precision :: PD, PD2, xs
  !compute Gauss-Levedev nodes and weights
  call LD0110(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAn)
   do i=1,nAn   !compute angles     
-       theta(i)= acos(r_lb(3,i))
-       if (sin(theta(i)).ne.0.d0) then
-            xs=r_lb(1,i)/sin(theta(i))
+       theta(i)= dacos(r_lb(3,i))
+       if (dsin(theta(i)).ne.0.d0) then
+            xs=r_lb(1,i)/dsin(theta(i))
             if (xs.gt.1.d0) xs=1.d0
             if (xs.lt.-1.d0) xs=-1.d0
-            phi(i)=acos(xs)
+            phi(i)=dacos(xs)
             if (r_lb(2,i).lt.0.d0) phi(i)=-phi(i)
        else
             phi(i)=0.d0
@@ -71,9 +71,9 @@ double precision :: PD, PD2, xs
  do i=1,nrd
    do j=1,nan
        sm=sm+1
-       rr(1,sm)=radius(i)*cos(phi(j))*sin(theta(j))
-       rr(2,sm)=radius(i)*sin(phi(j))*sin(theta(j))
-       rr(3,sm)=radius(i)*cos(theta(j))
+       rr(1,sm)=radius(i)*dcos(phi(j))*dsin(theta(j))
+       rr(2,sm)=radius(i)*dsin(phi(j))*dsin(theta(j))
+       rr(3,sm)=radius(i)*dcos(theta(j))
        wtot(sm)=wl_i(i)*wlb(j)
    end do
  end do  
@@ -92,7 +92,7 @@ double precision :: PD, PD2, xs
          z2=cartes(j,3)
          sm=sm+1
          !reference distance
-         x0(sm)=sqrt((x1-x2)**2.d0+(y1-y2)**2.d0+(z1-z2)**2.d0)
+         x0(sm)=dsqrt((x1-x2)**2.d0+(y1-y2)**2.d0+(z1-z2)**2.d0)
          !compute pair density integral
          sm2=0  
          Pk=0      
@@ -126,8 +126,8 @@ double precision :: PD, PD2, xs
          write(3,*) "Peak=", Pk
          Pk=Pk*(x0(sm)**2.d0)
          bn=an(i)*an(j)
-         Alp(sm)=pi*0.0625d0*((Pk*exp(1.d0))**2.d0)*(bn**(-2.d0))
-         N(sm)=sqrt(pi)*0.25d0*Alp(sm)**(-1.5d0) !normalization factor if integral is 1
+         Alp(sm)=pi*0.0625d0*((Pk*dexp(1.d0))**2.d0)*(bn**(-2.d0))
+         N(sm)=dsqrt(pi)*0.25d0*Alp(sm)**(-1.5d0) !normalization factor if integral is 1
          N(sm)=bn/N(sm)                           !full factor for exponential
          write(3,*) "Alpha=", Alp(sm)
          write(3,*) "Integral value=", bn
@@ -167,10 +167,10 @@ end subroutine pdint
 !  double precision :: Gauss
 !  double precision :: r,x0,Alp,N
 !  double precision :: minim, a1  
-!    a1=(sqrt(Alp))**(-1.d0)
+!    a1=(dsqrt(Alp))**(-1.d0)
 !    minim=x0-a1
 !    if (r.ge.minim) then
-!        Gauss=N*((r-x0+a1)**2.d0)*exp(-Alp*(r-x0+a1)**2.d0)
+!        Gauss=N*((r-x0+a1)**2.d0)*dexp(-Alp*(r-x0+a1)**2.d0)
 !    else
 !        Gauss=0.d0 !neglect the peak from the left
 !    end if

@@ -17,7 +17,7 @@ double precision :: diff, z
          if ((an(j).gt.1).and.(an(k).gt.1)) then !only for non-hydrogen atoms      
             sm=sm+1      
             c1(:,sm)=cartes(j,:)-cartes(k,:)
-            z=abs(c1(3,sm))
+            z=dabs(c1(3,sm))
             if (z.lt.trs) c1(3,sm)=0.d0 !to exploit symmetry
             smp=sm  
             sm=sm+1 !count centres  
@@ -35,9 +35,9 @@ double precision :: diff, z
  do i=2,nqmax-1
    do j=i+1,nqmax
       sm1=sm1+1
-      z=abs(c1(1,i))+abs(c1(2,i))+abs(c1(3,i)) !sum x,y,z axis (if 0->equivalent centres exist)
+      z=dabs(c1(1,i))+dabs(c1(2,i))+dabs(c1(3,i)) !sum x,y,z axis (if 0->equivalent centres exist)
       if (z.ne.0.d0) then                      !this center was not repeated
-         diff=abs(sum(c1(:,i)-c1(:,j)))
+         diff=dabs(sum(c1(:,i)-c1(:,j)))
          if (diff.lt.trsh) then             !center j is equal to center i
               sm=sm+1
               c1(:,j)=0.d0                     !set center j to zero
@@ -51,7 +51,7 @@ double precision :: diff, z
  sm=1
  sm1=1
  do i=2,nqmax
-      z=abs(c1(1,i))+abs(c1(2,i))+abs(c1(3,i))
+      z=dabs(c1(1,i))+dabs(c1(2,i))+dabs(c1(3,i))
       if (z.ne.0.d0) then  !store all non-equivalent centres in a lower-dimensional array
            sm1=sm1+1
            cent(:,sm1)=c1(:,i)

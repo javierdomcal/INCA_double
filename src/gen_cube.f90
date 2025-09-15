@@ -65,24 +65,24 @@ double precision :: x,y,z
 logical :: num
 
 num=.true. !interruptor manual per numerical or analitical !change this to choose in the input
-x=0.
-y=0.
-z=0.
+x=0.0d0
+y=0.0d0
+z=0.0d0
 xm=0.d0
 do i=1,3
     if (mod(np(i),2).eq.0)then !odd number
-         xm(i)=center(i)-(step(i)/2)-((np(i)-2)/2)*step(i)
+         xm(i)=center(i)-(step(i)/2.0d0)-((dble(np(i))-2.0d0)/2.0d0)*step(i)
     else !even number  !Calculates the starting point acording to cubeinfo data
-         xm(i)=center(i)-((np(i)-1)/2)*step(i)
+         xm(i)=center(i)-((dble(np(i))-1.0d0)/2.0d0)*step(i)
     end if  
 end do
 
 do i=1,np(1)         !Depending on a calculates the point with a different function
-     x=xm(1)+step(1)*(i-1)
+     x=xm(1)+step(1)*dble(i-1)
      do j=1,np(2) 
-          y=xm(2)+step(2)*(j-1)
+          y=xm(2)+step(2)*dble(j-1)
           do k=1,np(3)
-              z=xm(3)+step(3)*(k-1)
+              z=xm(3)+step(3)*dble(k-1)
               if (a.eq.1) then                                           
                     write(2,40) Prim(x,y,z,npr)
               else if (a.eq.2) then

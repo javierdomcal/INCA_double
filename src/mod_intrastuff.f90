@@ -3,7 +3,7 @@ use geninfo
 use quadratures
 implicit none
 integer :: i,j,k,l !primitive quartets
-double precision :: sqe !sqrt(e_ijkl) save time and compute it once
+double precision :: sqe !dsqrt(e_ijkl) save time and compute it once
 !Grid independent variables for the intracule:
 double precision :: a_ik, a_jl, a_ijkl 
 double precision :: e_ik, e_jl, e_ijkl 
@@ -49,12 +49,12 @@ contains
         end do
                 
         J_ik=pi**(1.5d0)*(2.d0*a_ik)**(-(dble(TMN(i,1)+TMN(k,1)+TMN(i,2)+TMN(k,2)+TMN(i,3)+TMN(k,3))+1.5d0))&
-        *exp(-2.d0*e_ik*(R_i_k_2))
+        *dexp(-2.d0*e_ik*(R_i_k_2))
         r_part=1.d0
         do ii=1,3
               r_part=r_part &
-              *((x_max(ii)+Alpha(k)*sqrt(2.d0/a_ik)*abs(Cartes(Ra(k),ii)-Cartes(Ra(i),ii)))**(2.d0*dble(TMN(i,ii))))&
-              *((x_max(ii)+Alpha(i)*sqrt(2.d0/a_ik)*abs(Cartes(Ra(k),ii)-Cartes(Ra(i),ii)))**(2.d0*dble(TMN(k,ii))))
+              *((x_max(ii)+Alpha(k)*dsqrt(2.d0/a_ik)*dabs(Cartes(Ra(k),ii)-Cartes(Ra(i),ii)))**(2.d0*dble(TMN(i,ii))))&
+              *((x_max(ii)+Alpha(i)*dsqrt(2.d0/a_ik)*dabs(Cartes(Ra(k),ii)-Cartes(Ra(i),ii)))**(2.d0*dble(TMN(k,ii))))
         end do
         J_ik=J_ik*r_part
         end function
@@ -92,13 +92,13 @@ contains
         end do
   
         J_jl=pi**(1.5d0)*(2.d0*a_jl)**(-(dble(TMN(j,1)+TMN(l,1)+TMN(j,2)+TMN(l,2)+TMN(j,3)+TMN(l,3))+1.5d0))&
-        *exp(-2.d0*e_jl*(R_j_l_2))&
-        *((x_max(1)+Alpha(l)*sqrt(2.d0/a_jl)*abs(Cartes(Ra(l),1)-Cartes(Ra(j),1)))**(2.d0*dble(TMN(j,1))))&
-        *((x_max(1)+Alpha(j)*sqrt(2.d0/a_jl)*abs(Cartes(Ra(l),1)-Cartes(Ra(j),1)))**(2.d0*dble(TMN(l,1))))&
-        *((x_max(2)+Alpha(l)*sqrt(2.d0/a_jl)*abs(Cartes(Ra(l),2)-Cartes(Ra(j),2)))**(2.d0*dble(TMN(j,2))))&
-        *((x_max(2)+Alpha(j)*sqrt(2.d0/a_jl)*abs(Cartes(Ra(l),2)-Cartes(Ra(j),2)))**(2.d0*dble(TMN(l,2))))&
-        *((x_max(3)+Alpha(l)*sqrt(2.d0/a_jl)*abs(Cartes(Ra(l),3)-Cartes(Ra(j),3)))**(2.d0*dble(TMN(j,3))))&
-        *((x_max(3)+Alpha(j)*sqrt(2.d0/a_jl)*abs(Cartes(Ra(l),3)-Cartes(Ra(j),3)))**(2.d0*dble(TMN(l,3))))
+        *dexp(-2.d0*e_jl*(R_j_l_2))&
+        *((x_max(1)+Alpha(l)*dsqrt(2.d0/a_jl)*dabs(Cartes(Ra(l),1)-Cartes(Ra(j),1)))**(2.d0*dble(TMN(j,1))))&
+        *((x_max(1)+Alpha(j)*dsqrt(2.d0/a_jl)*dabs(Cartes(Ra(l),1)-Cartes(Ra(j),1)))**(2.d0*dble(TMN(l,1))))&
+        *((x_max(2)+Alpha(l)*dsqrt(2.d0/a_jl)*dabs(Cartes(Ra(l),2)-Cartes(Ra(j),2)))**(2.d0*dble(TMN(j,2))))&
+        *((x_max(2)+Alpha(j)*dsqrt(2.d0/a_jl)*dabs(Cartes(Ra(l),2)-Cartes(Ra(j),2)))**(2.d0*dble(TMN(l,2))))&
+        *((x_max(3)+Alpha(l)*dsqrt(2.d0/a_jl)*dabs(Cartes(Ra(l),3)-Cartes(Ra(j),3)))**(2.d0*dble(TMN(j,3))))&
+        *((x_max(3)+Alpha(j)*dsqrt(2.d0/a_jl)*dabs(Cartes(Ra(l),3)-Cartes(Ra(j),3)))**(2.d0*dble(TMN(l,3))))
         end function
       
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    
@@ -108,7 +108,7 @@ contains
    !     implicit none
    !     double precision, intent(in) :: R_i_k_2, R_j_l_2
    !     double precision :: A_ind
-   !     A_ind=(a_ijkl)**(-1.5d0)* exp(-e_ik*R_i_k_2-e_jl*R_j_l_2) !eq.18
+   !     A_ind=(a_ijkl)**(-1.5d0)* dexp(-e_ik*R_i_k_2-e_jl*R_j_l_2) !eq.18
  ! 
  !       end function A_ind
 
@@ -121,10 +121,10 @@ contains
         double precision :: Wr
         double precision, intent(in) :: rhat,r
         integer, intent(in) :: ax
-        Wr=((sqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl-0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(i),ax)))**dble(TMN(i,ax))*&
-        ((sqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl+0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(j),ax)))**dble(TMN(j,ax))*&
-        ((sqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl-0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(k),ax)))**dble(TMN(k,ax))*&
-        ((sqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl+0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(l),ax)))**dble(TMN(l,ax))
+        Wr=((dsqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl-0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(i),ax)))**dble(TMN(i,ax))*&
+        ((dsqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl+0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(j),ax)))**dble(TMN(j,ax))*&
+        ((dsqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl-0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(k),ax)))**dble(TMN(k,ax))*&
+        ((dsqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl+0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(l),ax)))**dble(TMN(l,ax))
   end function Wr
       
  
@@ -138,7 +138,7 @@ contains
  if (m.eq.1) then
     w_m=1.d0
  else
-    w_m=(dble(m)*0.5d0)**(dble(m)*0.5d0) * exp(-dble(m)*0.5d0)
+    w_m=(dble(m)*0.5d0)**(dble(m)*0.5d0) * dexp(-dble(m)*0.5d0)
  end if       
  end function
 

@@ -6,10 +6,10 @@
    double precision, intent(in) :: x, y, z
    integer, intent(in) :: npr
    
-   Prim=(x-(cartes(Ra(npr),1)))**(TMN(npr,1))* &
-        (y-(cartes(Ra(npr),2)))**(TMN(npr,2))* &
-        (z-(cartes(Ra(npr),3)))**(TMN(npr,3))* &
-        exp(-Alpha(npr)*((x-cartes(Ra(npr),1))**2.d0+(y-(cartes(Ra(npr),2)))**2.d0+ & 
+   Prim=(x-(cartes(Ra(npr),1)))**(dble(TMN(npr,1)))* &
+        (y-(cartes(Ra(npr),2)))**(dble(TMN(npr,2)))* &
+        (z-(cartes(Ra(npr),3)))**(dble(TMN(npr,3)))* &
+        dexp(-Alpha(npr)*((x-cartes(Ra(npr),1))**2.d0+(y-(cartes(Ra(npr),2)))**2.d0+ & 
                          (z-(cartes(Ra(npr),3)))**2.d0))
               
  end function
@@ -20,7 +20,7 @@
    double precision :: expr
    double precision, intent(in) :: x, y, z,xa,ya,za
    integer, intent(in) :: npr
-   expr=exp(-Alpha(npr)*((x-xa)**2.d0+(y-ya)**2.d0+(z-za)**2.d0))
+   expr=dexp(-Alpha(npr)*((x-xa)**2.d0+(y-ya)**2.d0+(z-za)**2.d0))
    write(*,*) "Expr=-------------", expr
  end function
 
@@ -47,24 +47,24 @@ laply=0.d0
 laplz=0.d0
 sd=0.d0
 
-t=TMN(npr,1)
-m=TMN(npr,2)
-n=TMN(npr,3)
+t=dble(TMN(npr,1))
+m=dble(TMN(npr,2))
+n=dble(TMN(npr,3))
 xa=cartes(Ra(npr),1)
 ya=cartes(Ra(npr),2)
 za=cartes(Ra(npr),3)
 
-laplx=(Prim(x,y,z,npr)/(x**t))*(t*(t-1)*x**(t-2) &
-+4*t*(x**(t-1))*Alpha(npr)*(xa-x)+((x**t)*Alpha(npr) &
-*(4*Alpha(npr)*(xa-x)-2)))
+laplx=(Prim(x,y,z,npr)/(x**t))*(t*(t-1.0d0)*x**(t-2.0d0) &
++4.0d0*t*(x**(t-1.0d0))*Alpha(npr)*(xa-x)+((x**t)*Alpha(npr) &
+*(4.0d0*Alpha(npr)*(xa-x)-2.0d0)))
 
-laply=(Prim(x,y,z,npr)/(y**m))*(m*(m-1)*y**(m-2) &
-+4*m*(y**(m-1))*Alpha(npr)*(ya-y)+((y**m)*Alpha(npr) &
-*(4*Alpha(npr)*(ya-y)-2)))
+laply=(Prim(x,y,z,npr)/(y**m))*(m*(m-1.0d0)*y**(m-2.0d0) &
++4.0d0*m*(y**(m-1.0d0))*Alpha(npr)*(ya-y)+((y**m)*Alpha(npr) &
+*(4.0d0*Alpha(npr)*(ya-y)-2.0d0)))
 
-laplz=(Prim(x,y,z,npr)/(z**n))*(n*(n-1)*z**(n-2) &
-+4*n*(z**(n-1))*Alpha(npr)*(za-z)+((z**n)*Alpha(npr) &
-*(4*Alpha(npr)*(za-z)-2)))
+laplz=(Prim(x,y,z,npr)/(z**n))*(n*(n-1.0d0)*z**(n-2.0d0) &
++4.0d0*n*(z**(n-1.0d0))*Alpha(npr)*(za-z)+((z**n)*Alpha(npr) &
+*(4.0d0*Alpha(npr)*(za-z)-2.0d0)))
 
 sd=laplx+laply+laplz
 
@@ -196,7 +196,7 @@ end function
    if ((uhf).or.(opsh)) then
      Dens_a=0.d0
      do i=1,nalfae
-       Dens_a=Dens_a+MO_a(x,y,z,i)**2
+       Dens_a=Dens_a+MO_a(x,y,z,i)**2.0d0
      end do
    else if ((clsh).and.(rhf)) then
       do i=1,noccmo
@@ -217,7 +217,7 @@ end function
    if ((uhf).or.(opsh)) then
      Dens_b=0.d0
      do i=1,nalfae
-       Dens_b=Dens_b+MO_b(x,y,z,i)**2
+       Dens_b=Dens_b+MO_b(x,y,z,i)**2.0d0
      end do
     else if ((clsh).and.(rhf)) then
           do i=1,noccmo
@@ -238,9 +238,9 @@ double precision :: density,h
 
 h=0.0000001d0
 
-spx=(Density(x+h,y,z)+Density(x-h,y,z)-2.d0*Density(x,y,z))/(h**2)
-spy=(Density(x,y+h,z)+Density(x,y-h,z)-2.d0*Density(x,y,z))/(h**2)
-spz=(Density(x,y,z+h)+Density(x,y,z-h)-2.d0*Density(x,y,z))/(h**2)
+spx=(Density(x+h,y,z)+Density(x-h,y,z)-2.d0*Density(x,y,z))/(h**2.0d0)
+spy=(Density(x,y+h,z)+Density(x,y-h,z)-2.d0*Density(x,y,z))/(h**2.0d0)
+spz=(Density(x,y,z+h)+Density(x,y,z-h)-2.d0*Density(x,y,z))/(h**2.0d0)
 
 lapl=spx+spy+spz
 
@@ -284,19 +284,19 @@ integer, intent(in) :: part !1->x, 2->2, 3->z
 integer, intent(in) :: j !number of primitive
 double precision :: ti, m, n, xa, ya, za
 
-  ti=TMN(j,1)
-  m=TMN(j,2)
-  n=TMN(j,3)
+  ti=dble(TMN(j,1))
+  m=dble(TMN(j,2))
+  n=dble(TMN(j,3))
   xa=cartes(Ra(j),1)
   ya=cartes(Ra(j),2)
   za=cartes(Ra(j),3)
 
  if (part.eq.1) then !first partial derivative of prim with respect to x
-   dp=(Prim(x,y,z,j)*(ti*x**(ti-1))/(x**ti))+Prim(x,y,z,j)*2*Alpha(j)*(xa-x)
+   dp=(Prim(x,y,z,j)*(ti*x**(ti-1.0d0))/(x**ti))+Prim(x,y,z,j)*2.0d0*Alpha(j)*(xa-x)
  else if (part.eq.2) then !y
-   dp=(Prim(x,y,z,j)*(m*y**(m-1))/(x**m))+Prim(x,y,z,j)*2*Alpha(j)*(ya-y)
+   dp=(Prim(x,y,z,j)*(m*y**(m-1.0d0))/(y**m))+Prim(x,y,z,j)*2.0d0*Alpha(j)*(ya-y)
  else if (part.eq.3) then !z
-   dp=(Prim(x,y,z,j)*(n*z**(n-1))/(x**n))+Prim(x,y,z,j)*2*Alpha(j)*(za-z)
+   dp=(Prim(x,y,z,j)*(n*z**(n-1.0d0))/(z**n))+Prim(x,y,z,j)*2.0d0*Alpha(j)*(za-z)
  end if   
  
 end function
@@ -309,25 +309,25 @@ double precision :: d2p, prim
 integer, intent(in) :: part !1->x, 2->2, 3->z
 integer, intent(in) :: j !number of primitive
 double precision :: ti, m, n, xa, ya, za
-  ti=TMN(j,1)
-  m=TMN(j,2)
-  n=TMN(j,3)
+  ti=dble(TMN(j,1))
+  m=dble(TMN(j,2))
+  n=dble(TMN(j,3))
   xa=cartes(Ra(j),1)
   ya=cartes(Ra(j),2)
   za=cartes(Ra(j),3)
 
  if (part.eq.1) then !first partial derivative of prim with respect to x
-   d2p=(Prim(x,y,z,j)/(x**ti))*(ti*(ti-1)*x**(ti-2) &
-    +4*ti*(x**(ti-1))*Alpha(j)*(xa-x)+((x**ti)*Alpha(j) &
-    *(4*Alpha(j)*(xa-x)-2)))
+   d2p=(Prim(x,y,z,j)/(x**ti))*(ti*(ti-1.0d0)*x**(ti-2.0d0) &
+    +4.0d0*ti*(x**(ti-1.0d0))*Alpha(j)*(xa-x)+((x**ti)*Alpha(j) &
+    *(4.0d0*Alpha(j)*(xa-x)-2.0d0)))
  else if (part.eq.2) then !y
-   d2p=(Prim(x,y,z,j)/(y**m))*(m*(m-1)*y**(m-2) &
-    +4*m*(y**(m-1))*Alpha(j)*(ya-y)+((y**m)*Alpha(j) &
-    *(4*Alpha(j)*(ya-y)-2)))
+   d2p=(Prim(x,y,z,j)/(y**m))*(m*(m-1.0d0)*y**(m-2.0d0) &
+    +4.0d0*m*(y**(m-1.0d0))*Alpha(j)*(ya-y)+((y**m)*Alpha(j) &
+    *(4.0d0*Alpha(j)*(ya-y)-2.0d0)))
  else if (part.eq.3) then !z
-   d2p=(Prim(x,y,z,j)/(z**n))*(n*(n-1)*z**(n-2) &
-    +4*n*(z**(n-1))*Alpha(j)*(za-z)+((z**n)*Alpha(j) &
-    *(4*Alpha(j)*(za-z)-2)))
+   d2p=(Prim(x,y,z,j)/(z**n))*(n*(n-1.0d0)*z**(n-2.0d0) &
+    +4.0d0*n*(z**(n-1.0d0))*Alpha(j)*(za-z)+((z**n)*Alpha(j) &
+    *(4.0d0*Alpha(j)*(za-z)-2.0d0)))
  end if   
 
 end function

@@ -80,7 +80,7 @@ double precision, allocatable, dimension(:,:) :: fgr, brrg, rrg
 
 integer :: i, ia, ir, sm, smp, sma, smnn, j, k, smr, smpr, ngrid, i1
 integer :: np !number of points
-double precision, parameter :: pi=4.d0*atan(1.d0)
+double precision, parameter :: pi=4.d0*datan(1.d0)
 double precision, parameter :: trsh=1.d-15, trsh2=1.d-16
 double precision :: xs
 !double precision :: a,b
@@ -157,12 +157,12 @@ do i1=1,nquad       !loop over centres
    allocate(theta(nang))
    allocate(phi(nang))
    do i=1,nAng   !compute angles     
-        theta(i)= acos(r_lb(3,i)) 
-        if (sin(theta(i)).ne.0.d0) then
-             xs=r_lb(1,i)/sin(theta(i))
+        theta(i)= dacos(r_lb(3,i)) 
+        if (dsin(theta(i)).ne.0.d0) then
+             xs=r_lb(1,i)/dsin(theta(i))
              if (xs.gt.1.d0) xs=1.d0
              if (xs.lt.-1.d0) xs=-1.d0
-              phi(i)=acos(xs)
+              phi(i)=dacos(xs)
               if (r_lb(2,i).lt.0.d0) phi(i)=-phi(i)
         else
               phi(i)=0.d0
@@ -175,7 +175,7 @@ do i1=1,nquad       !loop over centres
    allocate(radius(nrad))
    
    !compute radial points for the quadrature from 0 to infty or a to b
-   if ((abs(a)+abs(b)).ne.0.d0) then
+   if ((dabs(a)+dabs(b)).ne.0.d0) then
        write(*,*) "radius from a to b"    
        do ir=1,nrad    
           radius(ir)=(b-a)*0.5d0*xl_i(ir)+(a+b)*0.5d0
@@ -193,9 +193,9 @@ do i1=1,nquad       !loop over centres
    do ir=1,nrad
         do ia=1,nAng
                sm=sm+1   !count total grid points    
-               fgr(1,sm)=radius(ir)*cos(phi(ia))*sin(theta(ia))+cent(1,i1)
-               fgr(2,sm)=radius(ir)*sin(phi(ia))*sin(theta(ia))+cent(2,i1)
-               fgr(3,sm)=radius(ir)*cos(theta(ia))+cent(3,i1)
+               fgr(1,sm)=radius(ir)*dcos(phi(ia))*dsin(theta(ia))+cent(1,i1)
+               fgr(2,sm)=radius(ir)*dsin(phi(ia))*dsin(theta(ia))+cent(2,i1)
+               fgr(3,sm)=radius(ir)*dcos(theta(ia))+cent(3,i1)
                !store total grid points (all quadratures)              
                if (fgr(3,sm).ge.0.d0) then
                   smn(i1)=smn(i1)+1 !sum the number of sym reduced points of each quadrature                  

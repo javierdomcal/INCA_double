@@ -1,8 +1,9 @@
 module inputdat
 implicit none
- logical :: readwfx, readlog, cube, primcube, aocube, MOcube, denscube, gradient, laplacian, intracalc
+ logical :: readwfx, readfchk, readlog, cube, primcube, aocube, MOcube, denscube, gradient, laplacian, intracalc
  logical :: c1calc
  character*40 :: wfxfilename
+ character*40 :: fchkfilename
  character*40 :: logfilename
  character*40 :: nameprim
  character*40 :: nameao

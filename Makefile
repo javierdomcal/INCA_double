@@ -34,7 +34,7 @@ roda.exe: $(OBJ)
 
 # Generate dependencies
 deps:
-	python generate_deps.py
+	python3 generate_deps.py
 
 # Clean
 clean:
