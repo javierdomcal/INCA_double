@@ -3,6 +3,8 @@ $wfxfile
 h2o.wfx
 $logfile
 no
+$fchk
+no
 $cubefile
 .false.
 $intracule

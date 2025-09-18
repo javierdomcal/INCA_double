@@ -3,7 +3,7 @@ implicit none
 !Angular+radial quadrature
 double precision, allocatable, dimension(:,:) :: rg, rrrg !grid points for the integral (total, sym+weight)
 integer ::  maxgrid, rrgrid !original and final number of (symmetry and weight reduced) grid points
-double precision, allocatable, dimension(:) :: rweight !weight of rrrg grid points
+double precision, allocatable, dimension(:) :: rweight, rweight_vee !weight of rrrg grid points
 !becke multicenter weight
 
 !Angular quadrature (I(s) vs s)

@@ -1,24 +1,46 @@
 3,6c3,6
-<  Total CPU time   2.30380201    
-<  Grid points computing time   1.88333094    
-<  Primitive quartet loop time  0.420403957    
-<  CPU time for intracule integrations   6.69956207E-05
+<  Total CPU time   2.84948707    
+<  Grid points computing time   8.47689956E-02
+<  Primitive quartet loop time   2.76384115    
+<  CPU time for intracule integrations   8.76903534E-04
 ---
 >  Total CPU time   2.28955984    
 >  Grid points computing time   1.86821806    
 >  Primitive quartet loop time  0.421267033    
 >  CPU time for intracule integrations   7.48634338E-05
 8,11c8,11
-<  Reading .dm2p file-->   1.48379803E-03
-<  1st primitive screening-->  -3.16989422E-03
-<  2nd primitive screening-->   8.62717628E-04
-<  Grid points loop-->  0.413740396    
+<  Reading .dm2p file-->   2.92242318E-03
+<  1st primitive screening-->  -5.07596135E-03
+<  2nd primitive screening-->   1.56135857E-03
+<  Grid points loop-->   2.57432127    
 ---
 >  Reading .dm2p file-->   1.49703026E-03
 >  1st primitive screening-->  -3.08823586E-03
 >  2nd primitive screening-->   8.71300697E-04
 >  Grid points loop-->  0.414582610    
-26c26
-<            1 :::   6.6546460048398603E-310   6.6546460048398603E-310   0.0000000000000000     
+14,16c14,16
+<  Original grid points           0
+<  Symmetry reduced grid points       11761
+<  Total number of reduced grid points           0
 ---
+>  Original grid points        9900
+>  Symmetry reduced grid points        5130
+>  Total number of reduced grid points        5102
+24,26c24,36
+<  RADIAL PLOT, I(S) vs s
+<  Number of distances         192
+<  From   0.0000000000000000      to   12.000000000000000     
+---
+>  --------------RADIAL INTEGRAL----------------
+>  Number of centres           3
 >            1 :::   6.3181451716435533E-310   6.3181451716435533E-310   0.0000000000000000     
+>            2 :::  -5.2139986030049997E-016   0.0000000000000000        8.5151059172900005     
+>            3 :::   5.2139986030049997E-016  -0.0000000000000000       -8.5151059172900005     
+>  Weights for centres   2.0000000000000000        1.0000000000000000        1.0000000000000000     
+>  Alpha parameter   1.0000000000000000        1.0000000000000000        1.0000000000000000     
+>  Gauss-Legendre nodes          30          30          30
+>  Gauss-Lebedev nodes         110         110         110
+>  ---------------------------------------------
+>  ---------------Final result------------------
+>  Intrac_integration=   5.9971536041637288     
+>  Radial_integral error=  -2.8463958362712205E-003

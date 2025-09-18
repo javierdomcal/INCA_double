@@ -3,6 +3,8 @@ $wfxfile
 he2.wfx
 $logfile
 no
+$fchk
+no
 $cubefile
 .false.
 $intracule

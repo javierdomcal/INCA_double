@@ -68,10 +68,10 @@ double precision, allocatable, dimension(:) :: Wlb
 double precision, allocatable, dimension(:) :: theta, phi
 !2-legendre quadrature
 integer :: nrad
-double precision, allocatable, dimension(:) :: xl_i, wl_i
+double precision, allocatable, dimension(:) :: xl_i, wl_i, wl2_i
 double precision, allocatable, dimension(:) :: radius !variable change from 0 to infty
 !Legendre+Lebedev combination
-double precision, allocatable, dimension(:) :: weight, srweight !total weight for each point (before neglecting points)
+double precision, allocatable, dimension(:) :: weight, weight_vee, srweight, srweight_vee !total weight for each point (before neglecting points)
 !3-becke vi
 double precision, allocatable, dimension(:) :: w_beck
 !-starting grid points 
@@ -96,6 +96,7 @@ maxgrid=np
 
 write(*,*) "Error?"
 allocate(weight(np))
+allocate(weight_vee(np))
 allocate(fgr(3,np)) !first grid points
 allocate(brrg(3,np))
 allocate(smn(nquad)) !counts number of grid points per quadrature
@@ -175,16 +176,19 @@ do i1=1,nquad       !loop over centres
    allocate(radius(nrad))
    
    !compute radial points for the quadrature from 0 to infty or a to b
+   allocate(wl2_i(nrad))  
    if ((dabs(a)+dabs(b)).ne.0.d0) then
-       write(*,*) "radius from a to b"    
-       do ir=1,nrad    
+        write(*,*) "radius from a to b"    
+        do ir=1,nrad    
           radius(ir)=(b-a)*0.5d0*xl_i(ir)+(a+b)*0.5d0
-          wl_i(ir)=(b-a)*0.5d0*wl_i(ir) !radial integration (see pdf) 
-       end do   
+          wl_i(ir)=(b-a)*0.5d0*wl_i(ir)*radius(ir)**2.d0 !radial integration
+          wl2_i(ir)=(b-a)*0.5d0*wl_i(ir)*radius(ir)   ! for Vee
+        end do   
    else
-       do ir=1,nrad    
+        do ir=1,nrad    
           radius(ir)=(1.d0+xl_i(ir))/(1.d0-xl_i(ir))*sfalpha(i1) 
-          wl_i(ir)=(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)**2.d0    
+          wl_i(ir)=(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)**2.d0 !for I(r)
+          wl2_i(ir)=(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)   ! for Vee
         end do   
    end if  
    
@@ -220,8 +224,10 @@ do i1=1,nquad       !loop over centres
               brrg(:,smr)=fgr(:,sm)   !store sym reduced points
               if (fgr(3,sm).lt.trsh) then    !z is 0, do not multiply by 2
                    weight(smr)=Wlb(k)*Wl_i(j)
+                   weight_vee(smr)=Wlb(k)*wl2_i(j) !for Vee
               else
                    weight(smr)=2.d0*Wlb(k)*Wl_i(j) !z is positive, use sym (I(z)=I(-z))
+                   weight_vee(smr)=2.d0*Wlb(k)*wl2_i(j) !for Vee
               end if
           else if (fgr(3,sm).lt.0.d0) then 
               !sym neglected point    
@@ -241,6 +247,7 @@ do i1=1,nquad       !loop over centres
    deallocate(Wlb)
    deallocate(xl_i)
    deallocate(wl_i)
+   deallocate(wl2_i)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 end do !end loop over quadratures
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -259,13 +266,15 @@ close(3)
 
 allocate(rrg(3,rgrid))
 allocate(srweight(rgrid))
+allocate(srweight_vee(rgrid))
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sm=0
 do i=1,nquad                   !store the sym reduced points in a smaller matrix 
  do j=1,smn(i)
-   sm=sm+1
-   rrg(:,sm)=brrg(:,sm)
-   srweight(sm)=weight(sm)
+    sm=sm+1
+    rrg(:,sm)=brrg(:,sm)
+    srweight(sm)=weight(sm)
+    srweight_vee(sm)=weight_vee(sm) !for Vee
  end do  
 end do 
 
@@ -299,6 +308,7 @@ write(*,*) sma, "neglected points of zero weight"
 write(*,*) sm, "neglected points of zero weight"
 
 allocate(rweight(rrgrid)) !reduced weight
+allocate(rweight_vee(rrgrid)) !for Vee
 allocate(rrrg(3,rrgrid))  !doubly reduced points
 sm=0
 write(*,*) "Final number of grid points=", rrgrid
@@ -306,6 +316,7 @@ do i=1,rgrid
      if ((srweight(i).gt.trsh2)) then !remove points with low (zero) weight
            sm=sm+1 
            rweight(sm)=srweight(i) 
+           rweight_vee(sm)=srweight_vee(i) !for Vee
            rrrg(:,sm)=rrg(:,i)           
      end if
 end do
@@ -317,6 +328,7 @@ end do
 close(3)
 
 deallocate(weight)
+deallocate(weight_vee)
 deallocate(rrg)
 close(4)
 end subroutine 
