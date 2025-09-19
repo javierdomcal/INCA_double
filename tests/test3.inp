@@ -3,20 +3,16 @@ $wfxfile
 he2.wfx
 $logfile
 no
-$fchk
+$fchkfile
 no
-$cubefile
-.false.
 $intracule
 intrac
-$HFhole
-.false.
 $Threshold (Tau)
 1.d-8
 $DM2
 he2.dm2p
 10 10
-he2.out
+he2_radial_plot.out
 $radial_integral
 .false.
 .false.    !different nodes
@@ -28,4 +24,5 @@ he2.rad
 5 12 0.05  110
 $Vectorial_plot
 .false.
-
+$Vee
+.false.

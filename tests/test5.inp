@@ -1,18 +1,18 @@
 h2o_input_total_integral
 $wfxfile
-h2o.wfx
-$logfile
 no
 $fchkfile
+h3.fchk
+$logfile
 no
 $intracule
 intrac
 $Threshold (Tau)
 1.d-8
 $DM2
-h2o.dm2p
+h3.dm2p
 10 10
-water.out
+h3.out
 $radial_integral
 .true.
 .true.    !different nodes
@@ -28,7 +28,7 @@ $Gauss-Lebedev
 110 110 110 110 110 110 110
 $radial_plot
 .false.
-water.rad
+he2.rad
 $Vectorial_plot
 .false.
 $Vee

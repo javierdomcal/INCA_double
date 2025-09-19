@@ -237,12 +237,17 @@ intracule_zero=0.d0
                                     else
                                         V_x=V_x+C_x(iii) !when pot is 0
                                     end if
+                            end do
+                            do iii=1,Lrtot(2)+1   !Ltot+1 is the number of coefficients we have               
                                     if (dble(pot_y).gt.1.d-16) then     
                                         V_y=V_y+C_y(iii)*rp(2)**(pot_y)
                                         pot_y=pot_y-1.d0
                                     else
                                         V_y=V_y+C_y(iii) !when pot is 0
                                     end if
+                            end do 
+                                
+                            do iii=1,Lrtot(3)+1   !Ltot+1 is the number of coefficients we have
                                     if (dble(pot_z).gt.1.d-16) then
                                         V_z=V_z+C_z(iii)*rp(3)**(pot_z)
                                         pot_z=pot_z-1.d0

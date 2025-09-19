@@ -3,20 +3,16 @@ $wfxfile
 h2o.wfx
 $logfile
 no
-$fchk
+$fchkfile
 no
-$cubefile
-.false.
 $intracule
 intrac
-$HFhole
-.false.
 $Threshold (Tau)
 1.d-8
 $DM2
 h2o.dm2p
 10 10
-water.out
+water_radial_plot.out
 $radial_integral
 .false.
 .false.    !different nodes
@@ -28,4 +24,5 @@ water.rad
 2 6 0.1  110
 $Vectorial_plot
 .false.
-
+$Vee
+.false.

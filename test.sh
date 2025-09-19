@@ -41,6 +41,23 @@ echo "################Test-4####################"
 # You can use `diff                               
 diff water.rad expected_water.rad >> out
 
+#------------------test-5------------------------------#
+#-----------Total integral of H3 (from fchk)-----------# 
+echo "################Test-4####################"       
+../roda.exe test5.inp > output5.log
+# Compare the output with expected results
+# You can use `diff                               
+diff h3.out expected_h3.out >> out
+
+#------------------test-6------------------------------#
+#-----------Total integral of Li (from fchk)-----------# 
+echo "################Test-4####################"       
+../roda.exe test6.inp > output6.log
+# Compare the output with expected results
+# You can use `diff                               
+diff Li.out expected_Li.out >> out
+
+
 #----------------Add open shell molecules!!!!----------#
 cat out
 

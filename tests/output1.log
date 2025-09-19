@@ -1,1 +1,40 @@
- ERROR: Section not found -> $fchkfile
+ Closed shell RHF
+ Computing centers automatically
+ nquad computed =           3
+ yeehaw
+ readed intra info
+ Error?
+ Error2=
+ nrad=,nang=          30         110
+ Total number of gp after center           1 =        3300        3300
+        1470 Points will be neglected in center           1
+ *********Neglecting points by symmetry*******************
+ zeta zero center
+        1470 points have been neglected in center number           1
+ Total number of gp after center           1 =        3300
+ Total number of reduced gp after center           1 =        1830
+ nrad=,nang=          30         110
+ Total number of gp after center           2 =        6600        3300
+         222 Points will be neglected in center           2
+ *********Neglecting points by symmetry*******************
+ zeta zero center
+         222 points have been neglected in center number           2
+ Total number of gp after center           2 =        6600
+ Total number of reduced gp after center           2 =        4908
+ nrad=,nang=          30         110
+ Total number of gp after center           3 =        9900        3300
+        3078 Points will be neglected in center           3
+ *********Neglecting points by symmetry*******************
+ zeta zero center
+        3078 points have been neglected in center number           3
+ Total number of gp after center           3 =        9900
+ Total number of reduced gp after center           3 =        5130
+ There are        5130 symmetry reduced grid points
+ number of points per centre        1830        3078         222
+          22 neglected points of zero weight
+          28 neglected points of zero weight
+ Final number of grid points=        5102
+ starting loop for primitives
+ Loop over        5102 grid points
+ Ended loop for primitives
+ intracule computed succesfully

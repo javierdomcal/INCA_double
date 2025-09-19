@@ -1,1 +1,24 @@
- ERROR: Section not found -> $fchkfile
+ Correlated wavefunction
+ UNRELAXED DENSITY (closed shell)
+ Computing centers automatically
+ nquad computed =           1
+ yeehaw
+ readed intra info
+ Error?
+ Error2=
+ nrad=,nang=          30         110
+ Total number of gp after center           1 =        3300        3300
+        1470 Points will be neglected in center           1
+ *********Neglecting points by symmetry*******************
+ zeta zero center
+        1470 points have been neglected in center number           1
+ Total number of gp after center           1 =        3300
+ Total number of reduced gp after center           1 =        1830
+ There are        1830 symmetry reduced grid points
+           0 neglected points of zero weight
+        1830 neglected points of zero weight
+ Final number of grid points=        1830
+ starting loop for primitives
+ Loop over        1830 grid points
+ Ended loop for primitives
+ intracule computed succesfully

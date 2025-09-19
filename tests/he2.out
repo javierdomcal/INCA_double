@@ -1,19 +1,19 @@
  *******Job Finished************
  -----------Computational time----------------
- Total CPU time   2.84948707    
- Grid points computing time   8.47689956E-02
- Primitive quartet loop time   2.76384115    
- CPU time for intracule integrations   8.76903534E-04
+ Total CPU time   2.3859309999999998     
+ Grid points computing time   1.7084750000000000     
+ Primitive quartet loop time  0.67736200000000002     
+ CPU time for intracule integrations   9.3999999999816453E-005
  ---Primitive quartet time analysis-----------
- Reading .dm2p file-->   2.92242318E-03
- 1st primitive screening-->  -5.07596135E-03
- 2nd primitive screening-->   1.56135857E-03
- Grid points loop-->   2.57432127    
+ Reading .dm2p file-->   2.5409999999985722E-003
+ 1st primitive screening-->  -6.0429999999909167E-003
+ 2nd primitive screening-->   2.0720000000000738E-003
+ Grid points loop-->  0.66449699999999501     
  ---------------------------------------------
  ------Grid point + primitive quartet info----
- Original grid points           0
- Symmetry reduced grid points       11761
- Total number of reduced grid points           0
+ Original grid points        9900
+ Symmetry reduced grid points        5130
+ Total number of reduced grid points        5102
  ---------------------------------------------
  --------------Accuracy check-----------------
  Sum of all DM2prim terms=   14.568082367977475        17.352773362142422     
@@ -21,6 +21,18 @@
  Threshold used for screenings(Tau)=   1.0000000000000000E-008
  Computed limit for the screenings   2.7777777777777777E-010
  ---------------------------------------------
- RADIAL PLOT, I(S) vs s
- Number of distances         192
- From   0.0000000000000000      to   12.000000000000000     
+ --------------RADIAL INTEGRAL----------------
+ Number of centres           3
+           1 :::   6.7519658324100236E-310   6.7519658324100236E-310   0.0000000000000000     
+           2 :::  -5.2139986030049997E-016   0.0000000000000000        8.5151059172900005     
+           3 :::   5.2139986030049997E-016  -0.0000000000000000       -8.5151059172900005     
+ Weights for centres   2.0000000000000000        1.0000000000000000        1.0000000000000000     
+ Alpha parameter   1.0000000000000000        1.0000000000000000        1.0000000000000000     
+ Gauss-Legendre nodes          30          30          30
+ Gauss-Lebedev nodes         110         110         110
+ ---------------------------------------------
+INTRACULE AT ZERO =    7.6015809906776610E-01
+TOTAL VALUE OF INTRACULE =    5.9971536041637288E+00
+TOTAL VALUE OF Vee =    1.5932145952614007E+03
+TOTAL Energy =    0.0000000000000000E+00
+ Radial_integral error=  -2.8463958362712205E-003
