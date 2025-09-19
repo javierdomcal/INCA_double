@@ -1,5 +1,6 @@
  Correlated wavefunction
  UNRELAXED DENSITY (closed shell)
+ yeehaw
  readed intra info
            2
            1   0.0000000000000000     
@@ -85,9 +86,9 @@
           81   5.9000000000000004     
           82   6.0000000000000000     
  Original number of grid points        9020
- Number of grid points after I(r)=I(-r)        5051
- Number of grid points per radi         110          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61          61
+ Number of grid points after I(r)=I(-r)        9020
+ Number of grid points per radi         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110         110
  starting loop for primitives
- Loop over        5051 grid points
+ Loop over        9020 grid points
  Ended loop for primitives
  intracule computed succesfully

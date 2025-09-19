@@ -1,14 +1,14 @@
  *******Job Finished************
  -----------Computational time----------------
- Total CPU time   15.869275999999999     
- Grid points computing time  0.49424000000000001     
- Primitive quartet loop time   15.375013000000001     
+ Total CPU time   17.332705000000001     
+ Grid points computing time  0.50665099999999996     
+ Primitive quartet loop time   16.826031000000000     
  CPU time for intracule integrations   2.2999999998774001E-005
  ---Primitive quartet time analysis-----------
- Reading .dm2p file-->   4.1733000000030329E-002
- 1st primitive screening-->  -8.3556000000037267E-002
- 2nd primitive screening-->  0.15368999999991728     
- Grid points loop-->   15.064571000000100     
+ Reading .dm2p file-->   4.6713999999802081E-002
+ 1st primitive screening-->  -9.4324000000114205E-002
+ 2nd primitive screening-->  0.17882499999998192     
+ Grid points loop-->   16.472286000000061     
  ---------------------------------------------
  ------Grid point + primitive quartet info----
  Original grid points        3300
@@ -16,21 +16,21 @@
  Total number of reduced grid points        1830
  ---------------------------------------------
  --------------Accuracy check-----------------
- Sum of all DM2prim terms=   33.703058128264622        23693.806767268470     
+ Sum of all DM2prim terms=   5.7264049838221975       0.46199331805897381     
  Thresholds used for DM2prim   10.000000000000000        10.000000000000000     
  Threshold used for screenings(Tau)=   1.0000000000000000E-008
  Computed limit for the screenings   4.3290043290043294E-011
  ---------------------------------------------
  --------------RADIAL INTEGRAL----------------
  Number of centres           1
-           1 :::   5.3135687412225787E-310   0.0000000000000000        0.0000000000000000     
+           1 :::   5.2004991435379496E-310   0.0000000000000000        0.0000000000000000     
  Weights for centres   2.0000000000000000     
  Alpha parameter   1.0000000000000000     
  Gauss-Legendre nodes          30
  Gauss-Lebedev nodes         110
  ---------------------------------------------
-INTRACULE AT ZERO =    3.9655076860149386E+01
-TOTAL VALUE OF INTRACULE =    4.4994430172630750E+01
-TOTAL VALUE OF Vee =    4.4124713877932953E+02
-TOTAL Energy =    0.0000000000000000E+00
- Radial_integral error=  -5.5698273692499356E-003
+INTRACULE AT ZERO =    6.6029797598995701E-02
+TOTAL VALUE OF INTRACULE =    2.9999856281171748E+00
+TOTAL VALUE OF Vee =    7.2717013445312546E+01
+TOTAL Energy =   -1.5290074739307780E+00
+ Radial_integral error=  -1.4371882825159332E-005

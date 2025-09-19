@@ -13,7 +13,7 @@ logical, intent(in) :: normalize_dm2p
 integer :: kk1, kk2 !integers we do not want to read from .dm2
 integer :: dfact    !double factorial
 integer :: ii,iii,sum, ig, ir, summ, np, sm, smm !some integers
-double precision :: pot 
+double precision :: pot, pot_x, pot_y, pot_z !power for the polynomial V 
 double precision :: R_i_k_2, R_j_l_2  !R_ik=(R_i-R_k)^2
 double precision :: Aa_ijkl !grid independent part of the intracule
 double precision :: n_prim_i, n_prim_j,n_prim_k, n_prim_l !normalization of primitives for DM2
@@ -95,7 +95,7 @@ Tread=0.d0
 T1screen=0.d0
 T2screen=0.d0
 Tgrid=0.d0
-
+intracule_zero=0.d0
  do while (.true.)  !loop for primitive quartets.
  
           call cpu_time(TT1)
@@ -190,8 +190,7 @@ Tgrid=0.d0
                             if (ii.eq.2) U_y=U_y+C_y(iii)*w_m(iii)  !for second integral screening
                             if (ii.eq.3) U_z=U_z+C_z(iii)*w_m(iii)  !eq.43 of the paper  
                         end do
-                 end do
-                                  
+                 end do                 
                  !!!!!!!!!!2nd Integral Screening!!!!!!!!!!!!!!!!!!!!!                      
                  screen2=dabs(Aa_ijkl*U_x*U_y*U_z) !eqn.40
                  call CPU_time(TT4)
@@ -223,6 +222,41 @@ Tgrid=0.d0
                                    I_vec(ig)=I_vec(ig)+Aa_ijkl*dexp(-(rp(1)**2.d0+rp(2)**2.d0+rp(3)**2.d0))*V_x*V_y*V_z
                                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                                  
                             end do       !End loop over grid points
+                            !compute intracule at 0,0,0
+                            V_x=0.d0; V_y=0.d0; V_z=0.d0
+                            rp(1)=sqe*(0.d0+r_ik(1)-r_jl(1))   !compute R'(eq. 19), at 0,0,0
+                            rp(2)=sqe*(0.d0+r_ik(2)-r_jl(2))
+                            rp(3)=sqe*(0.d0+r_ik(3)-r_jl(3))
+                            pot_x=dble(Lrtot(1))
+                            pot_y=dble(Lrtot(2))    
+                            pot_z=dble(Lrtot(3))
+                            do iii=1,Lrtot(1)+1   !Ltot+1 is the number of coefficients we have
+                                    if (dble(pot_x).gt.1.d-16) then
+                                        V_x=V_x+C_x(iii)*rp(1)**(pot_x)
+                                        pot_x=pot_x-1.d0
+                                    else
+                                        V_x=V_x+C_x(iii) !when pot is 0
+                                    end if
+                            end do
+                            do iii=1,Lrtot(2)+1   !Ltot+1 is the number of coefficients we have               
+                                    if (dble(pot_y).gt.1.d-16) then     
+                                        V_y=V_y+C_y(iii)*rp(2)**(pot_y)
+                                        pot_y=pot_y-1.d0
+                                    else
+                                        V_y=V_y+C_y(iii) !when pot is 0
+                                    end if
+                            end do 
+                                
+                            do iii=1,Lrtot(3)+1   !Ltot+1 is the number of coefficients we have
+                                    if (dble(pot_z).gt.1.d-16) then
+                                        V_z=V_z+C_z(iii)*rp(3)**(pot_z)
+                                        pot_z=pot_z-1.d0
+                                   else
+                                        V_z=V_z+C_z(iii) !when pot is 0
+                                   end if 
+                            end do  !end loop over the polynomial coefficients
+                            intracule_zero=intracule_zero+Aa_ijkl*dexp(-(rp(1)**2.d0+rp(2)**2.d0+rp(3)**2.d0))*V_x*V_y*V_z
+
                             call CPU_time(TT5)
                             Tgrid=Tgrid+(TT5-TT4)
                  else                     
@@ -314,11 +348,14 @@ if (vee_flag) then        ! compute radial intracule
       close(3)
 end if 
 if (radial_integral) then !integral of the intracule
-     r_integral=0.d0
+     r_integral=0.d0 
+     vee=0.d0
      do i=1,rrgrid
          r_integral=r_integral+rweight(i)*I_vec(i)
+         vee=vee+rweight_vee(i)*I_vec(i)
      end do 
      deallocate(rweight)
+
  end if
  if (cubeintra) then
          open(unit=3, file=cubeintraname)
@@ -375,8 +412,10 @@ if (radial_integral) then !integral of the intracule
     write(3,*) "Gauss-Legendre nodes", nradc(:)
     write(3,*) "Gauss-Lebedev nodes", nangc(:)
     write(3,*) "---------------------------------------------"
-    write(3,*) "---------------Final result------------------"
-    write(3,*) "Intrac_integration=", r_integral
+    write(3, '(A, ES25.16)') 'INTRACULE AT ZERO = ', intracule_zero
+    write(3, '(A, ES25.16)') 'TOTAL VALUE OF INTRACULE = ', r_integral
+    write(3, '(A, ES25.16)') 'TOTAL VALUE OF Vee = ', vee
+    write(3, '(A, ES25.16)') 'TOTAL Energy = ', toteng
     npairs=(nelec)*(nelec-1)/2
     write(3,*) "Radial_integral error=", r_integral-dble(npairs)
  else if (radial_plot) then

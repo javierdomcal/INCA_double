@@ -22,26 +22,21 @@ if (cube) then
       a=1
       call cubefile(a,nameprim) !Generate cubefile with a Primitive
   end if
-
   if (aocube) then 
       a=2
       call cubefile(a,nameao)  !Generate cubefile with AO
   end if
-
   if (mocube) then 
       a=3
       call cubefile(a,namemo) !Generate cubefile with a MO 
   end if  
-
   if (denscube) then
       a=5
       call cubefile(a,namedens) !Generate cubefile with density from MO
   end if
-
   !if (gradient) then 
   !  call gradient(0,0,0,gradx,grady,gradz) !not impletented
   !end if
-
   if (laplacian) then 
      a=6     
      call cubefile(a,namelap) !generate a cubefile with laplacian
@@ -111,67 +106,47 @@ call locate(3,"$logfile")
 
  rewind 3
 
- call locate(3,"$cubefile")
- read(3,*) cube
- if (cube) then 
-   read(3,*) (center(i), i=1,3) !cube centered in (x,y,z)
-   read(3,*) (step(i), i=1,3) !distance between points in the axis
-   read(3,*) (np(i), i=1,3) !number of points for each axis
-  
-   rewind 3
-
-   call locate(3,"$primitive")
-   read(3,*) nameprim
-   if (nameprim.ne.'no') primcube=.true.
-   read(3,*) npr !number of primitive we want to print
-
-   rewind 3
-
-   if (readlog) then    
-      call locate(3,"$AO")
-      read(3,*) nameao
-   if (nameao.ne.'no') aocube=.true. 
-      read(3,*) cao  !number of ao we want to print
-   end if 
-
-   rewind 3
-
-   call locate(3,"$MO")
-   read(3,*) namemo
-   if (namemo.ne.'no') MOcube=.true.    
-   read(3,*) mo  !number of MO we want to print
-
-   rewind 3
-
-   call locate(3,"$density")
-   read(3,*) namedens 
-   if (namedens.ne.'no') denscube=.true.
-       
-   rewind 3
-
-   call locate(3,"$gradient")
-   read(3,*) namegrad
-   if (namegrad.ne.'no') gradient=.true.
-
-   rewind 3
-
-   call locate(3,"$laplacian")
-   read(3,*) namelap
-   if (namelap.ne.'no') laplacian=.true.
- 
-   rewind(3)
-   close(3)
-   
+ if (located(3,"$cubefile")) then
+    read(3,*) (center(i), i=1,3) !cube centered in (x,y,z)
+    read(3,*) (step(i), i=1,3) !distance between points in the axis
+    read(3,*) (np(i), i=1,3) !number of points for each axis
+    rewind 3
+      ! --- Cubefile printing options ---
+    if (located(3,"$density")) then
+        denscube = .true.
+    end if
+    if (located(3,"$primitive")) then
+         primcube = .true.
+         read(3,*) npr
+    end if     
+    rewind(3)
+    if (readlog .and. located(3,"$AO")) then
+         aocube = .true.
+         read(3,*) cao
+    end if 
+    rewind(3)
+    if (located(3,"$MO")) then
+         MOcube = .true.
+         read(3,*) mo
+    end if     
+    rewind(3)     
+    if (located(3,"$gradient")) then
+         gradient = .true.
+    end if 
+    rewind(3)     
+    if (located(3,"$laplacian")) then
+        laplacian = .true.
+    end if
  end if
  
- call locate(3,"$intracule")
- read(3,*) nameint
- if (nameint.ne.'no') then
+ if (located(3,"$intracule")) then
         intracalc=.true.
  end if
+ 
+ if (located(3,"$HFhole")) then
+        c1calc=.true.
+ end if
 
- call locate(3,"$HFhole")
- read(3,*) c1calc
 end subroutine readinput 
 
 

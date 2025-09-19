@@ -1,3 +1,43 @@
+make[1]: Entering directory '/home/markelgtx/Desktop/INCA_develop/INCA_github/INCA_double'
+rm -f obj/*.o obj/*.mod roda.exe test.log
+make[1]: Leaving directory '/home/markelgtx/Desktop/INCA_develop/INCA_github/INCA_double'
+make[1]: Entering directory '/home/markelgtx/Desktop/INCA_develop/INCA_github/INCA_double'
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_geninfo.f90 -o obj/mod_geninfo.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_wfxinfo.f90 -o obj/mod_wfxinfo.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/derive.f90 -o obj/derive.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_quadratures.f90 -o obj/mod_quadratures.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/gridpoints.f90 -o obj/gridpoints.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_intrainfo.f90 -o obj/mod_intrainfo.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/autocalc.f90 -o obj/autocalc.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_radis.f90 -o obj/mod_radis.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/centercalc.f90 -o obj/centercalc.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_locatemod.f90 -o obj/mod_locatemod.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_loginfo.f90 -o obj/mod_loginfo.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/read_files.f90 -o obj/read_files.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/gaussleg.f90 -o obj/gaussleg.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_fractions.f90 -o obj/mod_fractions.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/c1hole.f90 -o obj/c1hole.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_intrastuff.f90 -o obj/mod_intrastuff.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/intracule.f90 -o obj/intracule.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/pdint.f90 -o obj/pdint.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/gridpoints2.f90 -o obj/gridpoints2.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/gauss_hermite.f90 -o obj/gauss_hermite.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_cubeinfo.f90 -o obj/mod_cubeinfo.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/gen_cube.f90 -o obj/gen_cube.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/becke.f90 -o obj/becke.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_inputdat.f90 -o obj/mod_inputdat.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/roda.f90 -o obj/roda.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/functions.f90 -o obj/functions.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/gridpoints3.f90 -o obj/gridpoints3.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/lebedev.f -o obj/lebedev.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -o roda.exe obj/mod_loginfo.o obj/roda.o obj/derive.o obj/autocalc.o obj/centercalc.o obj/mod_quadratures.o obj/gridpoints2.o obj/mod_geninfo.o obj/mod_locatemod.o obj/mod_radis.o obj/intracule.o obj/gen_cube.o obj/mod_intrainfo.o obj/mod_intrastuff.o obj/pdint.o obj/mod_cubeinfo.o obj/read_files.o obj/mod_fractions.o obj/functions.o obj/mod_wfxinfo.o obj/c1hole.o obj/gridpoints.o obj/gauss_hermite.o obj/becke.o obj/mod_inputdat.o obj/gridpoints3.o obj/gaussleg.o obj/lebedev.o -llapack -lblas
+make[1]: Leaving directory '/home/markelgtx/Desktop/INCA_develop/INCA_github/INCA_double'
+################Test-1####################
+################Test-2####################
+################Test-3####################
+################Test-4####################
+################Test-4####################
+################Test-4####################
 3,6c3,6
 <  Total CPU time   2.3859309999999998     
 <  Grid points computing time   1.7084750000000000     
@@ -582,3 +622,4 @@
 >       0.580000000000E+01       0.547392460906E-01
 >       0.590000000000E+01       0.449685187361E-01
 >       0.600000000000E+01       0.368728970272E-01
+All tests passed.
