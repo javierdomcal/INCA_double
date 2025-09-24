@@ -44,25 +44,24 @@
            1           1           0  0.20000000000000012                1           8
            1           0           1  0.20000000000000012                1           9
            0           1           1  0.20000000000000012                1          10
- Computing centers automatically
- nquad computed =           1
- yeehaw
+ Using default value of 590 points for angular integration
  readed intra info
+ We are in subroutine gridpoints
  Error?
  Error2=
- nrad=,nang=          30         110
- Total number of gp after center           1 =        3300        3300
-        1470 Points will be neglected in center           1
+ nrad=,nang=          50         590
+ Total number of gp after center           1 =       29500       29500
+       14050 Points will be neglected in center           1
  *********Neglecting points by symmetry*******************
  zeta zero center
-        1470 points have been neglected in center number           1
- Total number of gp after center           1 =        3300
- Total number of reduced gp after center           1 =        1830
- There are        1830 symmetry reduced grid points
+       14050 points have been neglected in center number           1
+ Total number of gp after center           1 =       29500
+ Total number of reduced gp after center           1 =       15450
+ There are       15450 symmetry reduced grid points
            0 neglected points of zero weight
-        1830 neglected points of zero weight
- Final number of grid points=        1830
+       15450 neglected points of zero weight
+ Final number of grid points=       15450
  starting loop for primitives
- Loop over        1830 grid points
+ Loop over       15450 grid points
  Ended loop for primitives
  intracule computed succesfully

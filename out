@@ -7,9 +7,8 @@ gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsur
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/derive.f90 -o obj/derive.o
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_quadratures.f90 -o obj/mod_quadratures.o
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/gridpoints.f90 -o obj/gridpoints.o
-gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_intrainfo.f90 -o obj/mod_intrainfo.o
-gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/autocalc.f90 -o obj/autocalc.o
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_radis.f90 -o obj/mod_radis.o
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_intrainfo.f90 -o obj/mod_intrainfo.o
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/centercalc.f90 -o obj/centercalc.o
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_locatemod.f90 -o obj/mod_locatemod.o
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/mod_loginfo.f90 -o obj/mod_loginfo.o
@@ -30,7 +29,7 @@ gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsur
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/functions.f90 -o obj/functions.o
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/gridpoints3.f90 -o obj/gridpoints3.o
 gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -Iobj -c src/lebedev.f -o obj/lebedev.o
-gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -o roda.exe obj/mod_loginfo.o obj/roda.o obj/derive.o obj/autocalc.o obj/centercalc.o obj/mod_quadratures.o obj/gridpoints2.o obj/mod_geninfo.o obj/mod_locatemod.o obj/mod_radis.o obj/intracule.o obj/gen_cube.o obj/mod_intrainfo.o obj/mod_intrastuff.o obj/pdint.o obj/mod_cubeinfo.o obj/read_files.o obj/mod_fractions.o obj/functions.o obj/mod_wfxinfo.o obj/c1hole.o obj/gridpoints.o obj/gauss_hermite.o obj/becke.o obj/mod_inputdat.o obj/gridpoints3.o obj/gaussleg.o obj/lebedev.o -llapack -lblas
+gfortran -Wall -g -msse4.2 -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Jobj     -o roda.exe obj/mod_loginfo.o obj/roda.o obj/c1hole.o obj/derive.o obj/centercalc.o obj/mod_quadratures.o obj/gridpoints2.o obj/mod_geninfo.o obj/mod_locatemod.o obj/mod_radis.o obj/gen_cube.o obj/mod_intrainfo.o obj/mod_intrastuff.o obj/pdint.o obj/mod_cubeinfo.o obj/read_files.o obj/mod_fractions.o obj/functions.o obj/mod_wfxinfo.o obj/gridpoints.o obj/gauss_hermite.o obj/becke.o obj/mod_inputdat.o obj/gridpoints3.o obj/intracule.o obj/gaussleg.o obj/lebedev.o -llapack -lblas
 make[1]: Leaving directory '/home/markelgtx/Desktop/INCA_develop/INCA_github/INCA_double'
 ################Test-1####################
 ################Test-2####################
@@ -39,37 +38,59 @@ make[1]: Leaving directory '/home/markelgtx/Desktop/INCA_develop/INCA_github/INC
 ################Test-4####################
 ################Test-4####################
 3,6c3,6
-<  Total CPU time   2.3859309999999998     
-<  Grid points computing time   1.7084750000000000     
-<  Primitive quartet loop time  0.67736200000000002     
-<  CPU time for intracule integrations   9.3999999999816453E-005
+<  Total CPU time   3.3272129999999995     
+<  Grid points computing time   2.0986529999999997     
+<  Primitive quartet loop time   1.2283830000000000     
+<  CPU time for intracule integrations   1.7699999999987170E-004
 ---
 >  Total CPU time   2.28955984    
 >  Grid points computing time   1.86821806    
 >  Primitive quartet loop time  0.421267033    
 >  CPU time for intracule integrations   7.48634338E-05
 8,11c8,11
-<  Reading .dm2p file-->   2.5409999999985722E-003
-<  1st primitive screening-->  -6.0429999999909167E-003
-<  2nd primitive screening-->   2.0720000000000738E-003
-<  Grid points loop-->  0.66449699999999501     
+<  Reading .dm2p file-->   1.4849999999957397E-003
+<  1st primitive screening-->  -3.0549999999993638E-003
+<  2nd primitive screening-->   8.9800000000517244E-004
+<  Grid points loop-->   1.2218099999999996     
 ---
 >  Reading .dm2p file-->   1.49703026E-03
 >  1st primitive screening-->  -3.08823586E-03
 >  2nd primitive screening-->   8.71300697E-04
 >  Grid points loop-->  0.414582610    
-26c26
-<            1 :::   6.7519658324100236E-310   6.7519658324100236E-310   0.0000000000000000     
+14,16c14,16
+<  Original grid points       29500
+<  Symmetry reduced grid points       15450
+<  Total number of reduced grid points       15450
 ---
+>  Original grid points        9900
+>  Symmetry reduced grid points        5130
+>  Total number of reduced grid points        5102
+25,30c25,32
+<  Number of centres           1
+<            1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
+<  Weights for centres   6.8281526874736724E-310
+<  Alpha parameter   1.0000000000000000     
+<  Gauss-Legendre nodes          50
+<  Gauss-Lebedev nodes         590
+---
+>  Number of centres           3
 >            1 :::   6.3181451716435533E-310   6.3181451716435533E-310   0.0000000000000000     
-34,37c34,35
+>            2 :::  -5.2139986030049997E-016   0.0000000000000000        8.5151059172900005     
+>            3 :::   5.2139986030049997E-016  -0.0000000000000000       -8.5151059172900005     
+>  Weights for centres   2.0000000000000000        1.0000000000000000        1.0000000000000000     
+>  Alpha parameter   1.0000000000000000        1.0000000000000000        1.0000000000000000     
+>  Gauss-Legendre nodes          30          30          30
+>  Gauss-Lebedev nodes         110         110         110
+32,36c34,36
 < INTRACULE AT ZERO =    7.6015809906776610E-01
-< TOTAL VALUE OF INTRACULE =    5.9971536041637288E+00
-< TOTAL VALUE OF Vee =    1.5932145952614007E+03
+< TOTAL VALUE OF INTRACULE =    6.0518412864806486E+00
+< TOTAL VALUE OF Vee =    1.6066763450424155E+03
 < TOTAL Energy =    0.0000000000000000E+00
+<  Radial_integral error=   5.1841286480648563E-002
 ---
 >  ---------------Final result------------------
 >  Intrac_integration=   5.9971536041637288     
+>  Radial_integral error=  -2.8463958362712205E-003
 1,192c1,192
 < 0.0000    0.3800790495338833D+00
 < 0.1000    0.3720223999089627D+00
@@ -622,4 +643,104 @@ make[1]: Leaving directory '/home/markelgtx/Desktop/INCA_develop/INCA_github/INC
 >       0.580000000000E+01       0.547392460906E-01
 >       0.590000000000E+01       0.449685187361E-01
 >       0.600000000000E+01       0.368728970272E-01
+3,6c3,6
+<  Total CPU time   128.99354099999999     
+<  Grid points computing time   2.0763180000000001     
+<  Primitive quartet loop time   126.91707200000000     
+<  CPU time for intracule integrations   1.5099999998824387E-004
+---
+>  Total CPU time   17.332705000000001     
+>  Grid points computing time  0.50665099999999996     
+>  Primitive quartet loop time   16.826031000000000     
+>  CPU time for intracule integrations   2.2999999998774001E-005
+8,11c8,11
+<  Reading .dm2p file-->   4.2919000000860574E-002
+<  1st primitive screening-->  -8.9403000001112343E-002
+<  2nd primitive screening-->  0.16519399999930329     
+<  Grid points loop-->   126.58687599999956     
+---
+>  Reading .dm2p file-->   4.6713999999802081E-002
+>  1st primitive screening-->  -9.4324000000114205E-002
+>  2nd primitive screening-->  0.17882499999998192     
+>  Grid points loop-->   16.472286000000061     
+14,16c14,16
+<  Original grid points       29500
+<  Symmetry reduced grid points       15450
+<  Total number of reduced grid points       15450
+---
+>  Original grid points        3300
+>  Symmetry reduced grid points        1830
+>  Total number of reduced grid points        1830
+26,27c26,27
+<            1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
+<  Weights for centres   6.5293860090342490E-310
+---
+>            1 :::   5.2004991435379496E-310   0.0000000000000000        0.0000000000000000     
+>  Weights for centres   2.0000000000000000     
+29,30c29,30
+<  Gauss-Legendre nodes          50
+<  Gauss-Lebedev nodes         590
+---
+>  Gauss-Legendre nodes          30
+>  Gauss-Lebedev nodes         110
+33,34c33,34
+< TOTAL VALUE OF INTRACULE =    2.9999999480513164E+00
+< TOTAL VALUE OF Vee =    7.2713305490720899E+01
+---
+> TOTAL VALUE OF INTRACULE =    2.9999856281171748E+00
+> TOTAL VALUE OF Vee =    7.2717013445312546E+01
+36c36
+<  Radial_integral error=  -5.1948683577052179E-008
+---
+>  Radial_integral error=  -1.4371882825159332E-005
+3,6c3,6
+<  Total CPU time   67.396254999999996     
+<  Grid points computing time   2.0460519999999995     
+<  Primitive quartet loop time   65.350050999999993     
+<  CPU time for intracule integrations   1.5199999999992997E-004
+---
+>  Total CPU time   10.296763000000000     
+>  Grid points computing time  0.57034499999999999     
+>  Primitive quartet loop time   9.7263950000000001     
+>  CPU time for intracule integrations   2.3000000000550358E-005
+8,11c8,11
+<  Reading .dm2p file-->  0.14830499999945879     
+<  1st primitive screening--> -0.30210100000029794     
+<  2nd primitive screening-->  0.10719899999911764     
+<  Grid points loop-->   64.688617000000363     
+---
+>  Reading .dm2p file-->  0.15340399999981535     
+>  1st primitive screening--> -0.32559300000012958     
+>  2nd primitive screening-->  0.12813400000001018     
+>  Grid points loop-->   9.0105049999999718     
+14,16c14,16
+<  Original grid points       29500
+<  Symmetry reduced grid points       15450
+<  Total number of reduced grid points       15450
+---
+>  Original grid points        3300
+>  Symmetry reduced grid points        1830
+>  Total number of reduced grid points        1830
+26,27c26,27
+<            1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
+<  Weights for centres   1.2671321245154166E-313
+---
+>            1 :::   4.6723168699495031E-310   0.0000000000000000        0.0000000000000000     
+>  Weights for centres   2.0000000000000000     
+29,30c29,30
+<  Gauss-Legendre nodes          50
+<  Gauss-Lebedev nodes         590
+---
+>  Gauss-Legendre nodes          30
+>  Gauss-Lebedev nodes         110
+33,34c33,34
+< TOTAL VALUE OF INTRACULE =    3.0000000107134173E+00
+< TOTAL VALUE OF Vee =    1.2671412467011601E+02
+---
+> TOTAL VALUE OF INTRACULE =    3.0000024525626960E+00
+> TOTAL VALUE OF Vee =    1.2666314609607197E+02
+36c36
+<  Radial_integral error=   1.0713417264440750E-008
+---
+>  Radial_integral error=   2.4525626960425484E-006
 All tests passed.

@@ -1,36 +1,18 @@
-h2o_input_total_integral
+he2_total_integral_single_center
 $wfxfile
 he2.wfx
-$fchkfile
-no
-$logfile
-no
 $intracule
-intrac
-$Threshold (Tau)
+$Integral screening threshold (Tau)
 1.d-8
-$DM2
+$DM2P
 he2.dm2p
 10 10
 he2.out
 $radial_integral
-.true.
-.true.    !different nodes
-$Number of quadrature
-auto
-$Center weights 
-2.d0 1.d0 1.d0 1.d0 1.d0 1.d0 1.d0
 $Gauss-Legendre
-30 30 30 30 30 30 30
-1 1 1 1 1 1 1
-0.d0 0.d0   !limits of the integral
+100
+1.d0
 $Gauss-Lebedev
-110 110 110 110 110 110 110
-$radial_plot
-.false.
-he2.rad
-$Vectorial_plot
-.false.
-$Vee
-.false.
+110
+
 

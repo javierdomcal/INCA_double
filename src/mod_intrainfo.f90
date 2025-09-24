@@ -14,7 +14,6 @@ double precision, allocatable, dimension(:) :: Ps !Bragg-Slater weight
 logical :: dif_nodes                                   !different nodes per centre
 integer, allocatable, dimension(:) :: nradc
 integer, allocatable, dimension(:) :: nangc  !angular grid points (diff nodes per centre)
-double precision :: a,b                                !limits of the integral
 integer :: nrad               !number of Gauss-Legendre quadrature points (same nodes per centre)
 double precision :: snglalpha                     !alpha parameter (same for all nodes)
 !!!!Radial intracule at several distances!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -1,28 +1,16 @@
-h2o_radial_input
+he2_radial_plot
 $wfxfile
 he2.wfx
-$logfile
-no
-$fchkfile
-no
 $intracule
-intrac
-$Threshold (Tau)
+$Integral screening threshold (Tau)
 1.d-8
-$DM2
+$DM2P
 he2.dm2p
 10 10
 he2_radial_plot.out
-$radial_integral
-.false.
-.false.    !different nodes
 $radial_plot
-.true.
 he2.rad
 2
 0 5 0.1 110
 5 12 0.05  110
-$Vectorial_plot
-.false.
-$Vee
-.false.
+

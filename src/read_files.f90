@@ -122,6 +122,7 @@ rewind 1
 call locate(1,"Number of Primitives")
 read(1,*) nprim
 
+write(*,*) "nprim=",nprim
 rewind 1
 
 allocate(cartes(natoms,3))
