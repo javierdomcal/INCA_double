@@ -1,4 +1,5 @@
 subroutine pdint()
+!right now we are not using this function for anything...    
 !computes SD pair density and its integral
 use geninfo !contains cartes and natoms
 use intrainfo !contains nquad and cent
@@ -16,7 +17,7 @@ double precision, allocatable, dimension(:) :: xl_i, wl_i, wlb, radius, wtot
 double precision, allocatable, dimension(:,:) :: r_lb, rr
 double precision, allocatable, dimension(:) :: phi, theta !angles
 double precision :: PD, PD2, xs
-
+double precision :: a, b !limits of the integral
  nqmax=(natoms*(natoms-1))/2
  allocate(x0(nqmax))
  allocate(Alp(nqmax))
@@ -25,7 +26,6 @@ double precision :: PD, PD2, xs
  write(*,*) "natoms=", natoms, nqmax  
  sm=0
  write(*,*) "start loop"
- 
  nrd=5
  nan=110
  ngrid=nrd*nan
@@ -37,10 +37,8 @@ double precision :: PD, PD2, xs
  allocate(wlb(nan))
  allocate(phi(nan))
  allocate(theta(nan))
- 
  a=0.d0
  b=0.00006
-   
  !compute Gauss-Legendre nodes and weights
  call sub_GauLeg(-1.d0,1.d0,xl_i,wl_i,nrd)
  !compute radial nodes from a to b
@@ -77,7 +75,6 @@ double precision :: PD, PD2, xs
        wtot(sm)=wl_i(i)*wlb(j)
    end do
  end do  
- 
  !loop for atomic pairs
  write(*,*) "Loop for atomic pairs"
  sm=0
@@ -133,8 +130,8 @@ double precision :: PD, PD2, xs
          write(3,*) "Integral value=", bn
     end do
  end do
- 
  close(3)
+ !
  open(unit=3,file='radial')
  r=0.d0
  Val_r=0.d0
@@ -163,17 +160,17 @@ double precision :: PD, PD2, xs
  deallocate(N)                 
 end subroutine pdint               
 
-!  function Gauss(r,x0,Alp,N)
-!  double precision :: Gauss
-!  double precision :: r,x0,Alp,N
-!  double precision :: minim, a1  
-!    a1=(dsqrt(Alp))**(-1.d0)
-!    minim=x0-a1
-!    if (r.ge.minim) then
-!        Gauss=N*((r-x0+a1)**2.d0)*dexp(-Alp*(r-x0+a1)**2.d0)
-!    else
-!        Gauss=0.d0 !neglect the peak from the left
-!    end if
-!   end function
+function Gauss(r,x0,Alp,N)
+  double precision :: Gauss
+  double precision :: r,x0,Alp,N
+  double precision :: minim, a1  
+    a1=(dsqrt(Alp))**(-1.d0)
+    minim=x0-a1
+    if (r.ge.minim) then
+        Gauss=N*((r-x0+a1)**2.d0)*dexp(-Alp*(r-x0+a1)**2.d0)
+    else
+        Gauss=0.d0 !neglect the peak from the left
+    end if
+end function
 
 

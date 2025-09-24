@@ -44,18 +44,18 @@ double precision :: vee, h
 double precision, allocatable :: vee_intra(:)
 double precision :: intracule_total, intracule_zero
 
- lim=thresh*(dble(nprim)*(dble(nprim)+1.d0)*0.5d0)**(-1.d0) !limit for the 1st integral screening
+lim=thresh*(dble(nprim)*(dble(nprim)+1.d0)*0.5d0)**(-1.d0) !limit for the 1st integral screening
  
- call cpu_time(T1)
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- !!!!!!!!!!!!!!!!!!!Obtain grid points!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+call cpu_time(T1)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!Obtain grid points!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
- if (radial_integral) then
-     call gridpoints(nradc,nAngc,sfalpha,nquad,cent,a,b,Ps) !obtain the grid points
-     allocate(r(3,rrgrid))
-     r=rrrg
-     ngrid=rrgrid
-     deallocate(rrrg)
+if (radial_integral) then
+    call gridpoints(nradc,nAngc,sfalpha,nquad,cent,Ps) !obtain the grid points
+    allocate(r(3,rrgrid))
+    r=rrrg
+    ngrid=rrgrid
+    deallocate(rrrg)
  else if (radial_plot .or. vee_flag) then
      call gridpoints2(nblock,tart,stp,n_an_per_part)
      allocate(r(3,rgrid))
@@ -82,14 +82,14 @@ double precision :: intracule_total, intracule_zero
 !!!!!!!!!!!!!!!Start loop over primitive quartets!!!!!!!!!!!!!!!!!!!  
 !!!!!!!!!!!!!!!Following Cioslowski and Liu algorithm!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- sum=0     !quartets skipped in the 1st screening
- summ=0    !quartets skipped in the 2nd screeening         
- write(*,*) "starting loop for primitives"
- write(*,*) "Loop over", ngrid, "grid points" 
- rewind(5)    !start reading from the begining of the dm2 file
+sum=0     !quartets skipped in the 1st screening
+summ=0    !quartets skipped in the 2nd screeening         
+write(*,*) "starting loop for primitives"
+write(*,*) "Loop over", ngrid, "grid points" 
+rewind(5)    !start reading from the begining of the dm2 file
  smm=0
- trDM2=0.d0  !sum of all the DM2 terms.
- trace_DM2prim=0.d0 !sum of all the normalized DM2 terms.
+trDM2=0.d0  !sum of all the DM2 terms.
+trace_DM2prim=0.d0 !sum of all the normalized DM2 terms.
 !Time check
 Tread=0.d0
 T1screen=0.d0

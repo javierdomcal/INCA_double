@@ -1,28 +1,16 @@
 h2o_radial_input
 $wfxfile
 h2o.wfx
-$logfile
-no
-$fchkfile
-no
 $intracule
-intrac
-$Threshold (Tau)
+$Integral screening threshold (Tau)
 1.d-8
-$DM2
+$DM2P
 h2o.dm2p
 10 10
 water_radial_plot.out
-$radial_integral
-.false.
-.false.    !different nodes
 $radial_plot
-.true.
 water.rad
 2
 0 2 0.05 110
 2 6 0.1  110
-$Vectorial_plot
-.false.
-$Vee
-.false.
+

@@ -42,7 +42,7 @@ clean:
 
 # Test
 test:
-	./test.sh > out 
+	./test.sh 
 
 # Dependencies (generated)
 include deps.mk

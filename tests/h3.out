@@ -1,14 +1,14 @@
  *******Job Finished************
  -----------Computational time----------------
- Total CPU time   116.76391599999999     
- Grid points computing time   2.0445080000000000     
- Primitive quartet loop time   114.71925500000000     
- CPU time for intracule integrations   1.5299999999740521E-004
+ Total CPU time   128.99354099999999     
+ Grid points computing time   2.0763180000000001     
+ Primitive quartet loop time   126.91707200000000     
+ CPU time for intracule integrations   1.5099999998824387E-004
  ---Primitive quartet time analysis-----------
- Reading .dm2p file-->   3.7738000000296701E-002
- 1st primitive screening-->  -7.8523999999109417E-002
- 2nd primitive screening-->  0.14500700000024258     
- Grid points loop-->   114.42924000000055     
+ Reading .dm2p file-->   4.2919000000860574E-002
+ 1st primitive screening-->  -8.9403000001112343E-002
+ 2nd primitive screening-->  0.16519399999930329     
+ Grid points loop-->   126.58687599999956     
  ---------------------------------------------
  ------Grid point + primitive quartet info----
  Original grid points       29500
@@ -16,7 +16,7 @@
  Total number of reduced grid points       15450
  ---------------------------------------------
  --------------Accuracy check-----------------
- Sum of all DM2prim terms=   33.703058128264622        23693.806767268470     
+ Sum of all DM2prim terms=   5.7264049838221975       0.46199331805897381     
  Thresholds used for DM2prim   10.000000000000000        10.000000000000000     
  Threshold used for screenings(Tau)=   1.0000000000000000E-008
  Computed limit for the screenings   4.3290043290043294E-011
@@ -24,13 +24,13 @@
  --------------RADIAL INTEGRAL----------------
  Number of centres           1
            1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
- Weights for centres   6.7287256174407859E-310
+ Weights for centres   6.5293860090342490E-310
  Alpha parameter   1.0000000000000000     
  Gauss-Legendre nodes          50
  Gauss-Lebedev nodes         590
  ---------------------------------------------
-INTRACULE AT ZERO =    3.9655076860149386E+01
-TOTAL VALUE OF INTRACULE =    4.5000000089069410E+01
-TOTAL VALUE OF Vee =    4.4130252228583709E+02
-TOTAL Energy =    0.0000000000000000E+00
- Radial_integral error=   8.9069409625608387E-008
+INTRACULE AT ZERO =    6.6029797598995701E-02
+TOTAL VALUE OF INTRACULE =    2.9999999480513164E+00
+TOTAL VALUE OF Vee =    7.2713305490720899E+01
+TOTAL Energy =   -1.5290074739307780E+00
+ Radial_integral error=  -5.1948683577052179E-008

@@ -71,11 +71,7 @@ integer :: i
 call getarg(1,name)  !gets the name of the input file (writen in the prompt)
 name=trim(name)      !remove the blank spaces of the string 'name'
 open(unit=3,file=name,status='OLD') 
- 
 !set up logical variables as false
-readwfx=.false. 
-readfchk=.false. 
-readlog=.false.
 primcube=.false.
 aocube=.false.
 MOcube=.false.
@@ -83,30 +79,24 @@ denscube=.false.
 gradient=.false.
 laplacian=.false.
 intracalc=.false.
-
-
-call locate(3,"$wfxfile")
-read(3,*) wfxfilename
-if (wfxfilename.ne.'no') then
-      readwfx=.true.
+!read input file
+if (located(3,"$wfxfile")) then
+    readwfx=.true.
+    read(3,*) wfxfilename
+else if (located(3,"$fchkfile")) then
+    readfchk=.true.
+    read(3,*) fchkfilename
+else
+    write(*,*) "Warning! You must provide at least a .wfx or .fchk file for intracule calculations"
 end if
 rewind 3
-call locate(3,"$fchkfile")
-read(3,*) fchkfilename
-if (fchkfilename.ne.'no') then
-      readfchk=.true.
+if (located(3,"$logfile")) then
+    readlog=.true.
+    read(3,*) logfilename
 end if
-rewind 3
+rewind 3    
 
-call locate(3,"$logfile")
- read(3,*) logfilename
- if (logfilename.ne.'no') then
-      readlog=.true.
- end if 
-
- rewind 3
-
- if (located(3,"$cubefile")) then
+if (located(3,"$cubefile")) then
     read(3,*) (center(i), i=1,3) !cube centered in (x,y,z)
     read(3,*) (step(i), i=1,3) !distance between points in the axis
     read(3,*) (np(i), i=1,3) !number of points for each axis
@@ -151,9 +141,11 @@ end subroutine readinput
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-subroutine readintra() 
+subroutine readintra()
+!read information from the intracule function     
 use intrainfo
 use locatemod
+use quadratures
 implicit none
 character*80 :: name
 integer :: i, j
@@ -163,128 +155,106 @@ call getarg(1,name)  !gets the name of the input file (writen in the prompt)
 name=trim(name)      !remove the blank spaces of the string 'name'
 open(unit=3,file=name,status='OLD')  
         !read input for intracule
-        call locate(3,'$Threshold') !threshold for integral screenings
+        call locate(3,'$Integral screening threshold') !threshold for integral screenings
         read(3,*) thresh  
         rewind(3)
         dm2name = ''
-        call locate(3,'$DM2')
+        call locate(3,'$DM2P')
         read(3,*) dm2name           !name of the dm2p file
         read(3,*) trsh1, trsh2      !thresholds used in DM2prim
         read(3,*) outname           !name of the output file
         rewind(3)
-        
-        call locate(3,'$radial_integral')
-        read(3,*) radial_integral   
-        read(3,*) dif_nodes
-        if (radial_integral) then   !read info to perform radial integral
-            call locate(3,'$Number of quadrature')
-            read(3,*) ccent
-            autoc=.false.
-            if (ccent.eq."manual") then  !input parameters
-                read(3,*) nquad          !number of quadrature centers      
-                call locate(3,'Quadrature center')
-                allocate(cent(3,nquad))
-                do i=1,nquad            !read position of centers
-                   read(3,*) (cent(j,i), j=1,3)
-                end do
-            else !default
-                write(*,*) "Computing centers automatically"
-                call centercalc()
-                write(*,*) "nquad computed =", nquad
-                !call pdint() !calculate approximate I_vs_r curve
-            end if            
-            if (dif_nodes) then       !Different node for each centre
-                allocate(nradc(nquad))
-                allocate(nangc(nquad))
-                allocate(sfalpha(nquad)) !PROBLEM: We can't know nquad beforehand
-                call locate(3,'Gauss-Legendre')
-                read(3,*) (nradc(i), i=1,nquad)
-                read(3,*) sfalpha(:)
-                rewind(3)           
-                call locate(3,'$Gauss-Lebedev')
-                read(3,*) nangc(:)
-            else        
-                call locate(3,'Gauss-Legendre')
-                read(3,*) nrad
-                read(3,*) sfalpha
-                if (nquad.eq.1) then  !Becke isn't used 
-                   read(3,*) a,b       !Choose limits of the radial integral
-                end if                 !if 0 the integral is computed from 0 to infty
-                rewind(3)
-                call locate(3,'$Gauss-Lebedev')
-                read(3,*) gpt !write number of angular nodes
-                do i=1,nquad
-                    nradc(i)=nrad
-                    nangc(i)=gpt
-                    sfalpha(i)=sfalpha(1)
-                end do                
-            end if 
-            rewind(3)
-            call locate(3,'$Center weights')
-            allocate(Ps(nquad)) !allocate weight of each centre
-            !read(3,*) beckw
-            !if (beckw) then
-                !call pdint()
-                !compute Becke centres weights automatically (TO IMPLEMENT)
-            !else
-            read(3,*) Ps(:) !the weigth of a positive center must be equal to the neg.
-            !end if
-            rewind(3)
-        end if   
-        call locate(3,'$radial_plot')
-        read(3,*) radial_plot
-        if (radial_plot) then
-                read(3,*) r_plot_name
-                read(3,*) nblock
-                allocate(n_an_per_part(nblock))
-                allocate(tart(2,nblock))
-                allocate(stp(nblock))
-                do i=1,nblock
-                  read(3,*) tart(:,i), stp(i), n_an_per_part(i)
-                end do
+        if (located(3,'$radial_integral')) then
+            radial_integral=.true.
+            if (located(3,'$definite')) then
+                definite=.true.
+                read(3,*) a,b
+            end if
+            if (located(3,'Multicenter')) then
+                if (located(3,'manual_grid')) then !number of quadrature centers(not automatically calculated)
+                    read(3,*) nquad
+                    allocate(cent(3,nquad))
+                    do i=1,nquad
+                        read(3,*) (cent(j,i), j=1,3) !read position of centers
+                    end do
+                    allocate(nradc(nquad))
+                    allocate(nangc(nquad))
+                    allocate(sfalpha(nquad)) 
+                    call locate(3,'Gauss-Legendre')
+                    read(3,*) (nradc(i), i=1,nquad)
+                    read(3,*) sfalpha(:)
+                    call locate(3,'$Gauss-Lebedev')
+                    read(3,*) (nangc(i), i=1,nquad)
+                    call locate(3,'$Center weights')
+                    allocate(Ps(nquad)) !allocate weight of each centre
+                    read(3,*) Ps(:) !the weigth of a positive center must be equal to the neg.
+                    rewind(3)
+                else !automatically calculate the parameters (default)
+                    if (located(3,'Gauss-Legendre')) then
+                        read(3,*) nrad
+                    else
+                        nrad=50
+                    end if
+                    if (located(3,'Gauss-Lebedev')) then
+                        read(3,*) nang
+                    else
+                        nang=590
+                    end if
+                    call centercalc() !calculate the number of centers and their positions
+                end if
+            else !single center quadrature
+                nquad=1
+                allocate(cent(3,1))
+                allocate(nradc(1)); allocate(nangc(1)); allocate(sfalpha(1)); allocate(Ps(nquad))
+                cent(1:3,1)=0.0d0
+                if (located(3,'SGauss-Legendre')) then
+                    read(3,*) nradc(1)
+                    read(3,*) sfalpha(1)
+                else !default values
+                    nradc(1)=50
+                    sfalpha(1)=1.0d0
+                end if
+                if (located(3,'SGauss-Lebedev')) then
+                    read(3,*) nangc(1)
+                else !default values
+                    write(*,*) 'Using default value of 590 points for angular integration'
+                    nangc(1)=590
+                end if
+            end if    
+        else if (located(3,'$radial_plot')) then
+            radial_plot=.true.
+            read(3,*) r_plot_name
+            read(3,*) nblock
+            allocate(n_an_per_part(nblock))
+            allocate(tart(2,nblock))
+            allocate(stp(nblock))
+            do i=1,nblock
+                read(3,*) tart(:,i), stp(i), n_an_per_part(i)
+            end do
+        else if (located(3,'$Vectorial_plot')) then     
+            cubeintra=.true.  
+            read(3,*) cubeintraname
+            read(3,*) (center_i(i), i=1,3) !cube centered in (x,y,z)
+            read(3,*) (step_i(i), i=1,3) !distance between points in the axis
+            read(3,*) (np_i(i), i=1,3) !number of points for each axis
+        else
+            write(*,*) 'Warning! You must provide at least a radial or vectorial plot option for intracule calculations'    
         end if
         rewind(3)
-        call locate (3,'$Vectorial_plot')
-        read(3,*) cubeintra
-        if (cubeintra) then
-                read(3,*) cubeintraname
-                read(3,*) (center_i(i), i=1,3) !cube centered in (x,y,z)
-                read(3,*) (step_i(i), i=1,3) !distance between points in the axis
-                read(3,*) (np_i(i), i=1,3) !number of points for each axis
-        end if
-        rewind(3)
-        call locate (3,'$Vee')
-        write(*,*) 'yeehaw'
-        read(3,*) vee_flag
-        if (vee_flag) then
-                read(3,*) nblock
-                allocate(n_an_per_part(nblock))
-                allocate(tart(2,nblock))
-                allocate(stp(nblock))
-                do i=1,nblock
-                  read(3,*) tart(:,i), stp(i), n_an_per_part(i)
-                end do
+        !Javier's method to calculate Vee!
+        if (located(3,'$Vee')) then
+            write(*,*) 'yeehaw'
+            read(3,*) nblock
+            allocate(n_an_per_part(nblock))
+            allocate(tart(2,nblock))
+            allocate(stp(nblock))
+            do i=1,nblock
+                read(3,*) tart(:,i), stp(i), n_an_per_part(i)
+            end do
         end if
         rewind(3)
  close(3) 
 end subroutine readintra
-
-subroutine autocac()
-use geninfo
-use radis
-implicit none
-!character*20 :: param
-integer :: i
-double precision, dimension(natoms) :: radii
-double precision :: maxrad
-
-do i=1,natoms
-   radii(i)=BL(an(i)) !assing a radius to each atom of the system. 
-end do
-maxrad=maxval(radii)
-
-
-end subroutine autocac
 
 
 
