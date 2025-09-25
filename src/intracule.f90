@@ -23,10 +23,16 @@ double precision :: A_ind !eq.18 (grid independent part)
 double precision :: screen1, screen2, lim !integral screenings
 double precision :: U_x, U_y, U_z !coef. for 2nd integral screening
 double precision, allocatable, dimension(:) :: C_x, C_y, C_z !coefficients of V 
-double precision :: V_x, V_y, V_z !eq 16
+double precision :: V_x, V_y, V_z !eq 16 
+double precision, allocatable, dimension(:) :: w_m_array
 !Gauss-hermite quadrature
+double precision, allocatable, dimension(:) :: rh, w_r !nodes and weights for gauss hermite(coef.)
+integer, parameter :: Lmax=21 !maximum angular momentum for primitives
+integer, parameter :: nmax = (Lmax+1)/2 + 1
+integer, parameter :: npmax = Lmax + 1
 integer :: nn !number of gauss hermite nodes (for x y and z)
 integer, dimension(3) :: Lrtot  !total angular momentum and number of nodes
+double precision, allocatable, dimension(:) :: ipiv !for dgesv in intrastuff
 !GRID POINTS
 integer :: ngrid !number of grid points
 double precision, allocatable, dimension(:,:) :: r !grid points
@@ -104,6 +110,20 @@ T1screen=0.d0
 T2screen=0.d0
 Tgrid=0.d0
 intracule_zero=0.d0
+allocate(rh(nmax)) 
+rh=0.d0
+allocate(w_r(nmax))
+allocate(C_x(npmax)); allocate(C_y(npmax)); allocate(C_z(npmax))
+allocate(ipiv(npmax))
+! Precompute w_m values for 2nd integral screening
+allocate(w_m_array(npmax))
+do ii = 1, npmax
+    if (ii == 1) then
+        w_m_array(ii) = 1.d0
+    else
+        w_m_array(ii) = (dble(ii) * 0.5d0)**(dble(ii) * 0.5d0) * dexp(-dble(ii) * 0.5d0)
+    end if
+end do
 do while (.true.)  !loop for primitive quartets.
     call cpu_time(TT1)    
     read(5,end=100) kk1,i,j,k,l,DMval,kk2 !read a line from binary file .dm2
@@ -169,24 +189,26 @@ do while (.true.)  !loop for primitive quartets.
         Aa_ijkl=DMval*A_ind 
         !!!!!!!!!!!!Calculate coeficients of V!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         sm=0
-        U_x=0.d0; U_y=0.d0; U_z=0.d0
-        do ii=1,3
-            Lrtot(ii)=TMN(i,ii)+TMN(j,ii)+TMN(k,ii)+TMN(l,ii) !Lrtot=degree of eqn 15 (I don't use Lmax)
-            call gauherm(Lrtot(ii), nn) !obtain Gauss-Hermite nodes(rh) and weights(w_r) (2L+1)   
-            np=Lrtot(ii)+1              !np is the number of coefficients to represent the polynomial V
-            if (ii.eq.1) call polycoef(C_x, np, nn, ii) 
-            if (ii.eq.2) call polycoef(C_y, np, nn, ii)
-            if (ii.eq.3) call polycoef(C_z, np, nn, ii)
-            deallocate(rh)
-            deallocate(w_r)                            
-            !evaluates Vr at Lxtot+1=np points to create the augmented matrix M
-            !diagonalizes M to obtain the coeficients of V --> C 
-            do iii=1,np
-                if (ii.eq.1) U_x=U_x+C_x(iii)*w_m(iii)  !compute U coefficients
-                if (ii.eq.2) U_y=U_y+C_y(iii)*w_m(iii)  !for second integral screening
-                if (ii.eq.3) U_z=U_z+C_z(iii)*w_m(iii)  !eq.43 of the paper  
-            end do
-        end do                 
+        !calculate w_m
+
+        ! --- x direction ---
+        Lrtot(1)=TMN(i,1)+TMN(j,1)+TMN(k,1)+TMN(l,1) !Lrtot=degree of eqn 15 (I don't use Lmax)    
+        call gauherm(Lrtot(1), nn, rh, w_r) !obtain Gauss-Hermite nodes(rh) and weights(w_r) (2L+1)
+        np=Lrtot(1)+1              !np is the number of coefficients to represent the polynomial V
+        call polycoef(C_x, np, nn, 1, rh, w_r, ipiv) !obtain coefficients of V in x direction
+        U_x=dot_product(C_x(1:np),w_m_array(1:np)) !compute U coefficients for 2nd integral screening (eq.43 of the paper)
+        ! --- y direction ---
+        Lrtot(2)=TMN(i,2)+TMN(j,2)+TMN(k,2)+TMN(l,2) !Lrtot=degree of eqn 15 (I don't use Lmax)
+        call gauherm(Lrtot(2), nn, rh, w_r) !obtain Gauss-Hermite nodes(rh) and weights(w_r) (2L+1)
+        np=Lrtot(2)+1              !np is the number of coefficients to represent the polynomial V
+        call polycoef(C_y, np, nn, 2, rh, w_r, ipiv) !obtain coefficients of V in y direction
+        U_y=dot_product(C_y(1:np),w_m_array(1:np)) !compute U coefficients for 2nd integral screening (eq.43 of the paper)  
+        ! --- z direction ---
+        Lrtot(3)=TMN(i,3)+TMN(j,3)+TMN(k,3)+TMN(l,3) !Lrtot=degree of eqn 15 (I don't use Lmax)
+        call gauherm(Lrtot(3), nn, rh, w_r) !obtain Gauss-Hermite nodes(rh) and weights(w_r) (2L+1)
+        np=Lrtot(3)+1              !np is the number of coefficients to represent the polynomial V
+        call polycoef(C_z, np, nn, 3, rh, w_r, ipiv) !obtain coefficients of V in z direction
+        U_z=dot_product(C_z(1:np),w_m_array(1:np)) !compute U coefficients for 2nd integral screening (eq.43 of the paper)             
         !!!!!!!!!!2nd Integral Screening!!!!!!!!!!!!!!!!!!!!!                      
         screen2=dabs(Aa_ijkl*U_x*U_y*U_z) !eqn.40
         call CPU_time(TT4)
@@ -219,16 +241,17 @@ do while (.true.)  !loop for primitive quartets.
             Tgrid=Tgrid+(TT5-TT4)
         else                     
             summ=summ+1  !count quartets that do not pass 2nd screening 
-        end if 
-        deallocate(C_x)
-        deallocate(C_y)   !deallocate polynomial coefficients
-        deallocate(C_z)                                                                
+        end if                                                                
     else               
         sum=sum+1    !count quartets that do not pass 1st screening                                 
     end if                
 end do !end loop over quartets 
 100 continue           !it comes here when .dm2 file is finished
 write(*,*) "Ended loop for primitives"
+
+deallocate(C_x)
+deallocate(C_y)   !deallocate polynomial coefficients
+deallocate(C_z) 
 !end subroutine intracalc 
 !as output gives a vector with the intracule at the given points
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

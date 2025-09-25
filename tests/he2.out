@@ -1,14 +1,14 @@
  *******Job Finished************
  -----------Computational time----------------
- Total CPU time   4.2822089999999999     
- Grid points computing time   2.2781009999999999     
- Primitive quartet loop time   2.0037910000000001     
- CPU time for intracule integrations   3.1699999999990069E-004
+ Total CPU time   4.3287350000000000     
+ Grid points computing time   2.3372169999999999     
+ Primitive quartet loop time   1.9911779999999997     
+ CPU time for intracule integrations   3.4000000000045105E-004
  ---Primitive quartet time analysis-----------
- Reading .dm2p file-->   1.5420000000117007E-003
- 1st primitive screening-->  -3.3079999999965359E-003
- 2nd primitive screening-->   9.5099999999659346E-004
- Grid points loop-->   1.9967970000000035     
+ Reading .dm2p file-->   1.5309999999981727E-003
+ 1st primitive screening-->  -3.6690000000065837E-003
+ 2nd primitive screening-->   9.0700000000687453E-004
+ Grid points loop-->   1.9838779999999878     
  ---------------------------------------------
  ------Grid point + primitive quartet info----
  Original grid points       59000
@@ -24,7 +24,7 @@
  --------------RADIAL INTEGRAL----------------
  Number of centres           1
            1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
- Weights for centres   6.6610363378452749E-310
+ Weights for centres   6.7167464797208186E-310
  Alpha parameter   1.0000000000000000     
  Gauss-Legendre nodes         100
  Gauss-Lebedev nodes         590

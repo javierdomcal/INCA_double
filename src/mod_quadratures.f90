@@ -17,6 +17,5 @@ double precision, allocatable, dimension(:) :: w_ang  !angular weights
 double precision, allocatable, dimension(:,:) :: rpg  !x,y,z total grid points
 integer :: rpgrid !number of grid points for the plot (symmetry reduced)
 !Gauss-hermite quadrature
-double precision, allocatable, dimension(:) :: rh, w_r !nodes and weights for gauss hermite(coef.)
 end module quadratures
 

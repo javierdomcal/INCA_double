@@ -1,18 +1,18 @@
 3,6c3,6
-<  Total CPU time   4.2822089999999999     
-<  Grid points computing time   2.2781009999999999     
-<  Primitive quartet loop time   2.0037910000000001     
-<  CPU time for intracule integrations   3.1699999999990069E-004
+<  Total CPU time   4.3287350000000000     
+<  Grid points computing time   2.3372169999999999     
+<  Primitive quartet loop time   1.9911779999999997     
+<  CPU time for intracule integrations   3.4000000000045105E-004
 ---
 >  Total CPU time   2.28955984    
 >  Grid points computing time   1.86821806    
 >  Primitive quartet loop time  0.421267033    
 >  CPU time for intracule integrations   7.48634338E-05
 8,11c8,11
-<  Reading .dm2p file-->   1.5420000000117007E-003
-<  1st primitive screening-->  -3.3079999999965359E-003
-<  2nd primitive screening-->   9.5099999999659346E-004
-<  Grid points loop-->   1.9967970000000035     
+<  Reading .dm2p file-->   1.5309999999981727E-003
+<  1st primitive screening-->  -3.6690000000065837E-003
+<  2nd primitive screening-->   9.0700000000687453E-004
+<  Grid points loop-->   1.9838779999999878     
 ---
 >  Reading .dm2p file-->   1.49703026E-03
 >  1st primitive screening-->  -3.08823586E-03
@@ -29,7 +29,7 @@
 25,30c25,32
 <  Number of centres           1
 <            1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
-<  Weights for centres   6.6610363378452749E-310
+<  Weights for centres   6.7167464797208186E-310
 <  Alpha parameter   1.0000000000000000     
 <  Gauss-Legendre nodes         100
 <  Gauss-Lebedev nodes         590
@@ -605,20 +605,20 @@
 >       0.590000000000E+01       0.449685187361E-01
 >       0.600000000000E+01       0.368728970272E-01
 3,6c3,6
-<  Total CPU time   12.114449000000000     
-<  Grid points computing time  0.47622300000000001     
-<  Primitive quartet loop time   11.638207000000000     
-<  CPU time for intracule integrations   1.8999999999991246E-005
+<  Total CPU time   12.323179000000000     
+<  Grid points computing time  0.52183099999999993     
+<  Primitive quartet loop time   11.801327000000001     
+<  CPU time for intracule integrations   2.1000000000270802E-005
 ---
 >  Total CPU time   17.332705000000001     
 >  Grid points computing time  0.50665099999999996     
 >  Primitive quartet loop time   16.826031000000000     
 >  CPU time for intracule integrations   2.2999999998774001E-005
 8,11c8,11
-<  Reading .dm2p file-->   4.4241000000023067E-002
-<  1st primitive screening-->  -8.8905000000014889E-002
-<  2nd primitive screening-->  0.20630200000018339     
-<  Grid points loop-->   10.965854999999827     
+<  Reading .dm2p file-->   4.5485999999851701E-002
+<  1st primitive screening-->  -9.5031000000032728E-002
+<  2nd primitive screening-->  0.16816300000003381     
+<  Grid points loop-->   11.460107000000068     
 ---
 >  Reading .dm2p file-->   4.6713999999802081E-002
 >  1st primitive screening-->  -9.4324000000114205E-002
@@ -626,7 +626,7 @@
 >  Grid points loop-->   16.472286000000061     
 26,27c26,27
 <            1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
-<  Weights for centres   6.7724963626748757E-310
+<  Weights for centres   6.6490382273973993E-310
 ---
 >            1 :::   5.2004991435379496E-310   0.0000000000000000        0.0000000000000000     
 >  Weights for centres   2.0000000000000000     
@@ -635,20 +635,20 @@
 ---
 > INTRACULE AT ZERO =    6.6029797598995701E-02
 3,6c3,6
-<  Total CPU time   7.3165319999999996     
-<  Grid points computing time  0.61868699999999999     
-<  Primitive quartet loop time   6.6978270000000002     
-<  CPU time for intracule integrations   1.7999999999851468E-005
+<  Total CPU time   7.3914019999999994     
+<  Grid points computing time  0.55810799999999994     
+<  Primitive quartet loop time   6.8332730000000002     
+<  CPU time for intracule integrations   2.0999999999382624E-005
 ---
 >  Total CPU time   10.296763000000000     
 >  Grid points computing time  0.57034499999999999     
 >  Primitive quartet loop time   9.7263950000000001     
 >  CPU time for intracule integrations   2.3000000000550358E-005
 8,11c8,11
-<  Reading .dm2p file-->  0.16130800000008372     
-<  1st primitive screening--> -0.34207799999988209     
-<  2nd primitive screening-->  0.13039799999996282     
-<  Grid points loop-->   5.9436600000000510     
+<  Reading .dm2p file-->  0.15997100000006881     
+<  1st primitive screening--> -0.33541900000006897     
+<  2nd primitive screening-->  0.12717899999998283     
+<  Grid points loop-->   6.0957229999999551     
 ---
 >  Reading .dm2p file-->  0.15340399999981535     
 >  1st primitive screening--> -0.32559300000012958     
@@ -656,7 +656,7 @@
 >  Grid points loop-->   9.0105049999999718     
 26,27c26,27
 <            1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
-<  Weights for centres   1.2178468801715499E-313
+<  Weights for centres   1.1820048488134041E-313
 ---
 >            1 :::   4.6723168699495031E-310   0.0000000000000000        0.0000000000000000     
 >  Weights for centres   2.0000000000000000     
