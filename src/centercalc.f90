@@ -5,7 +5,7 @@ implicit none
 integer :: i,j,k, nqmax, sm, sm1, smp
 double precision, allocatable, dimension(:,:) :: c1
 double precision, allocatable, dimension(:) :: dist
-integer, allocatable, dimension(:) :: nelec_c1, nelec_cent
+double precision, allocatable, dimension(:) :: nelec_c1, nelec_cent
 double precision, parameter :: trsh=1.d-1, zero=1.d-15, trs=5.d-1
 double precision :: z, k_val
 logical :: equal
@@ -14,13 +14,17 @@ nqmax=(natoms*(natoms-1))+1
 allocate(c1(3,nqmax)); allocate(nelec_c1(nqmax))
 c1(:,1)=0.d0 !first center always at zero    
 sm=1
+write(*,*) "Calculating centers for intracule function..."
 do j=1,natoms-1
    do k=j+1,natoms
+      write(*,*) "j,k=", j, k
       if (j.ne.k) then
-         if ((an(j).gt.1).and.(an(k).gt.1)) then !only for non-hydrogen atoms      
+         !if ((an(j).gt.1).and.(an(k).gt.1)) then !only for non-hydrogen atoms     
+            write(*,*) "centers between atoms ", j, " and ", k 
             sm=sm+1      
             c1(:,sm)=cartes(j,:)-cartes(k,:)
-            nelec_c1(sm)=(an(i)-chrg(i))*(an(j)-chrg(j))
+            write(*,*) an(j), an(k), chrg(j), chrg(k)
+            nelec_c1(sm)=an(j)*an(k)*0.5d0 
             z=dabs(c1(3,sm))
             if (z.lt.trs) c1(3,sm)=0.d0 !to exploit symmetry
             smp=sm  
@@ -29,7 +33,8 @@ do j=1,natoms-1
             c1(1,sm)=-c1(1,smp) !I(x,y,z)=I(-x,-y,-z)
             c1(2,sm)=-c1(2,smp)      
             nelec_c1(sm)=nelec_c1(smp)
-         end if  
+            write(*,*) "nelec_c1(sm)=", nelec_c1(sm)
+         !end if  
       end if  
    end do
 end do
@@ -59,6 +64,7 @@ do i=2,nqmax
       sm1=sm1+1
       cent(:,sm1)=c1(:,i)
       nelec_cent(sm1)=nelec_c1(i)
+      write(*,*) "Center ", sm1, " at (x,y,z)= ", cent(1,sm1), cent(2,sm1), cent(3,sm1), " with weight ", nelec_cent(sm1)
    end if
 end do 
 allocate(nradc(nquad)); allocate(nangc(nquad)); allocate(sfalpha(nquad)); allocate(Ps(nquad))
@@ -70,21 +76,21 @@ end do
 do i=1,nquad
    dist(i)=sqrt(sum(c1(:,i)**2))
 end do
-sfalpha(1)=minval(dist,dim=1,mask=(dist.gt.zero))/2.d0
-Ps(1)=1.d0
+sfalpha(1)=1.5d0
+!minval(dist,dim=1,mask=(dist.gt.zero))/2.d0
+Ps(1)=sum(an)/natoms !the weight of the central positive center
 sm=0
 k_val=nrad/nquad
 do i=2,nquad
-   if (dist(i).lt.zero) then
-      sfalpha(i)=((dist(i)-dist(i-1))/2.d0)*nradc(i)/K_val
-      Ps(i)=nelec_cent(i)
+   if (dist(i).ge.zero) then
+      sfalpha(i)=1.5d0
+      Ps(i)=1.d0
    end if   
 end do
-write(*,*) "Inteegration parameters for each center:"
+write(*,*) "Integration parameters for each center:"
 write(*,*)  "Center (x,y,z)    nrad    nang    sfalpha    Weight"
 do i=1,nquad
-   write(*,*) cent(1,i), cent(2,i), cent(3,i), nradc(i), nangc(i), sfalpha(i), Ps(i)
+   write(*,'(3F8.3, 2I6, F8.3, F8.3)') cent(1,i), cent(2,i), cent(3,i), nradc(i), nangc(i), sfalpha(i), Ps(i)
 end do
-
 end subroutine centercalc               
 

@@ -31,5 +31,7 @@ double precision, dimension(3) :: center_i            !cube centered in (x,y,z)
 double precision, dimension(3) :: step_i              !distance between points for each axis
 integer, dimension(3) :: np_i  
 logical :: vee_flag !number of points in the cube for each axis
+!intracule at zero distance!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+logical :: intracule_at_zero
 end module intrainfo
 

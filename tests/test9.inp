@@ -1,17 +1,17 @@
-he2_total_integral_single_center
+he2_total_integral_multicenter_centercalc
 $wfxfile
-he2.wfx
+h2o.wfx
 $intracule
 $Integral screening threshold (Tau)
 1.d-8
 $DM2P
-he2.dm2p
+h2o.dm2p
 10 10
-he2.out
+h20_multi.out
 $radial_integral
+$Multicenter
 $Gauss-Legendre
-100
-1.d0
+30
 $Gauss-Lebedev
 590
 

@@ -150,7 +150,6 @@ implicit none
 character*80 :: name
 integer :: i, j
 character*20 :: ccent
-logical :: beckw
 call getarg(1,name)  !gets the name of the input file (writen in the prompt)
 name=trim(name)      !remove the blank spaces of the string 'name'
 open(unit=3,file=name,status='OLD')  
@@ -170,8 +169,8 @@ open(unit=3,file=name,status='OLD')
                 definite=.true.
                 read(3,*) a,b
             end if
-            if (located(3,'Multicenter')) then
-                if (located(3,'manual_grid')) then !number of quadrature centers(not automatically calculated)
+            if (located(3,'$Multicenter')) then
+                if (located(3,'$manual_grid')) then !number of quadrature centers(not automatically calculated)
                     read(3,*) nquad
                     allocate(cent(3,nquad))
                     do i=1,nquad
@@ -180,7 +179,7 @@ open(unit=3,file=name,status='OLD')
                     allocate(nradc(nquad))
                     allocate(nangc(nquad))
                     allocate(sfalpha(nquad)) 
-                    call locate(3,'Gauss-Legendre')
+                    call locate(3,'$Gauss-Legendre')
                     read(3,*) (nradc(i), i=1,nquad)
                     read(3,*) sfalpha(:)
                     call locate(3,'$Gauss-Lebedev')
@@ -190,12 +189,12 @@ open(unit=3,file=name,status='OLD')
                     read(3,*) Ps(:) !the weigth of a positive center must be equal to the neg.
                     rewind(3)
                 else !automatically calculate the parameters (default)
-                    if (located(3,'Gauss-Legendre')) then
+                    if (located(3,'$Gauss-Legendre')) then
                         read(3,*) nrad
                     else
                         nrad=50
                     end if
-                    if (located(3,'Gauss-Lebedev')) then
+                    if (located(3,'$Gauss-Lebedev')) then
                         read(3,*) nang
                     else
                         nang=590
@@ -203,18 +202,20 @@ open(unit=3,file=name,status='OLD')
                     call centercalc() !calculate the number of centers and their positions
                 end if
             else !single center quadrature
+                write(*,*) 'Using single center quadrature'
                 nquad=1
                 allocate(cent(3,1))
                 allocate(nradc(1)); allocate(nangc(1)); allocate(sfalpha(1)); allocate(Ps(nquad))
                 cent(1:3,1)=0.0d0
-                if (located(3,'SGauss-Legendre')) then
+                if (located(3,'$Gauss-Legendre')) then
+                    write(*,*) 'Reading number of radial points and scaling factor for radial integration'
                     read(3,*) nradc(1)
                     read(3,*) sfalpha(1)
                 else !default values
                     nradc(1)=50
                     sfalpha(1)=1.0d0
                 end if
-                if (located(3,'SGauss-Lebedev')) then
+                if (located(3,'$Gauss-Lebedev')) then
                     read(3,*) nangc(1)
                 else !default values
                     write(*,*) 'Using default value of 590 points for angular integration'
@@ -237,6 +238,8 @@ open(unit=3,file=name,status='OLD')
             read(3,*) (center_i(i), i=1,3) !cube centered in (x,y,z)
             read(3,*) (step_i(i), i=1,3) !distance between points in the axis
             read(3,*) (np_i(i), i=1,3) !number of points for each axis
+        else if (located(3,'$Intracule_at_zero')) then
+            intracule_at_zero=.true.
         else
             write(*,*) 'Warning! You must provide at least a radial or vectorial plot option for intracule calculations'    
         end if
