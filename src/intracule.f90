@@ -56,17 +56,21 @@ if (radial_integral) then
     r=rrrg
     ngrid=rrgrid
     deallocate(rrrg)
- else if (radial_plot .or. vee_flag) then
+else if (radial_plot .or. vee_flag) then
      call gridpoints2(nblock,tart,stp,n_an_per_part)
      allocate(r(3,rgrid))
      r=rpg
      ngrid=rgrid
- else if (cubeintra) then !vectorial plot
+else if (cubeintra) then !vectorial plot
      call gridpoints3(center_i,step_i,np_i)    
      allocate(r(3,rgrid))
      r=rg
      ngrid=rgrid
- end if    
+else if (intracule_at_zero) then
+     ngrid=1
+     allocate(r(3,ngrid))
+     r(:,1)=0.d0
+end if    
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  
  allocate(I_vec(ngrid))
@@ -97,17 +101,12 @@ T2screen=0.d0
 Tgrid=0.d0
 intracule_zero=0.d0
  do while (.true.)  !loop for primitive quartets.
- 
-          call cpu_time(TT1)
-    
+          call cpu_time(TT1)    
           read(5,end=100) kk1,i,j,k,l,DMval,kk2 !read a line from binary file .dm2
-          if (i.eq.0) goto 100 !file is finished   
-          
+          if (i.eq.0) goto 100 !file is finished            
           call cpu_time(TT2) 
           Tread=Tread+(TT2-TT1)
-
           trDM2=trDM2+DMval
-
           smm=smm+1
           if (normalize_dm2p) then
               !normalization of DM2--> Normalize the primitives
@@ -131,10 +130,8 @@ intracule_zero=0.d0
                n_prim_t=N_prim_i*N_prim_j*N_prim_k*N_prim_l
                DMval=n_prim_t*DMval 
           end if     
-          trace_DM2prim=trace_DM2prim+DMval !sum all the DM2 quartets to check accuracy
-           
+          trace_DM2prim=trace_DM2prim+DMval !sum all the DM2 quartets to check accuracy           
           !compute the first variables
-
           a_ik=Alpha(i)+Alpha(k)  
           a_jl=Alpha(j)+Alpha(l)                  !eqn. 10                         
           e_ik=Alpha(i)*Alpha(k)*a_ik**(-1.d0)
@@ -222,41 +219,6 @@ intracule_zero=0.d0
                                    I_vec(ig)=I_vec(ig)+Aa_ijkl*dexp(-(rp(1)**2.d0+rp(2)**2.d0+rp(3)**2.d0))*V_x*V_y*V_z
                                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                                  
                             end do       !End loop over grid points
-                            !compute intracule at 0,0,0
-                            V_x=0.d0; V_y=0.d0; V_z=0.d0
-                            rp(1)=sqe*(0.d0+r_ik(1)-r_jl(1))   !compute R'(eq. 19), at 0,0,0
-                            rp(2)=sqe*(0.d0+r_ik(2)-r_jl(2))
-                            rp(3)=sqe*(0.d0+r_ik(3)-r_jl(3))
-                            pot_x=dble(Lrtot(1))
-                            pot_y=dble(Lrtot(2))    
-                            pot_z=dble(Lrtot(3))
-                            do iii=1,Lrtot(1)+1   !Ltot+1 is the number of coefficients we have
-                                    if (dble(pot_x).gt.1.d-16) then
-                                        V_x=V_x+C_x(iii)*rp(1)**(pot_x)
-                                        pot_x=pot_x-1.d0
-                                    else
-                                        V_x=V_x+C_x(iii) !when pot is 0
-                                    end if
-                            end do
-                            do iii=1,Lrtot(2)+1   !Ltot+1 is the number of coefficients we have               
-                                    if (dble(pot_y).gt.1.d-16) then     
-                                        V_y=V_y+C_y(iii)*rp(2)**(pot_y)
-                                        pot_y=pot_y-1.d0
-                                    else
-                                        V_y=V_y+C_y(iii) !when pot is 0
-                                    end if
-                            end do 
-                                
-                            do iii=1,Lrtot(3)+1   !Ltot+1 is the number of coefficients we have
-                                    if (dble(pot_z).gt.1.d-16) then
-                                        V_z=V_z+C_z(iii)*rp(3)**(pot_z)
-                                        pot_z=pot_z-1.d0
-                                   else
-                                        V_z=V_z+C_z(iii) !when pot is 0
-                                   end if 
-                            end do  !end loop over the polynomial coefficients
-                            intracule_zero=intracule_zero+Aa_ijkl*dexp(-(rp(1)**2.d0+rp(2)**2.d0+rp(3)**2.d0))*V_x*V_y*V_z
-
                             call CPU_time(TT5)
                             Tgrid=Tgrid+(TT5-TT4)
                  else                     
@@ -372,7 +334,12 @@ if (radial_integral) then !integral of the intracule
            write(3,'(D25.16)') I_vec(i)/2.0d0
          end do  
          close(3)
- end if        
+ end if       
+ if (intracule_at_zero) then
+    intracule_zero=I_vec(1)
+    write(*, '(A, ES25.16)') 'INTRACULE AT ZERO = ', intracule_zero
+ end if
+ 
 ! 40 format(6(E16.6E3))
  call cpu_time(T4)
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

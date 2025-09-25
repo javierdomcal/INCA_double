@@ -1,0 +1,23 @@
+ *******Job Finished************
+ -----------Computational time----------------
+ Total CPU time   2.1921689999999998     
+ Grid points computing time   3.8999999999997370E-005
+ Primitive quartet loop time   2.1920950000000001     
+ CPU time for intracule integrations   3.5000000000007248E-005
+ ---Primitive quartet time analysis-----------
+ Reading .dm2p file-->  0.27754699999999949     
+ 1st primitive screening--> -0.55630300000001265     
+ 2nd primitive screening-->  0.88066199999999639     
+ Grid points loop-->  0.26630999999998872     
+ ---------------------------------------------
+ ------Grid point + primitive quartet info----
+ Original grid points           0
+ Symmetry reduced grid points           0
+ Total number of reduced grid points           0
+ ---------------------------------------------
+ --------------Accuracy check-----------------
+ Sum of all DM2prim terms=   5.7264049838221975       0.46199331805897381     
+ Thresholds used for DM2prim   10.000000000000000        10.000000000000000     
+ Threshold used for screenings(Tau)=   9.9999999999999998E-017
+ Computed limit for the screenings   4.3290043290043291E-019
+ ---------------------------------------------

@@ -1,0 +1,30 @@
+ Located section -> $wfxfile
+ Located section -> $intracule
+ Correlated wavefunction
+ UNRELAXED DENSITY (closed shell)
+ nprim=          21
+ Located section -> $radial_integral
+ Using single center quadrature
+ Located section -> $Gauss-Legendre
+ Reading number of radial points and scaling factor for radial integration
+ Located section -> $Gauss-Lebedev
+ readed intra info
+ We are in subroutine gridpoints
+ Error?
+ Error2=
+ nrad=,nang=         100         110
+ Total number of gp after center           1 =       11000       11000
+        4900 Points will be neglected in center           1
+ *********Neglecting points by symmetry*******************
+ zeta zero center
+        4900 points have been neglected in center number           1
+ Total number of gp after center           1 =       11000
+ Total number of reduced gp after center           1 =        6100
+ There are        6100 symmetry reduced grid points
+           0 neglected points of zero weight
+        6100 neglected points of zero weight
+ Final number of grid points=        6100
+ starting loop for primitives
+ Loop over        6100 grid points
+ Ended loop for primitives
+ intracule computed succesfully

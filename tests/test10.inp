@@ -1,0 +1,13 @@
+he2_total_integral_multicenter_centercalc
+$fchkfile
+Li.fchk
+$intracule
+$Integral screening threshold (Tau)
+1.d-16
+$DM2P
+Li.dm2p
+10 10
+Li_fchk.out
+$Intracule_at_zero
+
+

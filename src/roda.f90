@@ -238,6 +238,8 @@ open(unit=3,file=name,status='OLD')
             read(3,*) (center_i(i), i=1,3) !cube centered in (x,y,z)
             read(3,*) (step_i(i), i=1,3) !distance between points in the axis
             read(3,*) (np_i(i), i=1,3) !number of points for each axis
+        else if (located(3,'$Intracule_at_zero')) then
+            intracule_at_zero=.true.
         else
             write(*,*) 'Warning! You must provide at least a radial or vectorial plot option for intracule calculations'    
         end if
