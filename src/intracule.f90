@@ -291,7 +291,7 @@ intracule_zero=0.d0
                 r_intra(i)=r_intra(i)+w_ang(sm)*I_vec(sm)!Perform the angular quadrature 
             end do
             r_intra(i)=(r_intra(i)/(4.0d0*pi))
-            write(3,'(F6.4,1X,D25.16,1X)') radi(i), r_intra(i)
+            write(3,'(F8.4,1X,D25.16,1X)') radi(i), r_intra(i)
       end do 
       deallocate(r_intra)
       close(3)
