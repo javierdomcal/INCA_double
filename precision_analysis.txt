@@ -1,0 +1,105 @@
+===========================================
+  PRECISION LEAK DETECTION REPORT
+===========================================
+Scanning: .
+
+✅ SINGLE PRECISION FUNCTIONS (should use dexp, dsqrt, etc.) - No issues found
+
+✅ FLOATING POINT LITERALS WITHOUT d0 SUFFIX - No issues found
+
+🔍 POTENTIAL INTEGER EXPONENTIATION (variable**integer without dble())
+----------------------------------------
+File: ./src/mod_intrastuff.f90
+  124:        Wr=((dsqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl-0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(i),ax)))**dble(TMN(i,ax))*&
+  125:        ((dsqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl+0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(j),ax)))**dble(TMN(j,ax))*&
+  126:        ((dsqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl-0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(k),ax)))**dble(TMN(k,ax))*&
+  127:        ((dsqrt(a_ijkl)**(-1.d0)*rhat)+(alf_ijkl+0.5d0)*r+(r_ijkl(ax)-Cartes(Ra(l),ax)))**dble(TMN(l,ax))
+
+File: ./src/intracule.f90
+  381: write(3,*) "*******Job Finished************"
+
+File: ./src/gridpoints.f90
+  215:    write(*,*) "*********Neglecting points by symmetry*******************"
+
+File: ./src/functions.f90
+  57:laplx=(Prim(x,y,z,npr)/(x**t))*(t*(t-1.0d0)*x**(t-2.0d0) &
+  58:+4.0d0*t*(x**(t-1.0d0))*Alpha(npr)*(xa-x)+((x**t)*Alpha(npr) &
+  61:laply=(Prim(x,y,z,npr)/(y**m))*(m*(m-1.0d0)*y**(m-2.0d0) &
+  62:+4.0d0*m*(y**(m-1.0d0))*Alpha(npr)*(ya-y)+((y**m)*Alpha(npr) &
+  65:laplz=(Prim(x,y,z,npr)/(z**n))*(n*(n-1.0d0)*z**(n-2.0d0) &
+  66:+4.0d0*n*(z**(n-1.0d0))*Alpha(npr)*(za-z)+((z**n)*Alpha(npr) &
+  295:   dp=(Prim(x,y,z,j)*(ti*x**(ti-1.0d0))/(x**ti))+Prim(x,y,z,j)*2.0d0*Alpha(j)*(xa-x)
+  297:   dp=(Prim(x,y,z,j)*(m*y**(m-1.0d0))/(y**m))+Prim(x,y,z,j)*2.0d0*Alpha(j)*(ya-y)
+  299:   dp=(Prim(x,y,z,j)*(n*z**(n-1.0d0))/(z**n))+Prim(x,y,z,j)*2.0d0*Alpha(j)*(za-z)
+  320:   d2p=(Prim(x,y,z,j)/(x**ti))*(ti*(ti-1.0d0)*x**(ti-2.0d0) &
+  321:    +4.0d0*ti*(x**(ti-1.0d0))*Alpha(j)*(xa-x)+((x**ti)*Alpha(j) &
+  324:   d2p=(Prim(x,y,z,j)/(y**m))*(m*(m-1.0d0)*y**(m-2.0d0) &
+  325:    +4.0d0*m*(y**(m-1.0d0))*Alpha(j)*(ya-y)+((y**m)*Alpha(j) &
+  328:   d2p=(Prim(x,y,z,j)/(z**n))*(n*(n-1.0d0)*z**(n-2.0d0) &
+  329:    +4.0d0*n*(z**(n-1.0d0))*Alpha(j)*(za-z)+((z**n)*Alpha(j) &
+
+🔍 INTEGER DIVISION IN REAL ASSIGNMENTS (like n/2 instead of n/2.d0)
+----------------------------------------
+File: ./src/lebedev.f
+  154:       a = dsqrt(1.0d0/3.0d0)
+
+✅ DO LOOP VARIABLES IN CALCULATIONS (may need dble() conversion) - No issues found
+
+🔍 TMN ASSIGNMENTS WITHOUT dble() CONVERSION
+----------------------------------------
+File: ./src/mod_intrastuff.f90
+  27:                n_nodes=TMN(i,ii)+TMN(k,ii) + 1          !obtain x_max
+  70:                n_nodes=TMN(j,ii)+TMN(l,ii) + 1
+
+File: ./src/intracule.f90
+  178:                       Lrtot(ii)=TMN(i,ii)+TMN(j,ii)+TMN(k,ii)+TMN(l,ii) !Lrtot=degree of eqn 15 (I don't use Lmax)
+
+✅ ARRAY INDICES IN CALCULATIONS (i,j,k may need dble() conversion) - No issues found
+
+✅ SCIENTIFIC NOTATION WITHOUT d (like 1.5e-10 should be 1.5d-10) - No issues found
+
+✅ COMPARISON TOLERANCES WITH SINGLE PRECISION (1e-10 should be 1d-15) - No issues found
+
+🔍 PARAMETER DECLARATIONS WITH SINGLE PRECISION LITERALS
+----------------------------------------
+File: ./src/mod_radis.f90
+  3:   double precision, parameter, dimension(92) :: BL=(/0.327d0, 0.320d0, &
+
+✅ DMOD WITH INTEGER ARGUMENTS (may need dble() conversion) - No issues found
+
+✅ REAL*8 ASSIGNMENTS FROM INTEGER OPERATIONS - No issues found
+
+✅ SUM FUNCTION WITH POTENTIALLY INTEGER ARRAYS - No issues found
+
+🔍 DIVISION BY 2 WITHOUT .d0 (should be /2.d0)
+----------------------------------------
+File: ./src/read_files.f90
+  622:            Ptyp(iprim)=5; TMN(iprim,:)=(/2,0,0/)   ! xx
+  646:            Ptyp(iprim)=14; TMN(iprim,:)=(/2,1,0/)   ! xxy
+  648:            Ptyp(iprim)=15; TMN(iprim,:)=(/2,0,1/)   ! xxz
+  685:            Ptyp(iprim)=30; TMN(iprim,:)=(/2,2,0/)   ! xxyy
+  687:            Ptyp(iprim)=31; TMN(iprim,:)=(/2,0,2/)   ! xxzz
+  691:            Ptyp(iprim)=33; TMN(iprim,:)=(/2,1,1/)   ! xxyz
+
+File: ./src/intracule.f90
+  419:    npairs=(nelec)*(nelec-1)/2
+  471:  do i=1,a/2
+  475:  do i=1,(a+1)/2
+
+File: ./src/gridpoints.f90
+  171:    end do                     !should be 4pi but we have a factor of 1/2 in the intracule!!
+
+✅ COMPLEX EXPONENTIATION EXPRESSIONS (check for mixed integer/real) - No issues found
+
+===========================================
+  SCAN COMPLETE
+===========================================
+
+📋 RECOMMENDATIONS:
+1. Convert single precision functions to double precision (exp→dexp, etc.)
+2. Add d0 suffix to all floating point literals
+3. Use dble() for integer-to-real conversions in calculations
+4. Replace integer exponentiation with dble() conversions
+5. Use double precision scientific notation (1.5d-10, not 1.5e-10)
+
+⚠️  NOTE: Some matches may be false positives. Review each case manually.
