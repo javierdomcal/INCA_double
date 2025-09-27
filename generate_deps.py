@@ -9,28 +9,40 @@ DEPS_FILE = "deps.mk"
 # Regex to match module usage
 use_pattern = re.compile(r'^\s*use\s+(\w+)', re.IGNORECASE)
 
+# First pass: identify which files define which modules
+module_to_file = {}
+for f90_file in Path(SRC_DIR).glob("*.f90"):
+    base = f90_file.stem
+    with f90_file.open("r") as f:
+        content = f.read()
+        # Look for module definitions
+        module_defs = re.findall(r'^\s*module\s+(\w+)', content, re.IGNORECASE | re.MULTILINE)
+        for mod_name in module_defs:
+            module_to_file[mod_name.lower()] = f"{OBJ_DIR}/{base}.o"
+
 # Map to hold dependencies
 deps = {}
 
+# Second pass: build dependencies
 for f90_file in Path(SRC_DIR).glob("*.f90"):
     base = f90_file.stem
     obj_file = f"{OBJ_DIR}/{base}.o"
     deps[obj_file] = [str(f90_file)]  # Start with the source file
-
+    
     # Read file and look for "use" statements
     with f90_file.open("r") as f:
         for line in f:
             match = use_pattern.match(line)
             if match:
                 mod_name = match.group(1).lower()
-                mod_file = f"{OBJ_DIR}/mod_{mod_name}.o"
-                # Avoid self-dependency if module name is same as file
-                if mod_file != obj_file and mod_file not in deps[obj_file]:
-                    deps[obj_file].append(mod_file)
+                # Check if we know where this module is defined
+                if mod_name in module_to_file:
+                    mod_file = module_to_file[mod_name]
+                    # Avoid self-dependency if module is defined in same file
+                    if mod_file != obj_file and mod_file not in deps[obj_file]:
+                        deps[obj_file].append(mod_file)
 
 # Write deps.mk
 with open(DEPS_FILE, "w") as out:
     for obj, dep_list in sorted(deps.items()):
         out.write(f"{obj} : {' '.join(dep_list)}\n")
-
-
