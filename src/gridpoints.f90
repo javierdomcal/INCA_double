@@ -64,7 +64,7 @@ double precision, dimension(3,nquad) :: cent !center of the quadratures
 integer :: nang
 double precision, allocatable, dimension(:,:) :: r_lb
 double precision, allocatable, dimension(:) :: Wlb
-double precision, allocatable, dimension(:) :: theta, phi
+!double precision, allocatable, dimension(:) :: theta, phi
 !2-legendre quadrature
 integer :: nrad
 double precision, allocatable, dimension(:) :: xl_i, wl_i, wl2_i
@@ -80,7 +80,7 @@ double precision, allocatable, dimension(:,:) :: fgr, brrg, rrg
 integer :: i, ia, ir, sm, smp, sma, smnn, j, k, smr, smpr, ngrid, i1
 integer :: np !number of points
 double precision, parameter :: pi=4.d0*datan(1.d0)
-double precision, parameter :: trsh=1.d-15, trsh2=1.d-16
+double precision, parameter :: trsh=1.d-15, trsh2=1.d-16, tol=dsqrt(epsilon(1.d0))
 double precision :: xs
 !double precision :: a,b
 !ntrsh=-trsh !set negative threshold
@@ -154,26 +154,9 @@ do i1=1,nquad       !loop over centres
     if (nAng.eq.4802) call LD4802(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !4802
     if (nAng.eq.5294) call LD5294(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !5294
     if (nAng.eq.5810) call LD5810(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !5810
-    allocate(theta(nang))
-    allocate(phi(nang))
-    do i=1,nAng   !compute angles     
-        theta(i)= dacos(r_lb(3,i)) 
-        if (dsin(theta(i)).ne.0.d0) then
-             xs=r_lb(1,i)/dsin(theta(i))
-             if (xs.gt.1.d0) xs=1.d0
-             if (xs.lt.-1.d0) xs=-1.d0
-              phi(i)=dacos(xs)
-              if (r_lb(2,i).lt.0.d0) phi(i)=-phi(i)
-        else
-              phi(i)=0.d0
-        end if  
-        Wlb(i)=Wlb(i)*2.d0*pi !store 2pi factor on the weight (see solid angle integral)
-    end do                     !should be 4pi but we have a factor of 1/2 in the intracule!!
-    deallocate(r_lb)
     !!!!!!!!!!!!!Compute grid points of quadrature!!!!!!!!!!!
     nGrid=nAng*nrad
     allocate(radius(nrad))
-   
     !compute radial points for the quadrature from 0 to infty or a to b
     allocate(wl2_i(nrad))  
     if (definite) then
@@ -186,22 +169,22 @@ do i1=1,nquad       !loop over centres
     else
         do ir=1,nrad    
           radius(ir)=(1.d0+xl_i(ir))/(1.d0-xl_i(ir))*sfalpha(i1) 
-          wl_i(ir)=(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)**2.d0 !for I(r)
-          wl2_i(ir)=(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)   ! for Vee
+          wl_i(ir)=2*pi*(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)**2.d0 !for I(r)
+          wl2_i(ir)=2*pi*(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)   ! for Vee
         end do   
     end if  
     !compute grid points for all the becke centers
     smn(i1)=0
     do ir=1,nrad
         do ia=1,nAng
-               sm=sm+1   !count total grid points    
-               fgr(1,sm)=radius(ir)*dcos(phi(ia))*dsin(theta(ia))+cent(1,i1)
-               fgr(2,sm)=radius(ir)*dsin(phi(ia))*dsin(theta(ia))+cent(2,i1)
-               fgr(3,sm)=radius(ir)*dcos(theta(ia))+cent(3,i1)
-               !store total grid points (all quadratures)              
-               if (fgr(3,sm).ge.0.d0) then
-                  smn(i1)=smn(i1)+1 !sum the number of sym reduced points of each quadrature                  
-               end if                  
+            sm=sm+1   !count total grid points    
+            fgr(1,sm)=radius(ir)*r_lb(1,ia)+cent(1,i1)
+            fgr(2,sm)=radius(ir)*r_lb(2,ia)+cent(2,i1)
+            fgr(3,sm)=radius(ir)*r_lb(3,ia)+cent(3,i1)
+            !store total grid points (all quadratures)              
+            if (fgr(3,sm).ge.-tol) then
+                smn(i1)=smn(i1)+1 !sum the number of sym reduced points of each quadrature                  
+            end if                  
         end do   
     end do  
     write(*,*) "Total number of gp after center",i1,"=", sm, ngrid
@@ -215,23 +198,23 @@ do i1=1,nquad       !loop over centres
     write(*,*) "*********Neglecting points by symmetry*******************"
     write(*,*) "zeta zero center"      
     do j=1,nrad
-       do k=1,nAng  
-          sm=sm+1                     !sum total grid points
-          if (fgr(3,sm).ge.0.d0) then !reduce points by symmetry
-              smr=smr+1               !sum sym reduced grid points   
-              brrg(:,smr)=fgr(:,sm)   !store sym reduced points
-              if (fgr(3,sm).lt.trsh) then    !z is 0, do not multiply by 2
-                   weight(smr)=Wlb(k)*Wl_i(j)
-                   weight_vee(smr)=Wlb(k)*wl2_i(j) !for Vee
-              else
-                   weight(smr)=2.d0*Wlb(k)*Wl_i(j) !z is positive, use sym (I(z)=I(-z))
-                   weight_vee(smr)=2.d0*Wlb(k)*wl2_i(j) !for Vee
-              end if
-          else if (fgr(3,sm).lt.0.d0) then 
-              !sym neglected point    
-              smnn=smnn+1
-          end if  
-       end do             
+        do k=1,nAng  
+            sm=sm+1                     !sum total grid points
+            if (fgr(3,sm).ge.-tol) then !reduce points by symmetry
+                smr=smr+1               !sum sym reduced grid points   
+                brrg(:,smr)=fgr(:,sm)   !store sym reduced points
+                if (abs(fgr(3,sm)).lt.tol) then    !z is 0, do not multiply by 2
+                    weight(smr)=Wlb(k)*Wl_i(j)
+                    weight_vee(smr)=Wlb(k)*wl2_i(j) !for Vee
+                else
+                    weight(smr)=2.d0*Wlb(k)*Wl_i(j) !z is positive, use sym (I(z)=I(-z))
+                    weight_vee(smr)=2.d0*Wlb(k)*wl2_i(j) !for Vee
+                end if
+            else 
+                !sym neglected point    
+                smnn=smnn+1
+            end if  
+        end do             
     end do   
     smpr=smr !store last reduced point of the quadrature
     smp=sm   !store last point of the quadrature
@@ -240,9 +223,10 @@ do i1=1,nquad       !loop over centres
     write(*,*) "Total number of gp after center", i1, "=", sm
     write(*,*) "Total number of reduced gp after center", i1, "=", smr
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-    deallocate(theta)
-    deallocate(phi)
+    !deallocate(theta)
+    !deallocate(phi)
     deallocate(Wlb)
+    deallocate(r_lb)
     deallocate(xl_i)
     deallocate(wl_i)
     deallocate(wl2_i)
@@ -251,16 +235,6 @@ end do !end loop over quadratures
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 rgrid=sum(smn) !set total number of grid points
 write(*,*) "There are", rgrid, "symmetry reduced grid points"
-!open(unit=3,file="all_points.dat")
-do i=1,np
-    write(3,*) fgr(1,i), fgr(2,i), fgr(3,i)
-end do
-close(3)
-!open(unit=3,file="sym_red_gp.dat")
-do i=1,rgrid
-    write(3,*) brrg(1,i), brrg(2,i), brrg(3,i)
-end do
-close(3)
 allocate(rrg(3,rgrid))
 allocate(srweight(rgrid))
 allocate(srweight_vee(rgrid))
@@ -316,12 +290,6 @@ do i=1,rgrid
         rrrg(:,sm)=rrg(:,i)           
     end if
 end do
-!
-!open(unit=3,file="sym_weight_red_gp.dat")
-do i=1,rrgrid
-    write(3,*) rrrg(1,i), rrrg(2,i), rrrg(3,i)
-end do
-close(3)
 
 deallocate(weight)
 deallocate(weight_vee)

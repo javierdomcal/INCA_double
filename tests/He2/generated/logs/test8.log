@@ -1,0 +1,57 @@
+ Located section -> $wfxfile
+ Located section -> $intracule
+ Closed shell RHF
+ nprim=           8
+ Located section -> $radial_integral
+ Located section -> $Multicenter
+ Located section -> $Gauss-Legendre
+ Located section -> $Gauss-Lebedev
+ Calculating centers for intracule function...
+ j,k=           1           2
+ centers between atoms            1  and            2
+           2           2   2.0000000000000000        2.0000000000000000     
+ nelec_c1(sm)=   2.0000000000000000     
+ Center            2  at (x,y,z)=   -5.2139986030049997E-016   0.0000000000000000        8.5151059172900005       with weight    2.0000000000000000     
+ Center            3  at (x,y,z)=    5.2139986030049997E-016  -0.0000000000000000       -8.5151059172900005       with weight    2.0000000000000000     
+ Integration parameters for each center:
+ Center (x,y,z)    nrad    nang    sfalpha    Weight
+   0.000   0.000   0.000    30   590   1.000   1.000
+  -0.000   0.000   8.515    30   590   1.000   1.000
+   0.000  -0.000  -8.515    30   590   1.000   1.000
+ readed intra info
+ We are in subroutine gridpoints
+ Error?
+ Error2=
+ nrad=,nang=          30         590
+ Total number of gp after center           1 =       17700       17700
+        8430 Points will be neglected in center           1
+ *********Neglecting points by symmetry*******************
+ zeta zero center
+        8430 points have been neglected in center number           1
+ Total number of gp after center           1 =       17700
+ Total number of reduced gp after center           1 =        9270
+ nrad=,nang=          30         590
+ Total number of gp after center           2 =       35400       17700
+        1178 Points will be neglected in center           2
+ *********Neglecting points by symmetry*******************
+ zeta zero center
+        1178 points have been neglected in center number           2
+ Total number of gp after center           2 =       35400
+ Total number of reduced gp after center           2 =       25792
+ nrad=,nang=          30         590
+ Total number of gp after center           3 =       53100       17700
+       16522 Points will be neglected in center           3
+ *********Neglecting points by symmetry*******************
+ zeta zero center
+       16522 points have been neglected in center number           3
+ Total number of gp after center           3 =       53100
+ Total number of reduced gp after center           3 =       26970
+ There are       26970 symmetry reduced grid points
+ number of points per centre        9270       16522        1178
+          58 neglected points of zero weight
+          80 neglected points of zero weight
+ Final number of grid points=       26890
+ starting loop for primitives
+ Loop over       26890 grid points
+ Ended loop for primitives
+ intracule computed succesfully

@@ -11,25 +11,25 @@ make
 cd tests/
 #------------------test-1------------------------------#
 #-----------Total integral of He2----------------------#
-../roda.exe test1.inp > output1.log
+../roda.exe test1.inp > out_files/output1.log
 # Compare the output with expected results
 # You can use `diff
 echo "################Test-1####################"
 echo "Integral of he2 from wfx (single center)"
-diff he2.out expected_he2.out > out
+diff he2.out expected_he2.out 
 
 #------------------test-2------------------------------#
 #-----------Total integral of H2O----------------------#      
-../roda.exe test2.inp > output2.log
+../roda.exe test2.inp > out_files/output2.log
 # Compare the output with expected results
 # You can use `diff  
 echo "################Test-2####################"
 echo "Integral of water from wfx (single center)"   
-diff water.out tests/expected_water.out >> out
+diff water.out tests/expected_water.out 
 
 #------------------test-3------------------------------#
 #-----------Radial plot of He2-------------------------# 
-../roda.exe test3.inp > output3.log
+../roda.exe test3.inp > out_files/output3.log
 # Compare the output with expected results
 # You can use `diff
 echo "################Test-3####################"  
@@ -38,7 +38,7 @@ diff he2.rad expected_he2.rad >> out
 
 #------------------test-4------------------------------#
 #-----------Radial plot of H2O-------------------------# 
-../roda.exe test4.inp > output4.log
+../roda.exe test4.inp > out_files/output4.log
 # Compare the output with expected results
 # You can use `diff      
 echo "################Test-4####################"       
@@ -47,7 +47,7 @@ diff water.rad expected_water.rad >> out
 
 #------------------test-5------------------------------#
 #-----------Total integral of H3 (from fchk)-----------# 
-../roda.exe test5.inp > output5.log
+../roda.exe test5.inp > out_files/output5.log
 # Compare the output with expected results
 # You can use `diff                               
 echo "################Test-5####################"       
@@ -56,16 +56,46 @@ diff h3.out expected_h3.out >> out
 
 #------------------test-6------------------------------#
 #-----------Total integral of Li (from fchk)-----------# 
-../roda.exe test6.inp > output6.log
+../roda.exe test6.inp > out_files/output6.log
 # Compare the output with expected results
 # You can use `diff
 echo "################Test-6####################"       
 echo "Integral of Li from fchk"             
-diff Li.out expected_Li.out >> out
+diff Li.out expected_Li.out 
 
+#------------------test-7------------------------------#
+#--------Multicenter integral of He2(manual quadrature)#
+../roda.exe test7.inp > out_files/output7.log
+# Compare the output with expected results
+echo "################Test-7####################"       
+echo "Multicenter integral of He2 from wfx (manual quadrature)"
+diff he2_multi.out expected_he2_multi.out
+
+#------------------test-8------------------------------#
+#--------Multicenter integral of He2(automatic)--------#
+../roda.exe test8.inp > out_files/output8.log
+# Compare the output with expected results
+echo "################Test-8####################"       
+echo "Multicenter integral of He2 from wfx (automatic quadrature)"
+diff he2_auto.out expected_he2_auto.out
+
+#------------------test-9------------------------------#
+#--------Multicenter integral of H2O(automatic)--------#
+../roda.exe test9.inp > out_files/output9.log
+# Compare the output with expected results
+echo "################Test-9####################"
+echo "Multicenter integral of water from wfx (automatic quadrature)"
+diff water_auto.out expected_water_auto.out
+
+#------------------test-10------------------------------#
+#--------Intracule at zero of Li------------------------#
+../roda.exe test10.inp > out_files/output10.log
+# Compare the output with expected results
+echo "################Test-10####################"
+echo "Intracule at zero of Li from fchk"
+diff Li_intracule_zero.out expected_Li_intracule_zero.out
 
 #----------------Add open shell molecules!!!!----------#
-cat out
 
 echo "All tests passed."
 

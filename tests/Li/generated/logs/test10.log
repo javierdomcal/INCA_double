@@ -1,0 +1,55 @@
+ Located section -> $fchkfile
+ Located section -> $intracule
+ Total Energy:  -7.4315661613155282     
+ Calculation type:CASSCFGen
+ Open shell
+ Correlated wavefunction
+ Reading fchk file
+ Number of atoms                            I                1                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+ nprim calculated from shells=          28
+ s shell           1
+ s shell           2
+ s shell           3
+ s shell           4
+ s shell           5
+ s shell           6
+ SP shell
+ SP shell
+ d shell          28
+          28          28          11
+ Ended reading fchk file, total primitives=          28
+           0           0           0   642.41891500000042                1           1
+           0           0           0   96.798515300000048                1           1
+           0           0           0   22.091121200000014                1           1
+           0           0           0   6.2010702500000034                1           1
+           0           0           0   1.9351176800000012                1           1
+           0           0           0  0.63673578900000039                1           1
+           0           0           0   2.3249184080000012                1           1
+           0           0           0  0.63243035560000038                1           1
+           0           0           0   7.9053434750000040E-002           1           1
+           1           0           0   2.3249184080000012                1           2
+           1           0           0  0.63243035560000038                1           2
+           1           0           0   7.9053434750000040E-002           1           2
+           0           1           0   2.3249184080000012                1           3
+           0           1           0  0.63243035560000038                1           3
+           0           1           0   7.9053434750000040E-002           1           3
+           0           0           1   2.3249184080000012                1           4
+           0           0           1  0.63243035560000038                1           4
+           0           0           1   7.9053434750000040E-002           1           4
+           0           0           0   3.5961971750000023E-002           1           1
+           1           0           0   3.5961971750000023E-002           1           2
+           0           1           0   3.5961971750000023E-002           1           3
+           0           0           1   3.5961971750000023E-002           1           4
+           2           0           0  0.20000000000000012                1           5
+           0           2           0  0.20000000000000012                1           6
+           0           0           2  0.20000000000000012                1           7
+           1           1           0  0.20000000000000012                1           8
+           1           0           1  0.20000000000000012                1           9
+           0           1           1  0.20000000000000012                1          10
+ Located section -> $Intracule_at_zero
+ readed intra info
+ starting loop for primitives
+ Loop over           1 grid points
+ Ended loop for primitives
+INTRACULE AT ZERO =    1.5723569661213761E+00
+ intracule computed succesfully

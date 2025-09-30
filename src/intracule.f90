@@ -190,7 +190,6 @@ do while (.true.)  !loop for primitive quartets.
         !!!!!!!!!!!!Calculate coeficients of V!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         sm=0
         !calculate w_m
-
         ! --- x direction ---
         Lrtot(1)=TMN(i,1)+TMN(j,1)+TMN(k,1)+TMN(l,1) !Lrtot=degree of eqn 15 (I don't use Lmax)    
         call gauherm(Lrtot(1), nn, rh, w_r) !obtain Gauss-Hermite nodes(rh) and weights(w_r) (2L+1)
@@ -266,13 +265,15 @@ if (radial_plot) then        !compute radial intracule
     sm=0
     r_intra=0.d0
     ir=0
-    do i=1,nradi        
+    do i=1,nradi   
+        write(*,*) i, radi(i), smn(i)
         do k=1,smn(i) !sum reduced angular points per radi  
             sm=sm+1            
             r_intra(i)=r_intra(i)+w_ang(sm)*I_vec(sm)!Perform the angular quadrature 
         end do
-        r_intra(i)=(r_intra(i)/(4.0d0*pi))
-        write(3,'(F8.4,1X,D25.16,1X)') radi(i), r_intra(i)
+        write(3,*) radi(i), r_intra(i), r_intra(i)*2.0d0*pi*radi(i)**2, r_intra(i)*2.0d0*pi*radi(i)
+        !'(F8.4,1X,D20.16,1X,E15.10,1X,E15.10)'
+        !write(3,*) i, radi(i), r_intra(i), r_intra(i)*2.d0*pi*radi(i)**2, r_intra*2*pi*radi(i)
     end do 
     deallocate(r_intra)
     close(3)
@@ -361,22 +362,22 @@ write(3,*) "Primitive quartet loop time", T3-T2
 write(3,*) "CPU time for intracule integrations", T4-T3
 write(3,*) "---Primitive quartet time analysis-----------"
 write(3,*) "Reading .dm2p file-->", Tread
- write(3,*) "1st primitive screening-->", T1screen
- write(3,*) "2nd primitive screening-->", T2screen
- write(3,*) "Grid points loop-->", Tgrid
- write(3,*) "---------------------------------------------"
- write(3,*) "------Grid point + primitive quartet info----"
- write(3,*) "Original grid points", maxgrid
- write(3,*) "Symmetry reduced grid points", rgrid
- write(3,*) "Total number of reduced grid points", rrgrid  
- write(3,*) "---------------------------------------------"
- write(3,*) "--------------Accuracy check-----------------"
- write(3,*) "Sum of all DM2prim terms=", trDM2, trace_DM2prim
- write(3,*) "Thresholds used for DM2prim", trsh1, trsh2
- write(3,*) "Threshold used for screenings(Tau)=", thresh
- write(3,*) "Computed limit for the screenings", lim
- write(3,*) "---------------------------------------------"
- if (radial_integral) then   
+write(3,*) "1st primitive screening-->", T1screen
+write(3,*) "2nd primitive screening-->", T2screen
+write(3,*) "Grid points loop-->", Tgrid
+write(3,*) "---------------------------------------------"
+write(3,*) "------Grid point + primitive quartet info----"
+write(3,*) "Original grid points", maxgrid
+write(3,*) "Symmetry reduced grid points", rgrid
+write(3,*) "Total number of reduced grid points", rrgrid  
+write(3,*) "---------------------------------------------"
+write(3,*) "--------------Accuracy check-----------------"
+write(3,*) "Sum of all DM2prim terms=", trDM2, trace_DM2prim
+write(3,*) "Thresholds used for DM2prim", trsh1, trsh2
+write(3,*) "Threshold used for screenings(Tau)=", thresh
+write(3,*) "Computed limit for the screenings", lim
+write(3,*) "---------------------------------------------"
+if (radial_integral) then   
     write(3,*) "--------------RADIAL INTEGRAL----------------" 
     write(3,*) "Number of centres", nquad
     do i=1,nquad
@@ -393,15 +394,22 @@ write(3,*) "Reading .dm2p file-->", Tread
     write(3, '(A, ES25.16)') 'TOTAL Energy = ', toteng
     npairs=(nelec)*(nelec-1)/2
     write(3,*) "Radial_integral error=", r_integral-dble(npairs)
- else if (radial_plot) then
+else if (radial_plot) then
      write(3,*) "RADIAL PLOT, I(S) vs s"    
      write(3,*) "Number of distances", nradi
      write(3,*) "From", radi(1), "to", radi(nradi)
- else if (cubeintra) then
+else if (cubeintra) then
      write(3,*) "CUBEFILE GENERATED"
- end if
- close(3)
- contains
+else if (intracule_at_zero) then
+     write(3, '(A, ES25.16)') 'INTRACULE AT ZERO = ', intracule_zero
+else if (vee_flag) then
+     write(3, '(A, ES25.16)') 'INTRACULE AT ZERO = ', intracule_zero
+     write(3, '(A, ES25.16)') 'TOTAL VALUE OF INTRACULE = ', intracule_total
+     write(3, '(A, ES25.16)') 'TOTAL VALUE OF Vee = ', vee
+     write(3, '(A, ES25.16)') 'TOTAL Energy = ', toteng    
+end if
+close(3)
+contains
 ! Simpson's 1/3 rule integration function
 ! Integrates function values y over uniform grid with spacing h
 ! Requires odd number of points for proper Simpson's rule

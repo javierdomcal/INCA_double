@@ -202,9 +202,9 @@ subroutine gauherm(Lrtot,n,rh,w_r)
          if (Lrtot.gt.0) then
          !compute the number of nodes for exact Hermite quadrature
              if(MOD(Lrtot,2).eq.0) then !even 
-                   n=int((dble(Lrtot)/2.0d0) +1.0d0) !nx->number of nodes
+                   n=int((dble(Lrtot)*0.5d0) +1.0d0) !nx->number of nodes
              else 
-                   n=int((dble(Lrtot)+1.0d0)/2.0d0) 
+                   n=int((dble(Lrtot)+1.0d0)*0.5d0) 
              end if
          else
           !only one node

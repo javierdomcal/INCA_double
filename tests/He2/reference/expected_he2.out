@@ -1,0 +1,36 @@
+ *******Job Finished************
+ -----------Computational time----------------
+ Total CPU time   4.3078259999999995     
+ Grid points computing time   2.3140079999999998     
+ Primitive quartet loop time   1.9934810000000001     
+ CPU time for intracule integrations   3.3700000000003172E-004
+ ---Primitive quartet time analysis-----------
+ Reading .dm2p file-->   1.6110000000071345E-003
+ 1st primitive screening-->  -3.4140000000029147E-003
+ 2nd primitive screening-->   9.4699999998759665E-004
+ Grid points loop-->   1.9862370000000018     
+ ---------------------------------------------
+ ------Grid point + primitive quartet info----
+ Original grid points       59000
+ Symmetry reduced grid points       30900
+ Total number of reduced grid points       30900
+ ---------------------------------------------
+ --------------Accuracy check-----------------
+ Sum of all DM2prim terms=   14.568082367977475        17.352773362142422     
+ Thresholds used for DM2prim   10.000000000000000        10.000000000000000     
+ Threshold used for screenings(Tau)=   1.0000000000000000E-008
+ Computed limit for the screenings   2.7777777777777777E-010
+ ---------------------------------------------
+ --------------RADIAL INTEGRAL----------------
+ Number of centres           1
+           1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
+ Weights for centres   6.3223425506977781E-310
+ Alpha parameter   1.0000000000000000     
+ Gauss-Legendre nodes         100
+ Gauss-Lebedev nodes         590
+ ---------------------------------------------
+INTRACULE AT ZERO =    0.0000000000000000E+00
+TOTAL VALUE OF INTRACULE =    5.9845919792358133E+00
+TOTAL VALUE OF Vee =    1.6367959764947896E+03
+TOTAL Energy =    0.0000000000000000E+00
+ Radial_integral error=  -1.5408020764186681E-002

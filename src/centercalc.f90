@@ -76,14 +76,15 @@ end do
 do i=1,nquad
    dist(i)=sqrt(sum(c1(:,i)**2))
 end do
-sfalpha(1)=1.5d0
+sfalpha(1)=1.d0
 !minval(dist,dim=1,mask=(dist.gt.zero))/2.d0
-Ps(1)=sum(an)/natoms !the weight of the central positive center
+!Ps(1)=sum(an)/natoms !the weight of the central positive center
+Ps(1)=1.d0 
 sm=0
 k_val=nrad/nquad
 do i=2,nquad
    if (dist(i).ge.zero) then
-      sfalpha(i)=1.5d0
+      sfalpha(i)=1.d0
       Ps(i)=1.d0
    end if   
 end do
