@@ -346,7 +346,7 @@ if (cubeintra) then
     close(3)
 end if       
 if (intracule_at_zero) then
-    intracule_zero=I_vec(1)
+    intracule_zero=I_vec(1)/2.d0
     write(*, '(A, ES25.16)') 'INTRACULE AT ZERO = ', intracule_zero
 end if 
 ! 40 format(6(E16.6E3))
