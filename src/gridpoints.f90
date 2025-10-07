@@ -62,7 +62,6 @@ double precision, dimension(3,nquad) :: cent !center of the quadratures
 !local variables
 !1-levedeb quadrature
 integer :: nang
-double precision, allocatable, dimension(:,:) :: r_lb
 double precision, allocatable, dimension(:) :: Wlb
 !double precision, allocatable, dimension(:) :: theta, phi
 !2-legendre quadrature
@@ -78,6 +77,7 @@ double precision, allocatable, dimension(:,:) :: fgr, brrg, rrg
 
 
 integer :: i, ia, ir, sm, smp, sma, smnn, j, k, smr, smpr, ngrid, i1
+double precision,allocatable,dimension(:) :: xlb,ylb,zlb
 integer :: np !number of points
 double precision, parameter :: pi=4.d0*datan(1.d0)
 double precision, parameter :: trsh=1.d-15, trsh2=1.d-16, tol=dsqrt(epsilon(1.d0))
@@ -118,42 +118,41 @@ do i1=1,nquad       !loop over centres
     !    write(*,*) xl_i(i), wl_i(i)
     !end do      
     !!!Obtain angular nodes and weights (Gauss-Lebedev)!!!!!!!!!!!!!!!!!!!!!!!  
-    allocate(r_lb(3,nang))
+    allocate(xlb(nang));allocate(ylb(nang));allocate(zlb(nang))
     allocate(Wlb(nang))
     Wlb=0.d0
-    r_lb=0.d0
-    if (nAng.eq.6) call LD0006(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng)  !6 grid points
-    if (nAng.eq.14) call LD0014(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng)  !14 grid points
-    if (nAng.eq.26) call LD0026(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng)  !26 grid points 
-    if (nAng.eq.38) call LD0038(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng)  !38 grid points
-    if (nAng.eq.50) call LD0050(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng)  !50 grid points
-    if (nAng.eq.74) call LD0074(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng)  !74 grid points
-    if (nAng.eq.86) call LD0086(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng)  !86 grid points
-    if (nAng.eq.110) call LD0110(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng)  !110 grid points
-    if (nAng.eq.146) call LD0146(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng)  !146 grid points
-    if (nAng.eq.170) call LD0170(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !170 grid points
-    if (nAng.eq.194) call LD0194(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !194 grid points 
-    if (nAng.eq.230) call LD0230(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !230 grid points
-    if (nAng.eq.266) call LD0266(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !266 grid points 
-    if (nAng.eq.302) call LD0302(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !302 grid points
-    if (nAng.eq.350) call LD0350(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !350 grid points
-    if (nAng.eq.434) call LD0434(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !434
-    if (nAng.eq.590) call LD0590(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !590
-    if (nAng.eq.770) call LD0770(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !770
-    if (nAng.eq.974) call LD0974(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !974
-    if (nAng.eq.1202) call LD1202(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !1202
-    if (nAng.eq.1454) call LD1454(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !1454
-    if (nAng.eq.1730) call LD1730(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !1730
-    if (nAng.eq.2030) call LD2030(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !2030
-    if (nAng.eq.2354) call LD2354(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !2354
-    if (nAng.eq.2702) call LD2702(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !2702
-    if (nAng.eq.3074) call LD3074(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !3074
-    if (nAng.eq.3470) call LD3470(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !3470
-    if (nAng.eq.3890) call LD3890(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !3890
-    if (nAng.eq.4334) call LD4334(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !4334
-    if (nAng.eq.4802) call LD4802(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !4802
-    if (nAng.eq.5294) call LD5294(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !5294
-    if (nAng.eq.5810) call LD5810(r_lb(1,:),r_lb(2,:),r_lb(3,:),Wlb,nAng) !5810
+    if (nAng.eq.6) call LD0006(xlb,ylb,zlb,Wlb,nAng)  !6 grid points
+    if (nAng.eq.14) call LD0014(xlb,ylb,zlb,Wlb,nAng)  !14 grid points
+    if (nAng.eq.26) call LD0026(xlb,ylb,zlb,Wlb,nAng)  !26 grid points 
+    if (nAng.eq.38) call LD0038(xlb,ylb,zlb,Wlb,nAng)  !38 grid points
+    if (nAng.eq.50) call LD0050(xlb,ylb,zlb,Wlb,nAng)  !50 grid points
+    if (nAng.eq.74) call LD0074(xlb,ylb,zlb,Wlb,nAng)  !74 grid points
+    if (nAng.eq.86) call LD0086(xlb,ylb,zlb,Wlb,nAng)  !86 grid points
+    if (nAng.eq.110) call LD0110(xlb,ylb,zlb,Wlb,nAng)  !110 grid points
+    if (nAng.eq.146) call LD0146(xlb,ylb,zlb,Wlb,nAng)  !146 grid points
+    if (nAng.eq.170) call LD0170(xlb,ylb,zlb,Wlb,nAng) !170 grid points
+    if (nAng.eq.194) call LD0194(xlb,ylb,zlb,Wlb,nAng) !194 grid points 
+    if (nAng.eq.230) call LD0230(xlb,ylb,zlb,Wlb,nAng) !230 grid points
+    if (nAng.eq.266) call LD0266(xlb,ylb,zlb,Wlb,nAng) !266 grid points 
+    if (nAng.eq.302) call LD0302(xlb,ylb,zlb,Wlb,nAng) !302 grid points
+    if (nAng.eq.350) call LD0350(xlb,ylb,zlb,Wlb,nAng) !350 grid points
+    if (nAng.eq.434) call LD0434(xlb,ylb,zlb,Wlb,nAng) !434
+    if (nAng.eq.590) call LD0590(xlb,ylb,zlb,Wlb,nAng) !590
+    if (nAng.eq.770) call LD0770(xlb,ylb,zlb,Wlb,nAng) !770
+    if (nAng.eq.974) call LD0974(xlb,ylb,zlb,Wlb,nAng) !974
+    if (nAng.eq.1202) call LD1202(xlb,ylb,zlb,Wlb,nAng) !1202
+    if (nAng.eq.1454) call LD1454(xlb,ylb,zlb,Wlb,nAng) !1454
+    if (nAng.eq.1730) call LD1730(xlb,ylb,zlb,Wlb,nAng) !1730
+    if (nAng.eq.2030) call LD2030(xlb,ylb,zlb,Wlb,nAng) !2030
+    if (nAng.eq.2354) call LD2354(xlb,ylb,zlb,Wlb,nAng) !2354
+    if (nAng.eq.2702) call LD2702(xlb,ylb,zlb,Wlb,nAng) !2702
+    if (nAng.eq.3074) call LD3074(xlb,ylb,zlb,Wlb,nAng) !3074
+    if (nAng.eq.3470) call LD3470(xlb,ylb,zlb,Wlb,nAng) !3470
+    if (nAng.eq.3890) call LD3890(xlb,ylb,zlb,Wlb,nAng) !3890
+    if (nAng.eq.4334) call LD4334(xlb,ylb,zlb,Wlb,nAng) !4334
+    if (nAng.eq.4802) call LD4802(xlb,ylb,zlb,Wlb,nAng) !4802
+    if (nAng.eq.5294) call LD5294(xlb,ylb,zlb,Wlb,nAng) !5294
+    if (nAng.eq.5810) call LD5810(xlb,ylb,zlb,Wlb,nAng) !5810
     !!!!!!!!!!!!!Compute grid points of quadrature!!!!!!!!!!!
     nGrid=nAng*nrad
     allocate(radius(nrad))
@@ -179,9 +178,9 @@ do i1=1,nquad       !loop over centres
     do ir=1,nrad
         do ia=1,nAng
             sm=sm+1   !count total grid points    
-            fgr(1,sm)=radius(ir)*r_lb(1,ia)+cent(1,i1)
-            fgr(2,sm)=radius(ir)*r_lb(2,ia)+cent(2,i1)
-            fgr(3,sm)=radius(ir)*r_lb(3,ia)+cent(3,i1)
+            fgr(1,sm)=radius(ir)*xlb(ia)+cent(1,i1)
+            fgr(2,sm)=radius(ir)*ylb(ia)+cent(2,i1)
+            fgr(3,sm)=radius(ir)*zlb(ia)+cent(3,i1)
             !store total grid points (all quadratures)              
             !if (fgr(3,sm).ge.-tol) then
                 smn(i1)=smn(i1)+1 !sum the number of sym reduced points of each quadrature                  
@@ -227,7 +226,7 @@ do i1=1,nquad       !loop over centres
     !deallocate(theta)
     !deallocate(phi)
     deallocate(Wlb)
-    deallocate(r_lb)
+    deallocate(xlb);deallocate(ylb);deallocate(zlb)
     deallocate(xl_i)
     deallocate(wl_i)
     deallocate(wl2_i)

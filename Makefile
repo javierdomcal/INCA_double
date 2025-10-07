@@ -6,10 +6,11 @@ SRC_DIR = src
 OBJ_DIR = obj
 
 FC = gfortran
-FFLAGS = -Wall -g -msse4.2 -fcheck=all \
+
+FFLAGS = -Wall -g -msse4.2 -fopenmp -fcheck=all \
          -Waliasing -Wampersand -Wconversion -Wsurprising \
          -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant \
-         -J$(OBJ_DIR)    # store .mod files here
+         -J$(OBJ_DIR)
 
 LIB = -llapack -lblas
 
