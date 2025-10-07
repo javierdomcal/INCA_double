@@ -169,8 +169,9 @@ do i1=1,nquad       !loop over centres
     else
         do ir=1,nrad    
           radius(ir)=(1.d0+xl_i(ir))/(1.d0-xl_i(ir))*sfalpha(i1) 
-          wl_i(ir)=2*pi*(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)**2.d0 !for I(r)
-          wl2_i(ir)=2*pi*(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)   ! for Vee
+          wl2_i(ir)=2*pi*(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)   !for Vee          
+          wl_i(ir)=2*pi*(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)*radius(ir) !for I(r)
+          write(*,*) ir, radius(ir), wl_i(ir)
         end do   
     end if  
     !compute grid points for all the becke centers
@@ -182,9 +183,9 @@ do i1=1,nquad       !loop over centres
             fgr(2,sm)=radius(ir)*r_lb(2,ia)+cent(2,i1)
             fgr(3,sm)=radius(ir)*r_lb(3,ia)+cent(3,i1)
             !store total grid points (all quadratures)              
-            if (fgr(3,sm).ge.-tol) then
+            !if (fgr(3,sm).ge.-tol) then
                 smn(i1)=smn(i1)+1 !sum the number of sym reduced points of each quadrature                  
-            end if                  
+            !end if                  
         end do   
     end do  
     write(*,*) "Total number of gp after center",i1,"=", sm, ngrid
@@ -200,20 +201,20 @@ do i1=1,nquad       !loop over centres
     do j=1,nrad
         do k=1,nAng  
             sm=sm+1                     !sum total grid points
-            if (fgr(3,sm).ge.-tol) then !reduce points by symmetry
+            !if (fgr(3,sm).ge.-tol) then !reduce points by symmetry
                 smr=smr+1               !sum sym reduced grid points   
                 brrg(:,smr)=fgr(:,sm)   !store sym reduced points
-                if (abs(fgr(3,sm)).lt.tol) then    !z is 0, do not multiply by 2
+                !if (abs(fgr(3,sm)).lt.tol) then    !z is 0, do not multiply by 2
                     weight(smr)=Wlb(k)*Wl_i(j)
                     weight_vee(smr)=Wlb(k)*wl2_i(j) !for Vee
-                else
-                    weight(smr)=2.d0*Wlb(k)*Wl_i(j) !z is positive, use sym (I(z)=I(-z))
-                    weight_vee(smr)=2.d0*Wlb(k)*wl2_i(j) !for Vee
-                end if
-            else 
+                !else
+                !    weight(smr)=2.d0*Wlb(k)*Wl_i(j) !z is positive, use sym (I(z)=I(-z))
+                !    weight_vee(smr)=2.d0*Wlb(k)*wl2_i(j) !for Vee
+                !end if
+            !else 
                 !sym neglected point    
                 smnn=smnn+1
-            end if  
+            !end if  
         end do             
     end do   
     smpr=smr !store last reduced point of the quadrature
@@ -256,20 +257,21 @@ if (nquad.gt.1) then         !we have more than one quadrature centre
     call becke(rrg,smn,rgrid,nquad,cent,w_beck,Ps)
     do i=1,rgrid
         srweight(i)=srweight(i)*w_beck(i) !store becke weight into the total one
+        srweight_vee(i)=srweight_vee(i)*w_beck(i) !for Vee
     end do
     deallocate(w_beck)
     !reduce points with 0 weight
     sm=0
     sma=0
-    do i=1,rgrid
-        if ((srweight(i).le.trsh2)) then !not 1st center and little weight
-            sm=sm+1                     !sum number of neglected points  
-            if (i.gt.smn(1)) then
-                sma=sma+1 !count neglected points in 2nd center 
-            end if        
-        end if        
-    end do
-    rrgrid=rgrid-sm !number of sym and weight reduced points
+    !do i=1,rgrid
+    !    if ((srweight(i).le.trsh2)) then !not 1st center and little weight
+    !        sm=sm+1                     !sum number of neglected points  
+    !        if (i.gt.smn(1)) then
+    !            sma=sma+1 !count neglected points in 2nd center 
+    !        end if        
+    !    end if        
+    !end do
+    !rrgrid=rgrid-sm !number of sym and weight reduced points
 else !only 1 quadrature centre--> No Becke    
     rrgrid=rgrid
 end if
@@ -283,12 +285,12 @@ allocate(rrrg(3,rrgrid))  !doubly reduced points
 sm=0
 write(*,*) "Final number of grid points=", rrgrid
 do i=1,rgrid
-    if ((srweight(i).gt.trsh2)) then !remove points with low (zero) weight
+    !if ((srweight(i).gt.trsh2)) then !remove points with low (zero) weight
         sm=sm+1 
         rweight(sm)=srweight(i) 
         rweight_vee(sm)=srweight_vee(i) !for Vee
         rrrg(:,sm)=rrg(:,i)           
-    end if
+    !end if
 end do
 
 deallocate(weight)

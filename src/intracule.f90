@@ -13,7 +13,7 @@ logical, intent(in) :: normalize_dm2p
 integer :: kk1, kk2 !integers we do not want to read from .dm2
 integer :: dfact    !double factorial
 integer :: ii,iii,sum, ig, ir, summ, np, sm, smm !some integers
-double precision :: pot, pot_x, pot_y, pot_z !power for the polynomial V 
+!double precision :: pot, pot_x, pot_y, pot_z !power for the polynomial V 
 double precision :: R_i_k_2, R_j_l_2  !R_ik=(R_i-R_k)^2
 double precision :: Aa_ijkl !grid independent part of the intracule
 double precision :: n_prim_i, n_prim_j,n_prim_k, n_prim_l !normalization of primitives for DM2
@@ -49,9 +49,13 @@ double precision :: Tread, T1screen, T2screen, Tgrid
 double precision :: vee, h
 double precision, allocatable :: vee_intra(:)
 double precision :: intracule_total, intracule_zero
+!block summation for better precision
+integer, parameter :: BLOCK_SIZE=100
+integer :: prim_count_block
+double precision, allocatable, dimension(:) :: block_sum(:)
 
 lim=thresh*(dble(nprim)*(dble(nprim)+1.d0)*0.5d0)**(-1.d0) !limit for the 1st integral screening
- 
+write(*,*) "lim=", lim
 call cpu_time(T1)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!Obtain grid points!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -124,6 +128,10 @@ do ii = 1, npmax
         w_m_array(ii) = (dble(ii) * 0.5d0)**(dble(ii) * 0.5d0) * dexp(-dble(ii) * 0.5d0)
     end if
 end do
+
+allocate(block_sum(nGrid))
+block_sum(:)=0.d0
+prim_count_block=0
 do while (.true.)  !loop for primitive quartets.
     call cpu_time(TT1)    
     read(5,end=100) kk1,i,j,k,l,DMval,kk2 !read a line from binary file .dm2
@@ -213,7 +221,7 @@ do while (.true.)  !loop for primitive quartets.
         call CPU_time(TT4)
         T2screen=T2screen+(TT4-TT3)                
         if (screen2.ge.lim) then 
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                                             
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                                        
             !loop over grid points
             do ig=1,nGrid                                             
                 V_x=0.d0; V_y=0.d0; V_z=0.d0  
@@ -233,24 +241,45 @@ do while (.true.)  !loop for primitive quartets.
                     V_z=V_z*rp(3)+C_z(iii)
                 end do  !end loop over the polynomial coefficients
                 !!!!!!!!!!!!!Calculate intracule at the grid point!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                I_vec(ig)=I_vec(ig)+Aa_ijkl*dexp(-(rp(1)**2.d0+rp(2)**2.d0+rp(3)**2.d0))*V_x*V_y*V_z
+                !I_vec(ig)=I_vec(ig)+Aa_ijkl*dexp(-(rp(1)**2.d0+rp(2)**2.d0+rp(3)**2.d0))*V_x*V_y*V_z
+                block_sum(ig)=block_sum(ig)+Aa_ijkl*dexp(-(rp(1)*rp(1)+rp(2)*rp(2)+rp(3)*rp(3)))*V_x*V_y*V_z
                 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                                  
             end do       !End loop over grid points
-            call CPU_time(TT5)
-            Tgrid=Tgrid+(TT5-TT4)
+            prim_count_block=prim_count_block+1
+            if (prim_count_block >= BLOCK_SIZE) then
+                do ig=1,nGrid
+                    I_vec(ig)=I_vec(ig)+block_sum(ig)
+                end do
+                block_sum(:)=0.d0
+                prim_count_block=0
+            end if
         else                     
             summ=summ+1  !count quartets that do not pass 2nd screening 
         end if                                                                
     else               
         sum=sum+1    !count quartets that do not pass 1st screening                                 
     end if                
-end do !end loop over quartets 
+end do !end loop over quartets
 100 continue           !it comes here when .dm2 file is finished
+! flush any remaining block
+if (prim_count_block > 0) then
+    do ig = 1, nGrid
+        I_vec(ig) = I_vec(ig) + block_sum(ig)
+    end do
+end if
+deallocate(block_sum) 
 write(*,*) "Ended loop for primitives"
+write(*,*) sm, "quartets skipped in 1st screening"
+write(*,*) summ, "quartets skipped in 2nd screening"
 
 deallocate(C_x)
 deallocate(C_y)   !deallocate polynomial coefficients
 deallocate(C_z) 
+deallocate(w_r)
+deallocate(ipiv); deallocate(w_m_array)
+deallocate(rh)
+close(5)  !close binary file
+
 !end subroutine intracalc 
 !as output gives a vector with the intracule at the given points
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -324,10 +353,14 @@ if (radial_integral) then !integral of the intracule
     r_integral=0.d0 
     vee=0.d0
     do i=1,rrgrid
-        r_integral=r_integral+rweight(i)*I_vec(i)
-        vee=vee+rweight_vee(i)*I_vec(i)
+        if (I_vec(i).gt.1e-16) then
+            write(*,*) i, rweight(i), rweight_vee(i), I_vec(i)
+            r_integral=r_integral+rweight(i)*I_vec(i)
+            vee=vee+rweight_vee(i)*I_vec(i)
+        end if    
     end do 
     deallocate(rweight)
+    deallocate(rweight_vee)
 end if
 if (cubeintra) then
     open(unit=3, file=cubeintraname)

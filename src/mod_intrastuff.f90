@@ -151,6 +151,7 @@ double precision, intent(inout) :: ipiv(:) !for dgbsv
 !local variables
 double precision, dimension(np,np) :: M  
 double precision, dimension(np) :: xx    !Points where we evaluate W
+double precision :: xval
 integer :: Ltot
 integer :: i1, j1, l1
 
@@ -158,20 +159,26 @@ integer :: i1, j1, l1
 integer :: INFO
 
 if (np.eq.1) then !only one coefficient
-   C_r=w_r(1)     !see equation 15 (in this case we only have 1 node)
+   C_r(1)=w_r(1)     !see equation 15 (in this case we only have 1 node)
+   return
 else
    Ltot=np-1 !degree of the polynomial    
    !generate 'np' points to evaluate the polynomial (xx(np)) !linearly independent!! 
    do i1=1,np
-     xx(i1)=-0.5d0+dble(i1)
+      xx(i1)=-0.5d0+dble(i1)
    end do   
    !build M matrix (M and C_r form the augmented matrix)
    do i1=1,np
-       l1=Ltot !start from the maximum degree
-       do j1=1,np
-          M(i1,j1)=(sqe*(xx(i1)+r_ik(ax)-r_jl(ax)))**(dble(l1)) !r'^l               
-          l1=l1-1
-       end do
+      !l1=Ltot !start from the maximum degree
+      xval=sqe*(xx(i1)+r_ik(ax)-r_jl(ax)) !r' (eq.15)
+      M(i1,np)=1.d0  
+      !do j1=1,np
+      do j1=np-1,1,-1
+         M(i1,j1)=M(i1,j1+1)*xval  !
+      end do   
+         !M(i1,j1)=(sqe*(xx(i1)+r_ik(ax)-r_jl(ax)))**(dble(l1)) !r'^l               
+         !l1=l1-1
+      !end do
    end do
    C_r=0.d0
    do i1=1,np
