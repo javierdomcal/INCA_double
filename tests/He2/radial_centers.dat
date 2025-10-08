@@ -1,0 +1,14 @@
+# ==========================================
+# Radial Integration Centers
+# Generated: 2025-10-08 16:17:52
+# ==========================================
+# Description: Quadrature centers and parameters for radial integration
+# Units: Various
+# Notes: Centers, weights, and parameters for numerical integration
+# Tabular Data
+# Dimensions: 1 rows x 8
+ columns
+# ----------------------------------------
+# Columns:  Center_ID  X_coord  Y_coord  Z_coord  Weight  Alpha  GL_nodes  LB_nodes
+# ----------------------------------------
+  0.1000000000000000D+01  0.0000000000000000D+00  0.0000000000000000D+00  0.0000000000000000D+00  0.6921201529005121-309  0.1000000000000000D+01  0.9000000000000000D+02  0.5900000000000000D+03

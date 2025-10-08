@@ -1,0 +1,23 @@
+# ==========================================
+# Timing Analysis
+# Generated: 2025-10-08 16:17:53
+# ==========================================
+# Description: Detailed timing breakdown of intracule calculation
+# Units: seconds
+# Method: CPU timing measurements
+# Computation time:     2.699249 seconds
+# Notes: Complete timing breakdown for performance analysis
+# Tabular Data
+# Dimensions: 8 rows x 2
+ columns
+# ----------------------------------------
+# Columns:  Stage  Time_sec
+# ----------------------------------------
+  0.1000000000000000D+01  0.2699249000000000D+01
+  0.2000000000000000D+01 -0.1350700000000000D-01
+  0.3000000000000000D+01  0.0000000000000000D+00
+  0.4000000000000000D+01  0.2712756000000000D+01
+  0.5000000000000000D+01  0.2572908237133694-308
+  0.6000000000000000D+01  0.8899712647780551-306
+  0.7000000000000000D+01  0.0000000000000000D+00
+  0.8000000000000000D+01  0.0000000000000000D+00

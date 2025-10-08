@@ -1,0 +1,10 @@
+# ==========================================
+# Initial Parameters
+# Generated: 2025-10-08 16:17:53
+# ==========================================
+# Description: Screening limit parameter for intracule calculation
+# Units: a.u.
+# Notes: Computed as thresh/(nprim*(nprim+1)*0.5)
+# Scalar Value
+# ----------------------------------------
+  0.2777777777777778D-09

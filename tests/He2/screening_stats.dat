@@ -1,0 +1,13 @@
+# ==========================================
+# Screening Statistics
+# Generated: 2025-10-08 16:17:53
+# ==========================================
+# Description: Number of quartets skipped in different screening stages
+# Units: Count
+# Notes: Efficiency statistics for primitive quartet screening
+# Vector Data
+# ----------------------------------------
+# Columns: Screening  Count
+# ----------------------------------------
+  0.1000000000000000D+01  0.8800000000000000D+03
+  0.2000000000000000D+01  0.0000000000000000D+00

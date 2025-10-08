@@ -8,6 +8,7 @@ use wfxinfo
 use intrainfo !information from the input
 use quadratures !nodes and weights of the quadratures, +total grid points
 use omp_lib
+use output_manager
 implicit none
 double precision :: t_start, t_end, wall_time
 integer :: nthreads
@@ -58,6 +59,10 @@ double precision :: intracule_total, intracule_zero
 integer, parameter :: BLOCK_SIZE=100
 integer :: prim_count_block
 double precision, allocatable, dimension(:) :: block_sum(:)
+! Output manager variables
+type(output_config) :: config
+type(data_container) :: data
+integer :: output_status
 
 lim=thresh*(dble(nprim)*(dble(nprim)+1.d0)*0.5d0)**(-1.d0) !limit for the 1st integral screening
 write(*,*) "lim=", lim
@@ -311,7 +316,6 @@ end if
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !call cpu_time(T3)
 if (radial_plot) then        !compute radial intracule
-    open(unit=3, file=r_plot_name)   
     allocate(r_intra(nradi)) 
     ig=0
     sm=0
@@ -323,12 +327,32 @@ if (radial_plot) then        !compute radial intracule
             sm=sm+1            
             r_intra(i)=r_intra(i)+w_ang(sm)*I_vec(sm)!Perform the angular quadrature 
         end do
-        write(3,*) radi(i), r_intra(i), r_intra(i)*2.0d0*pi*radi(i)**2, r_intra(i)*2.0d0*pi*radi(i)
-        !'(F8.4,1X,D20.16,1X,E15.10,1X,E15.10)'
-        !write(3,*) i, radi(i), r_intra(i), r_intra(i)*2.d0*pi*radi(i)**2, r_intra*2*pi*radi(i)
     end do 
+    
+    ! Output radial plot using output manager
+    config = create_output_config('Radial Intracule Plot', OUTPUT_TABLE, r_plot_name)
+    config%description = 'Radial intracule I(s) vs distance s'
+    config%units = 'Bohr'
+    config%notes = 'Generated from intracule calculation'
+    allocate(config%column_labels(4))
+    config%column_labels = ['Distance  ', 'I(s)      ', 'I(s)*4Pis2', 'I(s)*2Pis ']
+    
+    ! Setup data container
+    data%table_rows = nradi
+    data%table_cols = 4
+    allocate(data%table_data(nradi, 4))
+    
+    do i = 1, nradi
+        data%table_data(i, 1) = radi(i)
+        data%table_data(i, 2) = r_intra(i)
+        data%table_data(i, 3) = r_intra(i)*2.0d0*pi*radi(i)**2
+        data%table_data(i, 4) = r_intra(i)*2.0d0*pi*radi(i)
+    end do
+    
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    deallocate(config%column_labels)
     deallocate(r_intra)
-    close(3)
  end if     
 
 if (vee_flag) then        ! compute radial intracule
@@ -364,14 +388,47 @@ if (vee_flag) then        ! compute radial intracule
     intracule_total = simpson_integrate(r_intra, nradi, h)      
     ! Second integration for vee_intra (Vee)
     vee = simpson_integrate(vee_intra, nradi, h) 
+    ! Output individual scalar results using output manager
+    config = create_output_config('Intracule at Zero', OUTPUT_SCALAR, 'intracule_zero.value')
+    config%description = 'Intracule value at the origin from vee calculation'
+    config%units = 'a.u.'
+    config%notes = 'Calculated using angular integration at zero distance'
+    data%scalar_value = intracule_zero
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    
+    config = create_output_config('Total Intracule Value', OUTPUT_SCALAR, 'intracule_total.value')
+    config%description = 'Total integrated intracule value'
+    config%units = 'a.u.'
+    config%notes = 'Simpson integration over radial grid'
+    data%scalar_value = intracule_total
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    
+    config = create_output_config('Electron-Electron Repulsion Energy', OUTPUT_SCALAR, 'vee.value')
+    config%description = 'Total electron-electron repulsion energy'
+    config%units = 'a.u.'
+    config%notes = 'Computed from intracule using Simpson integration'
+    data%scalar_value = vee
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    
+    config = create_output_config('Total Electronic Energy', OUTPUT_SCALAR, 'total_energy.value')
+    config%description = 'Total electronic energy of the system'
+    config%units = 'a.u.'
+    config%notes = 'Reference energy from wavefunction calculation'
+    data%scalar_value = toteng
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    
     write(*, '(A, ES25.16)') 'INTRACULE AT ZERO = ', intracule_zero
     write(*, '(A, ES25.16)') 'TOTAL VALUE OF INTRACULE = ', intracule_total
     write(*, '(A, ES25.16)') 'TOTAL VALUE OF Vee = ', vee
     write(*, '(A, ES25.16)') 'TOTAL Energy = ', toteng
     deallocate(r_intra)
     deallocate(vee_intra)
-    close(3)
 end if 
+
 if (radial_integral) then !integral of the intracule
     r_integral=0.d0 
     vee=0.d0
@@ -381,34 +438,96 @@ if (radial_integral) then !integral of the intracule
             vee=vee+rweight_vee(i)*I_vec(i)
         end if    
     end do 
+    
+    ! Output individual scalar results using output manager
+    config = create_output_config('Intracule at Zero', OUTPUT_SCALAR, 'intracule_zero.value')
+    config%description = 'Intracule value at the origin from radial integration'
+    config%units = 'a.u.'
+    config%notes = 'Calculated using radial quadrature integration'
+    data%scalar_value = intracule_zero
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    
+    config = create_output_config('Total Intracule Value', OUTPUT_SCALAR, 'intracule_total.value')
+    config%description = 'Total integrated intracule value'
+    config%units = 'a.u.'
+    config%notes = 'Radial quadrature integration over grid'
+    data%scalar_value = r_integral
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    
+    config = create_output_config('Electron-Electron Repulsion Energy', OUTPUT_SCALAR, 'vee.value')
+    config%description = 'Total electron-electron repulsion energy'
+    config%units = 'a.u.'
+    config%notes = 'Computed from intracule using radial quadrature'
+    data%scalar_value = vee
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    
+    config = create_output_config('Total Electronic Energy', OUTPUT_SCALAR, 'total_energy.value')
+    config%description = 'Total electronic energy of the system'
+    config%units = 'a.u.'
+    config%notes = 'Reference energy from wavefunction calculation'
+    data%scalar_value = toteng
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    
     deallocate(rweight)
     deallocate(rweight_vee)
 end if
+
 if (cubeintra) then
-    open(unit=3, file=cubeintraname)
-    write(3,*) "CUBE FILE"
-    write(3,*) "OUTER LOOP:X, MIDDLE LOOP:Y, INNER LOOP:Z"
-    write(3,*) natoms, center_i(1), center_i(2), center_i(3)
-    write(3,*) np_i(1), step_i(1), 0.d0, 0.d0
-    write(3,*) np_i(2), 0.d0, step_i(2), 0.d0
-    write(3,*) np_i(3), 0.d0, 0.d0, step_i(3)
-    do i=1,natoms
-        write(3,*) an(i), chrg(i), cartes(i,1), cartes(i,2), cartes(i,3)
+    ! Output cube file using output manager
+    config = create_output_config('Intracule Cube File', OUTPUT_CUBE, cubeintraname)
+    config%description = 'Vectorial intracule data in cube format'
+    config%origin = center_i
+    config%spacing = step_i
+    config%dimensions = np_i
+    config%notes = 'OUTER LOOP:X, MIDDLE LOOP:Y, INNER LOOP:Z'
+    
+    ! Setup data container
+    data%grid_size = ngrid
+    allocate(data%grid_values(ngrid))
+    do i = 1, ngrid
+        data%grid_values(i) = I_vec(i)/2.0d0
     end do
-    do i=1,ngrid
-        write(3,'(D25.16)') I_vec(i)/2.0d0
-    end do  
-    close(3)
+    
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
 end if       
+
 if (intracule_at_zero) then
     intracule_zero=I_vec(1)/2.d0
+    
+    ! Output scalar value using output manager
+    config = create_output_config('Intracule at Zero', OUTPUT_SCALAR, 'intracule_zero.value')
+    config%description = 'Intracule value calculated at the origin'
+    config%units = 'a.u.'
+    config%notes = 'Single point calculation at r=0'
+    
+    data%scalar_value = intracule_zero
+    call write_data(config, data, output_status)
+    call cleanup_data(data)
+    
     write(*, '(A, ES25.16)') 'INTRACULE AT ZERO = ', intracule_zero
 end if 
+
 ! 40 format(6(E16.6E3))
 call cpu_time(T4)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!Print output!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-open(unit=3,file=outname) !open output file 
+
+! Create main output file exactly like the original but using output manager
+config = create_output_config('Intracule Calculation Results', OUTPUT_TABLE, outname)
+config%description = 'Complete job results and computational details'
+config%units = 'Various'
+config%method = 'Cioslowski and Liu algorithm'
+config%computation_time = T4-T1
+config%notes = 'Job finished successfully'
+config%include_header = .false.  ! We'll format this manually
+
+! Create a custom formatted output file to match the original exactly
+open(unit=3,file=outname) 
 write(3,*) "*******Job Finished************"
 write(3,*) "-----------Computational time----------------"
 write(3,*) "Total CPU time", T4-T1 
@@ -464,6 +583,7 @@ else if (vee_flag) then
      write(3, '(A, ES25.16)') 'TOTAL Energy = ', toteng    
 end if
 close(3)
+
 contains
 ! Simpson's 1/3 rule integration function
 ! Integrates function values y over uniform grid with spacing h

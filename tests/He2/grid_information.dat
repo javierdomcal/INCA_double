@@ -1,0 +1,16 @@
+# ==========================================
+# Grid Information
+# Generated: 2025-10-08 16:17:53
+# ==========================================
+# Description: Grid point statistics and configuration
+# Units: Count
+# Notes: Grid reduction and symmetry information
+# Tabular Data
+# Dimensions: 3 rows x 2
+ columns
+# ----------------------------------------
+# Columns:  Grid_Type  Count
+# ----------------------------------------
+  0.1000000000000000D+01  0.0000000000000000D+00
+  0.2000000000000000D+01  0.1176100000000000D+05
+  0.3000000000000000D+01  0.0000000000000000D+00

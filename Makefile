@@ -10,7 +10,7 @@ FC = gfortran
 FFLAGS = -Wall -g -msse4.2 -fopenmp -fcheck=all \
          -Waliasing -Wampersand -Wconversion -Wsurprising \
          -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant \
-         -J$(OBJ_DIR)
+         -J$(OBJ_DIR) -I/usr/lib/gcc/x86_64-linux-gnu/9/finclude
 
 LIB = -llapack -lblas
 
