@@ -168,9 +168,9 @@ do i1=1,nquad       !loop over centres
         end do   
     else
         do ir=1,nrad    
-          radius(ir)=(1.d0+xl_i(ir))/(1.d0-xl_i(ir))*sfalpha(i1) 
-          wl_i(ir)=2*pi*(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)**2.d0 !for I(r)
+          radius(ir)=(1.d0+xl_i(ir))/(1.d0-xl_i(ir))*sfalpha(i1)
           wl2_i(ir)=2*pi*(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)   ! for Vee
+          wl_i(ir)=2*pi*(2.d0*sfalpha(i1)/((1.d0-xl_i(ir))**2.d0))*wl_i(ir)*radius(ir)*radius(ir) !for I(r)
         end do   
     end if  
     !compute grid points for all the becke centers
