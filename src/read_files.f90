@@ -742,11 +742,6 @@ subroutine filefchk(fchkfilename)
          stop  
       end select
    end do
-   write(*,*) nprim, iprim, l
-   write(*,*) "Ended reading fchk file, total primitives=", nprim
-   do i=1,nprim 
-      write(*,*) TMN(i,:), Alpha(i), Ra(i), Ptyp(i) 
-   end do   
    close(1)
 end subroutine filefchk
 

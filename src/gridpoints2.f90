@@ -122,6 +122,7 @@ do i=1,nblock !loop for each radius fragment
                 gpt(1,sm)=radi(smrad)*x_lb(ia)!dcos(phi(ia))*dsin(theta(ia))
                 gpt(2,sm)=radi(smrad)*y_lb(ia)!dsin(phi(ia))*dsin(theta(ia))
                 gpt(3,sm)=radi(smrad)*z_lb(ia)!dcos(theta(ia))
+                pweight(sm)=Wlb(ia)
             else    
                 z=radi(smrad)*z_lb(ia) !compute z
                 if (z.ge.-tol) then
