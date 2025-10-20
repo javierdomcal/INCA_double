@@ -1,14 +1,14 @@
  *******Job Finished************
  -----------Computational time----------------
- Total CPU time   17.860757000000000     
- Grid points computing time   1.0890649999999999     
- Primitive quartet loop time   16.771656999999998     
- CPU time for intracule integrations   3.5000000000451337E-005
+ Total CPU time   17.820732999999997     
+ Grid points computing time   1.0901049999999999     
+ Primitive quartet loop time   16.730596000000002     
+ CPU time for intracule integrations   3.1999999997367468E-005
  ---Primitive quartet time analysis-----------
- Reading .dm2p file-->   3.9488000000239998E-002
- 1st primitive screening-->  -7.7281999999842643E-002
- 2nd primitive screening-->  0.13995700000013178     
- Grid points loop-->   16.487727999999908     
+ Reading .dm2p file-->   4.0702999999919998E-002
+ 1st primitive screening-->  -7.9180000000153683E-002
+ 2nd primitive screening-->  0.14153399999979088     
+ Grid points loop-->   16.440992000000239     
  ---------------------------------------------
  ------Grid point + primitive quartet info----
  Original grid points        6020
@@ -23,7 +23,7 @@
  ---------------------------------------------
  --------------RADIAL INTEGRAL----------------
  Number of centres           7
-           1 :::   6.6400873386518610E-310   6.6400873386518610E-310   0.0000000000000000     
+           1 :::   6.6078076999923046E-310   6.6078076999923046E-310   0.0000000000000000     
            2 :::   1.0942288841450001E-031  -1.4325769196900000        1.2014772028670000     
            3 :::  -1.0942288841450001E-031   1.4325769196900000       -1.2014772028670000     
            4 :::   1.7544007392299999E-016   1.4325769196900000        1.2014772028670000     
@@ -37,6 +37,6 @@
  ---------------------------------------------
 INTRACULE AT ZERO =    0.0000000000000000E+00
 TOTAL VALUE OF INTRACULE =    4.4942860153280769E+01
-TOTAL VALUE OF Vee =    2.8169534031708929E+04
+TOTAL VALUE OF Vee =    1.4912461518595171E+02
 TOTAL Energy =    0.0000000000000000E+00
  Radial_integral error=  -5.7139846719231002E-002

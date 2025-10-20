@@ -1,14 +1,14 @@
  *******Job Finished************
  -----------Computational time----------------
- Total CPU time   3.6817010000000003     
- Grid points computing time   1.4672950000000000     
- Primitive quartet loop time   2.2140769999999996     
- CPU time for intracule integrations   3.2900000000024576E-004
+ Total CPU time   3.5714009999999998     
+ Grid points computing time   1.5745920000000000     
+ Primitive quartet loop time   1.9964960000000000     
+ CPU time for intracule integrations   3.1299999999978567E-004
  ---Primitive quartet time analysis-----------
- Reading .dm2p file-->   2.4110000000086007E-003
- 1st primitive screening-->  -3.8729999999946862E-003
- 2nd primitive screening-->   1.1310000000008813E-003
- Grid points loop-->   2.2048709999999971     
+ Reading .dm2p file-->   2.2550000000052250E-003
+ 1st primitive screening-->  -3.7089999999893042E-003
+ 2nd primitive screening-->   1.0830000000037199E-003
+ Grid points loop-->   1.9877639999999952     
  ---------------------------------------------
  ------Grid point + primitive quartet info----
  Original grid points       53100
@@ -32,7 +32,7 @@
  Gauss-Lebedev nodes         590         590         590
  ---------------------------------------------
 INTRACULE AT ZERO =    0.0000000000000000E+00
-TOTAL VALUE OF INTRACULE =    5.9991739491727314E+00
-TOTAL VALUE OF Vee =    1.5452245711847472E+04
+TOTAL VALUE OF INTRACULE =    5.9991739491727323E+00
+TOTAL VALUE OF Vee =    6.8150333055593775E+00
 TOTAL Energy =    0.0000000000000000E+00
- Radial_integral error=  -8.2605082726860957E-004
+ Radial_integral error=  -8.2605082726772139E-004

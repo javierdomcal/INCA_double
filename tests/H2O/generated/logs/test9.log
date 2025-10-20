@@ -41,64 +41,34 @@
  Error2=
  nrad=,nang=          10          86
  Total number of gp after center           1 =         860         860
-         370 Points will be neglected in center           1
  *********Neglecting points by symmetry*******************
- zeta zero center
          370 points have been neglected in center number           1
- Total number of gp after center           1 =         860
- Total number of reduced gp after center           1 =         490
  nrad=,nang=          10          86
  Total number of gp after center           2 =        1720         860
-         133 Points will be neglected in center           2
  *********Neglecting points by symmetry*******************
- zeta zero center
          133 points have been neglected in center number           2
- Total number of gp after center           2 =        1720
- Total number of reduced gp after center           2 =        1217
  nrad=,nang=          10          86
  Total number of gp after center           3 =        2580         860
-         727 Points will be neglected in center           3
  *********Neglecting points by symmetry*******************
- zeta zero center
          727 points have been neglected in center number           3
- Total number of gp after center           3 =        2580
- Total number of reduced gp after center           3 =        1350
  nrad=,nang=          10          86
  Total number of gp after center           4 =        3440         860
-         133 Points will be neglected in center           4
  *********Neglecting points by symmetry*******************
- zeta zero center
          133 points have been neglected in center number           4
- Total number of gp after center           4 =        3440
- Total number of reduced gp after center           4 =        2077
  nrad=,nang=          10          86
  Total number of gp after center           5 =        4300         860
-         727 Points will be neglected in center           5
  *********Neglecting points by symmetry*******************
- zeta zero center
          727 points have been neglected in center number           5
- Total number of gp after center           5 =        4300
- Total number of reduced gp after center           5 =        2210
  nrad=,nang=          10          86
  Total number of gp after center           6 =        5160         860
-         370 Points will be neglected in center           6
  *********Neglecting points by symmetry*******************
- zeta zero center
          370 points have been neglected in center number           6
- Total number of gp after center           6 =        5160
- Total number of reduced gp after center           6 =        2700
  nrad=,nang=          10          86
  Total number of gp after center           7 =        6020         860
-         370 Points will be neglected in center           7
  *********Neglecting points by symmetry*******************
- zeta zero center
          370 points have been neglected in center number           7
- Total number of gp after center           7 =        6020
- Total number of reduced gp after center           7 =        3190
- There are        3190 symmetry reduced grid points
+ There are        3190 grid points
  number of points per centre         490         727         133         727         133         490         490
-          92 neglected points of zero weight
-          98 neglected points of zero weight
  Final number of grid points=        3092
  starting loop for primitives
  Loop over        3092 grid points
