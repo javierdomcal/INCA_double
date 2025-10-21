@@ -26,8 +26,6 @@ double precision, parameter :: trsh=1.d-15, trsh2=1.d-16, tol=dsqrt(epsilon(1.d0
 !double precision :: a,b
 double precision :: xs
 double precision :: r_start,r_end
-logical :: nosym
-nosym=.true.
 write(*,*) nblock
 write(*,*) "tol=", tol
 allocate(npb(nblock))

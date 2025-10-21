@@ -32,8 +32,6 @@ double precision, allocatable, dimension(:) :: weight, weight_vee, srweight, srw
 double precision, allocatable, dimension(:) :: w_beck
 !-starting grid points 
 double precision, allocatable, dimension(:,:) :: gr1, gr2, gr3 
-logical :: nosym
-
 integer :: i, ia, ir, sm, smp, sma, smnn, j, k, smr, smpr, ngrid, i1
 integer :: np !number of points
 double precision, parameter :: pi=4.d0*datan(1.d0)
@@ -46,7 +44,6 @@ np=0
 do i=1,nquad
   np=np+nradc(i)*nAngc(i)
 end do
-nosym=.false.
 maxgrid=np
 write(*,*) "We are in subroutine gridpoints"
 write(*,*) "Error?"

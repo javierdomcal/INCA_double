@@ -1,14 +1,14 @@
  *******Job Finished************
  -----------Computational time----------------
- Total CPU time   3.5714009999999998     
- Grid points computing time   1.5745920000000000     
- Primitive quartet loop time   1.9964960000000000     
- CPU time for intracule integrations   3.1299999999978567E-004
+ Total CPU time   3.7082190000000002     
+ Grid points computing time   1.6502720000000000     
+ Primitive quartet loop time   2.0576289999999999     
+ CPU time for intracule integrations   3.1800000000004047E-004
  ---Primitive quartet time analysis-----------
- Reading .dm2p file-->   2.2550000000052250E-003
- 1st primitive screening-->  -3.7089999999893042E-003
- 2nd primitive screening-->   1.0830000000037199E-003
- Grid points loop-->   1.9877639999999952     
+ Reading .dm2p file-->   2.2310000000025365E-003
+ 1st primitive screening-->  -3.8780000000071535E-003
+ 2nd primitive screening-->   1.1509999999959053E-003
+ Grid points loop-->   2.0486130000000036     
  ---------------------------------------------
  ------Grid point + primitive quartet info----
  Original grid points       53100
