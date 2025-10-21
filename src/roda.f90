@@ -63,7 +63,6 @@ end program wavefunction
 subroutine readinput() 
 use inputdat
 use cubeinfo
-
 use locatemod
 implicit none
 character*80 :: name
@@ -162,6 +161,12 @@ open(unit=3,file=name,status='OLD')
         read(3,*) dm2name           !name of the dm2p file
         read(3,*) trsh1, trsh2      !thresholds used in DM2prim
         read(3,*) outname           !name of the output file
+        if (located(3,'$nosym')) then
+            nosym=.true.
+            write(*,*) 'Deactivating symmetry in intracule calculations'
+        else
+            nosym=.false.
+        end if
         rewind(3)
         if (located(3,'$radial_integral')) then
             radial_integral=.true.
@@ -198,6 +203,11 @@ open(unit=3,file=name,status='OLD')
                         read(3,*) nang
                     else
                         nang=590
+                    end if
+                    if (located(3,'$hydro')) then
+                        nohydro=.false.
+                    else
+                        nohydro=.true. !do not include H atoms as centres per default
                     end if
                     call centercalc() !calculate the number of centers and their positions
                 end if

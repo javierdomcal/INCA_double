@@ -5,7 +5,8 @@ character*40 :: dm2name, outname
 double precision :: thresh
 double precision :: trsh1, trsh2 !thresholds for DM2prim
 !!!!!Radial integral parameters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-logical :: autoc                                       !calculate centres automatically
+logical :: autoc                              !calculate centres automatically
+logical :: nohydro                            !do not include H atoms as centres
 logical :: radial_integral                    !=.true. integral of radial intra from 0 to infty
 integer :: nquad !number of quadratures
 double precision, allocatable, dimension(:,:) :: cent  !integration centre

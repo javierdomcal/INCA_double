@@ -1,0 +1,30 @@
+ Located section -> $wfxfile
+ Located section -> $intracule
+ Closed shell RHF
+ nprim=           8
+ Located section -> $radial_integral
+ Located section -> $Multicenter
+ Located section -> $manual_grid
+ readed intra info
+ We are in subroutine gridpoints
+ Error?
+ Error2=
+ nrad=,nang=          30         590
+ Total number of gp after center           1 =       17700       17700
+ *********Neglecting points by symmetry*******************
+        8430 points have been neglected in center number           1
+ nrad=,nang=          30         590
+ Total number of gp after center           2 =       35400       17700
+ *********Neglecting points by symmetry*******************
+        1178 points have been neglected in center number           2
+ nrad=,nang=          30         590
+ Total number of gp after center           3 =       53100       17700
+ *********Neglecting points by symmetry*******************
+       16522 points have been neglected in center number           3
+ There are       26970 grid points
+ number of points per centre        9270       16522        1178
+ Final number of grid points=       26894
+ starting loop for primitives
+ Loop over       26894 grid points
+ Ended loop for primitives
+ intracule computed succesfully

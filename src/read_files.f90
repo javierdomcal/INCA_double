@@ -558,7 +558,7 @@ subroutine filefchk(fchkfilename)
          nprim = nprim + 10*prim_per_shell(i)
       case(4)  ! g shell -> Cartesian (15 functions) 
          nprim = nprim + 15*prim_per_shell(i)
-      case(-4) ! spherical g shell
+      case(-4) ! spherical g shell 
          nprim = nprim + 15*prim_per_shell(i)   
       case default
          write(*,*) "Shell type not implemented:", shell_types(i)
@@ -629,7 +629,7 @@ subroutine filefchk(fchkfilename)
             iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
             Ptyp(iprim)=9; TMN(iprim,:)=(/1,0,1/)   ! xz
             iprim = iprim+1; Ra(iprim)=shell2atom(i); Alpha(iprim)=prim_exp(l)
-            Ptyp(iprim)=10; TMN(iprim,:)=(/0,1,1/)   ! yz
+            Ptyp(iprim)=10; TMN(iprim,:)=(/0,1,1/)  ! yz
             write(*,*) "d shell", iprim
          end do
       case(3, -3)  ! f shell -> Cartesian (10 functions)
@@ -742,11 +742,6 @@ subroutine filefchk(fchkfilename)
          stop  
       end select
    end do
-   write(*,*) nprim, iprim, l
-   write(*,*) "Ended reading fchk file, total primitives=", nprim
-   do i=1,nprim 
-      write(*,*) TMN(i,:), Alpha(i), Ra(i), Ptyp(i) 
-   end do   
    close(1)
 end subroutine filefchk
 

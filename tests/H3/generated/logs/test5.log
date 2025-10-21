@@ -1,0 +1,49 @@
+ Located section -> $fchkfile
+ Located section -> $intracule
+ Total Energy:  -1.5290074739307780     
+ Calculation type:CASSCFGen
+ Open shell
+ Correlated wavefunction
+ Reading fchk file
+ Number of atoms                            I                3                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+ nprim calculated from shells=          21
+ s shell           1
+ s shell           2
+ s shell           3
+ s shell           4
+ p shell           5
+ p shell           6
+ p shell           7
+ s shell           8
+ s shell           9
+ s shell          10
+ s shell          11
+ p shell          12
+ p shell          13
+ p shell          14
+ s shell          15
+ s shell          16
+ s shell          17
+ s shell          18
+ p shell          19
+ p shell          20
+ p shell          21
+ Located section -> $radial_integral
+ Using single center quadrature
+ Located section -> $Gauss-Legendre
+ Reading number of radial points and scaling factor for radial integration
+ Located section -> $Gauss-Lebedev
+ readed intra info
+ We are in subroutine gridpoints
+ Error?
+ Error2=
+ nrad=,nang=          30          86
+ Total number of gp after center           1 =        2580        2580
+ *********Neglecting points by symmetry*******************
+        1110 points have been neglected in center number           1
+ There are        1470 grid points
+ Final number of grid points=        1470
+ starting loop for primitives
+ Loop over        1470 grid points
+ Ended loop for primitives
+ intracule computed succesfully

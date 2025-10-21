@@ -1,0 +1,38 @@
+ *******Job Finished************
+ -----------Computational time----------------
+ Total CPU time   3.6924850000000000     
+ Grid points computing time   1.4729459999999999     
+ Primitive quartet loop time   2.2192099999999999     
+ CPU time for intracule integrations   3.2900000000024576E-004
+ ---Primitive quartet time analysis-----------
+ Reading .dm2p file-->   2.4439999999938955E-003
+ 1st primitive screening-->  -3.9300000000013213E-003
+ 2nd primitive screening-->   1.1359999999973613E-003
+ Grid points loop-->   2.2097670000000060     
+ ---------------------------------------------
+ ------Grid point + primitive quartet info----
+ Original grid points       53100
+ Symmetry reduced grid points       26970
+ Total number of reduced grid points       26894
+ ---------------------------------------------
+ --------------Accuracy check-----------------
+ Sum of all DM2prim terms=   14.568082367977475        17.352773362142422     
+ Thresholds used for DM2prim   10.000000000000000        10.000000000000000     
+ Threshold used for screenings(Tau)=   1.0000000000000000E-008
+ Computed limit for the screenings   2.7777777777777777E-010
+ ---------------------------------------------
+ --------------RADIAL INTEGRAL----------------
+ Number of centres           3
+           1 :::   0.0000000000000000        0.0000000000000000        0.0000000000000000     
+           2 :::   0.0000000000000000        0.0000000000000000        8.5151059169999996     
+           3 :::   0.0000000000000000        0.0000000000000000       -8.5151059169999996     
+ Weights for centres   1.0000000000000000        1.0000000000000000        1.0000000000000000     
+ Alpha parameter   1.0000000000000000        1.0000000000000000        1.0000000000000000     
+ Gauss-Legendre nodes          30          30          30
+ Gauss-Lebedev nodes         590         590         590
+ ---------------------------------------------
+INTRACULE AT ZERO =    0.0000000000000000E+00
+TOTAL VALUE OF INTRACULE =    5.9991739491727314E+00
+TOTAL VALUE OF Vee =    1.5452245711847472E+04
+TOTAL Energy =    0.0000000000000000E+00
+ Radial_integral error=  -8.2605082726860957E-004

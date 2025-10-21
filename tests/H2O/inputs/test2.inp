@@ -1,0 +1,17 @@
+h2o_total_integral_single_center
+$wfxfile
+h2o.wfx
+$intracule
+$Integral screening threshold (Tau)
+1.d-8
+$DM2P
+h2o.dm2p
+10 10
+water_single.out
+$radial_integral
+$Gauss-Legendre
+70
+1.d0
+$Gauss-Lebedev
+86
+

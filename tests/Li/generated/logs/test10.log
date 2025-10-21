@@ -1,0 +1,25 @@
+ Located section -> $fchkfile
+ Located section -> $intracule
+ Total Energy:  -7.4315661613155282     
+ Calculation type:CASSCFGen
+ Open shell
+ Correlated wavefunction
+ Reading fchk file
+ Number of atoms                            I                1                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+ nprim calculated from shells=          28
+ s shell           1
+ s shell           2
+ s shell           3
+ s shell           4
+ s shell           5
+ s shell           6
+ SP shell
+ SP shell
+ d shell          28
+ Located section -> $Intracule_at_zero
+ readed intra info
+ starting loop for primitives
+ Loop over           1 grid points
+ Ended loop for primitives
+INTRACULE AT ZERO =    7.8617848306068805E-01
+ intracule computed succesfully
