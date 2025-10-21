@@ -1,0 +1,9 @@
+# Ignore binary files
+*.o
+*.mod
+*.exe
+obj/
+out
+*.log
+tests/*.log
+tests/*.rad
