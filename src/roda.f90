@@ -204,6 +204,11 @@ open(unit=3,file=name,status='OLD')
                     else
                         nang=590
                     end if
+                    if (located(3,'$hydro')) then
+                        nohydro=.false.
+                    else
+                        nohydro=.true. !do not include H atoms as centres per default
+                    end if
                     call centercalc() !calculate the number of centers and their positions
                 end if
             else !single center quadrature
